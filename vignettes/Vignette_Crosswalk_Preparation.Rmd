@@ -1,0 +1,83 @@
+---
+title: "Vignette - Crosswalk Preparation (Optional)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this vignette, we show how we prepared the crosswalk dataset that is attached to the `hyspdisp` package. In case you want to use a different crosswalk you can follow some of these preprocessing steps. 
+
+First, we load the packages that we will need for completing this task. 
+
+```{r, message = FALSE, warning = FALSE}
+library(hyspdisp2)
+library(data.table)
+library(tidyverse)
+```
+
+In case you have not yet created your project folder use the following command. 
+
+```{r}
+createdirs()
+```
+
+If the file does not exist, download it from "https://www.udsmapper.org/docs/zip_to_zcta_2017.xlsx". 
+Then, open it. 
+
+```{r}
+filename<- file.path(main_dir, "crosswalk.xlsx")
+if(!file.exists(filename)){
+  download.file("http://www.udsmapper.org/docs/zip_to_zcta_2017.xlsx", filename)
+}
+crosswalk <- readxl::read_excel(filename, skip = 0)
+```
+
+Next step is to rename the `ZIP_CODE` variable.
+
+```{r}
+crosswalk <- crosswalk %>% dplyr::rename(.,ZIP=ZIP_CODE)
+```
+
+We use the 2017 census data packaged by [American Fact Finder](https://factfinder.census.gov/bkmk/table/1.0/en/ACS/17_5YR/B01003/0100000US.86000).
+
+We put the downloaded csv file in our main directory that has been specified in the `createdirs()` function and read it. We are also cleaning a the column names a little bit. 
+
+```{r}
+file <- file.path(main_dir, "ACS_17_5YR_B01003_with_ann.csv")
+ZCTApop2017 <- read.csv(file, skip = 1, header = T)
+names(ZCTApop2017) <- c('ID', 'ID2', 'GEOGRAPHY', 'TOTALESTIMATE', 'MARGINOFERROR')
+```
+
+Now, we create a ZCTA code variable by extracting the 5 last digits from the `id` variable. 
+
+```{r}
+ZCTApop2017 <- ZCTApop2017 %>% dplyr::mutate(ZCTA=stringr::str_sub(ID,-5,-1))
+```
+
+Merge the data to the crosswalk. 
+
+```{r}
+crosswalk <- dplyr::inner_join(crosswalk, ZCTApop2017)
+```
+
+Keep only some of the variables.
+
+```{r}
+crosswalk<- crosswalk %>% dplyr::select(ZIP, PO_NAME, ZCTA, STATE, TOTALESTIMATE, MARGINOFERROR)
+```
+
+Transform to data.table.
+
+```{r}
+crosswalk <- data.table::data.table(crosswalk)
+```
+
+Now the crosswalk is ready to use. 
+
+

@@ -1,0 +1,92 @@
+---
+title: "Vignette - Units Data Preparation (Optional)"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this vignette, we show how we prepared the `Units` data available in `hyspdisp`. 
+
+We will need two files. The first one - Power Plant Emissions Data - can be downloaded form [Harvard Dataverse](https://dataverse.harvard.edu/dataset.xhtml?persistentId=doi:10.7910/DVN/M3D2NR). We are assuming you downloaded it to your main directory, so if you did not, please change the paths accordingly. 
+
+In case you have not yet created your project folder use the following command. 
+
+```{r, message = FALSE, warning = FALSE}
+library(data.table)
+library(tidyverse)
+```
+
+```{r}
+createdirs()
+```
+
+```{r}
+library(data.table)
+
+d_ampd <- fread("~/Dropbox/Harvard/ARP/Data_AMPD_EIA/AMPD_Unit_with_Sulfur_Content_and_Regulations_with_Facility_Attributes.csv")
+d_ampd <- d_ampd[Year == 2006][, V1 := NULL]
+fwrite(d_ampd, "AMPD/AMPD_2006.csv")
+
+d_nei <- fread("2014fa_nata_cb6cmaq_14j/inputs/ptegu/ptegu_2014NEIv1_final_POINT_02nov2016_v0.csv", skip = 110)
+d_ampd <- fread("AMPD/AMPD_2006.csv")
+
+```
+
+```{r}
+names(d_nei)
+# d_nei <- d_nei[poll == "SO2"]
+
+d_nei_unique <- unique(d_nei[, .(facility_name, 
+                                 Facility.ID..ORISPL. = oris_facility_code, 
+                                 Unit.ID = oris_boiler_id,
+                                  stkhgt, stkdiam, stktemp, stkvel, latitude, longitude)])
+d_nei_unique <- d_nei_unique[Facility.ID..ORISPL. != "" & Unit.ID != ""]
+d_nei_unique
+
+d_ampd_subset <- d_ampd[Fuel1.IsCoal == 1][, .(Facility.ID..ORISPL.,
+                            Unit.ID,
+                            Year,
+                            Month,
+                            Initial.Year.of.Operation,
+                            Sulfur.Content,
+                            Program.s. = Program.s..x,
+                            SO2.Phase = SO2.Phase.y,
+                            NOx.Phase = NOx.Phase.y,
+                            EPA.Region,
+                            NERC.Region,
+                            Source.Category = Source.Category.y,
+                            State = State.x,
+                            Facility.Latitude = Facility.Latitude.x,
+                            Facility.Longitude = Facility.Longitude.x,
+                            Has.SO2.Scrub,
+                            SO2..tons.,
+                            Has.NOx.Scrub,
+                            NOx..tons.,
+                            CO2..short.tons.,
+                            Heat.Input..MMBtu.,
+                            Gross.Load..MW.h.,
+                            Steam.Load..1000lb.,
+                            Max.Hourly.HI.Rate..MMBtu.hr.)]
+
+d_ampd_annual <- d_ampd_subset[, .(Facility.Latitude,
+                                   Facility.Longitude,
+                                   SO2..tons. = sum(SO2..tons., na.rm = TRUE),
+                                   CO2..short.tons. = sum(CO2..short.tons., na.rm = TRUE),
+                                   NOx..tons. = sum(NOx..tons., na.rm = TRUE)),
+                               by = c("Facility.ID..ORISPL.", "Unit.ID", "Year")]
+
+d_ampd_annual <- unique(d_ampd_annual, by = c("Facility.ID..ORISPL.", "Unit.ID"))
+#d_ampd_annual[, Facility.ID..ORISPL. := as.character(Facility.ID..ORISPL.)]
+
+M <- merge(d_ampd_annual, d_nei_unique, by = c("Facility.ID..ORISPL.", "Unit.ID"), all.x = TRUE)
+fwrite(M, "Merge_AMPD_NEI/merge_no_missing_info_coal_only_2006.csv")
+
+# View(d_nei[oris_boiler_id == "SGU1"])
+```
+
