@@ -43,15 +43,16 @@ get_data <-
     end.year = NULL,
     end.month = NULL,
     unit = NULL,
-    linked_zips_data = NULL,
-    linked_zips_data_position = NULL) {
+    linked.zips.data = NULL,
+    linked.zips.data.position = NULL) {
+
     # to avoid error of unused arguments we used them independently of data requested
-    startyear <- startyear
-    startmonth <- startmonth
-    endyear <- endyear
-    endmonth <- endmonth
-    linked_zips_data <- linked_zips_data
-    linked_zips_data_position <- linked_zips_data_position
+    startyear <- start.year
+    startmonth <- start.month
+    endyear <- end.year
+    endmonth <- end.month
+    linked_zips_data <- linked.zips.data
+    linked_zips_data_position <- linked.zips.data.position
 
     if (data == "zctashapefile" | data == "zcta_dataplot") {
       directory <- zcta_dir

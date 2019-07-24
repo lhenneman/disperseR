@@ -85,16 +85,16 @@ PP.units.monthly1995_2017
 Equally important is the ZCTA shapefile. Using the `get_data()` function and specifing the `data` argument to `"zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. 
 
 ```{r}
-zcta <- get_data(data = "zctashapefile")
+zcta <- disperseR::get_data(data = "zctashapefile")
 zcta
 ```
 
-### Monthly mean boundary layer heights 
+### Monthly mean planetary boundary layer heights 
 
 Another input that we need are the monthly mean boundary layer heights. Again, using the `get_data()` function and specifing the `data` argument to `"pblheight"`. If you need more information about how this data has been preprocessed just check the special vignette that is available with the package. We used the data that you can find by clicking on this link [ESRL website](https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j). 
 
 ```{r}
-pblheight <- get_data(data = "pblheight")
+pblheight <- disperseR::get_data(data = "pblheight")
 pblheight
 ```
 
@@ -104,7 +104,55 @@ Now, we need to select the power plants that we will run. In this case, we'll us
 
 
 ```{r}
-unitsrun <- disperseR::units2005 %>% dplyr::select(.,-c(V1)) %>% dplyr::top_n(2, SOx)
+unitsrun <- disperseR::units2005 %>% 
+  dplyr::top_n(2, SOx) # get the two most polluting plants
+
+# transform to data table 
+unitsrun <- data.table::data.table(unitsrun) 
+knitr::kable(head(unitsrun))
 ```
+
+### The meteorology files
+
+Download reanalysis meteorology files.
+
+Please download the files using the code below before the *first* run of `run_fac_parallel`. This package does not provide a function that would download the files in parallel because the parallel code does not handle the download well split over multiple cores. Below is shown code to test for the three meteorology files needed for the present run, and download them if they are not already in the `meteo_dir`. The reanalysis met files are about 120 MB each.
+
+If you, for example, want to donwload files for Jan-Mar 2005, you just have to use the `get_data()` function specifying the `data` argument to `metfiles`, `start.year` to `"2005"`, `start.month` to `"01"`, `end.year` to `"2005"`, and `end.month` to `"03"`. See below.
+
+```{r}
+disperseR::get_data(data="metfiles", start.year="2005", start.month="01", end.year="2005", end.month="3")
+```
+
+Now the data should be downloaded to your `meteo_dir` directory and we can start the analysis.
+
+## Analysis
+
+### Define time periods to be run
+
+HYSPLIT, as applied here, tracks air parcels emitted at certain times and locations. `hyspdisp` refers to these as *emissions events*. Once HYSPLIT has been run for each emissions event, the simulated parcel locations are aggregated by source, time, and location. The functions below are written to enable runs of many emissions events.
+
+To define an object that includes all emission events in a given time period, we can use the helper function `define_inputtimes`. This takes as inputs a starting and ending day, and outputs a table of value whose rows will later correspond to inputs into the main `hyspdisp` worker functions. The following command combines the units defined above with four times a day for January-March in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the `start_hours` variable, and `duration = 240` denotes that the emitted air parces are tracked for 240 hours (10 days). The resulting data.table the head of which is printed in the table below. 
+
+```{r}
+input_refs <- disperseR::define_inputs(units = unitsrun,
+  startday = '2005-01-01',
+  endday = '2005-06-30',
+  start.hours =  c(0, 6, 12, 18),
+  duration = 240)
+
+knitr::kable(input_refs)
+```
+
+### Run HYSPLIT
+The following examples show how to run a small subset (chosen to provide workable examples on a laptop) of emissions events, link to ZIP codes, and plot the results.
+
+The `run_fac_parallel` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shapefile (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. With `link2zip = T` you can link dispersion patterns from individual emissions events to ZIP codes; this, however, somewhat violates the spirit of HyADS, since the large number of emissions events is used as a check on some other uncertainties introduced by the simplifying assumptions. 
+
+**If you get an error running HYSPLIT, it is likely because the meteorology files did not download correctly. Check your `meteo_dir` to ensure all files are present and at least 100MB in size.**
+
+Below we get the 20 indexes that will be used to sample the input data.
+
+
 
 
