@@ -100,11 +100,11 @@ pblheight
 
 ### The units data 
 
-Now, we need to select the power plants that we will run. In this case, we'll use the three units in 2005 with the greatest SOx emissions. This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency] (https://www.eia.gov/electricity/data/eia860/) for 2005, 2006, 2011 and 2012.
+Now, we need to select the power plants that we will run. In this case, we'll use the two units in 2005 with the greatest SOx emissions. This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency] (https://www.eia.gov/electricity/data/eia860/) for years 2003 to 2012 both included. If you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
 
 
 ```{r}
-unitsrun <- disperseR::units2005 %>% dplyr::select(.,-c(V1)) %>% dplyr::top_n(5, SOx)
+unitsrun <- disperseR::units2005 %>% dplyr::select(.,-c(V1)) %>% dplyr::top_n(2, SOx)
 ```
 
 

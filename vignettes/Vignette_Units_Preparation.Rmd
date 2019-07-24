@@ -190,4 +190,3 @@ write.csv(data.frame(ampd), file)
 
 The ampd file present in your environment should be now ready to use. It was attached to the `disperser` package as `units2005`.  
 
-
