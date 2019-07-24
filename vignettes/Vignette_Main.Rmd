@@ -137,7 +137,7 @@ To define an object that includes all emission events in a given time period, we
 ```{r}
 input_refs <- disperseR::define_inputs(units = unitsrun,
   startday = '2005-01-01',
-  endday = '2005-06-30',
+  endday = '2005-03-30',
   start.hours =  c(0, 6, 12, 18),
   duration = 240)
 
@@ -151,8 +151,39 @@ The `run_fac_parallel` function runs HYSPLIT for each emissions event. Inputs de
 
 **If you get an error running HYSPLIT, it is likely because the meteorology files did not download correctly. Check your `meteo_dir` to ensure all files are present and at least 100MB in size.**
 
-Below we get the 20 indexes that will be used to sample the input data.
+Below we get the 10 indexes that will be used to sample the input data.
 
+```{r}
+run_sample <- round(seq(1, dim(input_refs)[1], length.out = 10)) 
+```
 
+So we will be using the following events. 
 
+```{r}
+knitr::kable(input_refs[run_sample])
+```
+
+Now we will run the fac model in parallel. The argument `X` should take the vector of indeces that we created above, the `run_sample` vector. 
+
+`input.refs` should be the data table that is the result of the `define_input()` function. The `ztca` argument takes the `zcta` set by default, by you can change it. The `crosswalk` argument takes the `crosswalk` table by default, but you can change it.  
+
+The `pbl.height` argument takes the `pblheight` set by default, but you can change it. 
+
+The `detectCores()` function automatically detects the number of cores on your machine. We use it in the `mc.cores` of `mclapply`. If you would like to change on how many cores the model should be run please specify the number of cores. Here, for example we specified the number of cores to be the number of the cores on our machine minus 1. If you would like to run this model sequentially please set the number of cores to 1.
+
+The package now has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`. 
+
+```{r}
+hysp_raw <- parallel::mclapply(X = run_sample,
+  FUN = run_fac_parallel,
+  input.refs = input_refs,
+  pbl.height = pblheight,
+  ztca = ztca,
+  species = 'so2',
+  link2zip = F,
+  proc_dir = proc_dir,
+  overwrite = F,
+  npart = 100,
+  mc.cores = detectCores()-1)
+```
 

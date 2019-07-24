@@ -1,0 +1,230 @@
+run_fac_parallel <- function(x,
+  input.refs = input_refs,
+  zcta = zcta,
+  crosswalk = crosswalk,
+  pbl.height = pblheight,
+  species = 'so2',
+  npart = 100,
+  overwrite = F,
+  link2zip = F,
+  proc_dir = proc_dir,
+  bin_path = NULL,
+  keep.hysplit.files = FALSE) {
+  print(meteo_dir)
+
+  #########################################################################################################
+  ## define speciec params depening on species.
+
+  if (species == 'so2') {
+    species_param <-
+      data.table(
+        name = 'so2',
+        pdiam = 0,
+        density = 0,
+        shape_factor = 0,
+        resuspension = 1e-10,
+        ddep_vel = 0.002
+      )
+  } else if (species == 'so4') {
+    # so4p (particulate sulfate)
+    species_param <-
+      data.table(
+        name = 'so4p',
+        pdiam = 2.5,
+        density = 1,
+        shape_factor = 1,
+        resuspension = 0,
+        ddep_vel = 0.002
+      )
+  } else {
+    stop("No species or incorrect species defined!")
+  }
+
+  #########################################################################################################
+  ## subset the data using the indexes provided.
+  subset <- input.refs[x]
+  print(paste0(
+    'Date: ',
+    format(subset$start_day, format = "%Y-%m-%d"),
+    ', Hour: ',
+    subset$start_hour
+  ))
+
+  if (is.na(subset$Height)) {
+    stop("Check to make sure your Height is defined in the run_ref_tab!")
+  }
+
+  #########################################################################################################
+  ## Check if Height parameter in unit is NA
+
+  ## Define output file names
+  output_file <- path.expand(file.path(
+    hysp_dir,
+    paste0(
+      "hyspdisp_",
+      subset$ID,
+      "_",
+      subset$start_day,
+      "_",
+      formatC(
+        subset$start_hour,
+        width = 2,
+        format = "d",
+        flag = "0"
+      ),
+      ".csv"
+    )
+  ))
+  message(paste("output file", output_file))
+
+  zip_output_file <- file.path(
+    ziplink_dir,
+    paste0(
+      "ziplinks_",
+      subset$ID,
+      "_",
+      subset$start_day,
+      "_",
+      formatC(
+        subset$start_hour,
+        width = 2,
+        format = "d",
+        flag = "0"
+      ),
+      ".csv"
+    )
+  )
+
+  ## Initial output data.table
+  out1 <-
+    paste(
+      "Partial trimmed parcel locations (below height 0 and the highest PBL height) already exist at",
+      output_file
+    )
+  out2 <-
+    paste("ZIP code parcel counts not called for or already exist at",
+      zip_output_file)
+
+  ## Check if output parcel locations file already exists
+  tmp.exists <-
+    system(paste("ls -f", file.path(output_file)), intern = T)
+
+
+  if (output_file %ni% tmp.exists | overwrite == T) {
+    message("Defining HYSPLIT model parameters and running the model.")
+
+    ## Create run directory
+    run_dir <-
+      file.path(proc_dir, paste0(subset$ID, '_', paste(subset[, .(ID, start_day, start_hour)], collapse = '_')))
+
+    ## preemptively remove if run_dir already exists, then create
+    unlink(run_dir, recursive = T)
+    dir.create(run_dir, showWarnings = FALSE)
+
+    ## Define the dispersion model
+    dispersion_model <-
+      create_disp_model() %>%
+      add_emissions(
+        rate = 1,
+        duration = subset$duration_emiss_hours,
+        start_day = as(subset$start_day, 'character'),
+        start_hour = subset$start_hour
+      ) %>%
+      add_species(
+        name = species_param$name,
+        pdiam = species_param$pdiam,
+        # okay
+        density = 0,
+        # okay
+        shape_factor = 0,
+        # okay
+        #resuspension = species_param$resuspension
+        ddep_vel = species_param$ddep_vel
+      ) %>% # okay
+      add_grid(range = c(0.5, 0.5),
+        division = c(0.1, 0.1)) %>%
+      add_params(
+        lat = subset$Latitude,
+        lon = subset$Longitude,
+        height = subset$Height,
+        duration = subset$duration_run_hours,
+        start_day = as(subset$start_day, 'character'),
+        start_hour = subset$start_hour,
+        direction = "forward",
+        met_type = "reanalysis"#,
+        #    binary_path = bin_path
+      ) %>%
+      disperseR::run_model(npart = npart, run_dir = run_dir)
+
+
+    ## Extract output from the dispersion model
+    dispersion_df <-
+      dispersion_model %>% get_output_df() %>% data.table()
+
+    ## trim particles if they go below zero
+    disp_df <- trim_zero(dispersion_df)
+
+    ## Add parcel date and time
+    disp_df$Pdate <- subset$start_day + disp_df$hour / 24
+
+    # trims particles that are above the global max boundary value
+    disp_df_trim <- disp_df[height <= 2665]
+
+    ## Save R data frame
+    save.vars <- c('lon', 'lat', 'height', 'Pdate', 'hour')
+    partial_trimmed_parcel_locs <-
+      disp_df_trim[, save.vars, with = F]
+    write.csv(partial_trimmed_parcel_locs, output_file)
+    out1 <-
+      paste(
+        "Partial trimmed parcel locations (below height 0 and the highest PBL height) written to",
+        output_file
+      )
+
+    ## Erase run files
+    if (!keep.hysplit.files)
+      unlink(run_dir, recursive = TRUE)
+  }
+
+  if (link2zip == T) {
+    print("Linking parcel locations to ZIP codes. This could take a few minutes...")
+
+    # Check if hpbl_raster is defined
+    if (!hasArg(pbl.height))
+      stop("Please define a hpbl_raster file")
+
+    # Check if crosswalk is defined
+    if (!hasArg(crosswalk))
+      stop("Please define a crosswalk file to link zips")
+
+    #Read output file from hysplit
+    disp_df <- fread(output_file)
+
+    #Check if extent matches the hpbl raster (pbl.height)
+    d_xmin <- min(disp_df$lon)
+    e_xmin <- extent(pbl.height)[1]
+    if (d_xmin < e_xmin) {
+      pbl.height <- rotate(pbl.height)
+    }
+
+    ## trim values above PBL
+    disp_df_trim <- trim_pbl(disp_df, rasterin = pbl.height)
+
+    ## link to zips
+    disp_df_link <- link_zip(
+      disp_df_trim,
+      zc = zcta,
+      cw = crosswalk,
+      gridfirst = T,
+      rasterin = pbl.height
+    )
+
+    # Write to output csv file
+    write.csv(disp_df_link[, .(ZIP, N)], zip_output_file)
+    out2 <-
+      paste("ZIP code parcel counts written to", zip_output_file)
+  }
+
+  out <- data.table(out = c(out1, out2))
+  return(out)
+}
