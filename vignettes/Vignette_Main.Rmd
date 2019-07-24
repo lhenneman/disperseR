@@ -21,7 +21,7 @@ In this vignette you will see how to use the `disperser` package. We will walk y
 We start by importing the packages that we will use in the analysis. Make sure you have them installed.
 
 ```{r, message = FALSE, warning = FALSE}
-library(disperser) # our package
+library(disperseR) # our package
 library(ncdf4)
 library(data.table)
 library(tidyverse)
@@ -67,14 +67,22 @@ ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are
 Let's load the crosswalk file. 
 
 ```{r}
-crosswalk <- disperser::crosswalk
+crosswalk <- disperseR::crosswalk
 ```
 
 The disper package also includes monthly power plant emissions, load, and heat input data, accessible using the following command:
 
 ### The monthly powerplant emissions
+
 ```{r}
-PP.units.monthly1995_2017 <- disperser::PP.units.monthly1995_2017
+PP.units.monthly1995_2017 <- disperseR::PP.units.monthly1995_2017
 ```
 
+### The shape files
+
+Equally important is the ZCTA shapefile. Using the `get_data()` function and specifing the `data` argument to `"zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. 
+
+```{r}
+zcta <- get_data(data = "zctashapefile")
+```
 
