@@ -1,16 +1,17 @@
 run_fac_parallel <- function(x,
   input.refs = input_refs,
-  zcta = zcta,
-  crosswalk = crosswalk,
-  pbl.height = pblheight,
+  crosswalk. = NULL,
+  pbl.height = NULL,
+  zcta. = NULL,
   species = 'so2',
   npart = 100,
-  overwrite = F,
-  link2zip = F,
+  overwrite = FALSE,
+  link2zip = FALSE,
   proc_dir = proc_dir,
-  bin_path = NULL,
   keep.hysplit.files = FALSE) {
-  print(meteo_dir)
+
+  zcta <- zcta.
+  crosswalk <- crosswalk.
 
   #########################################################################################################
   ## define speciec params depening on species.
@@ -80,7 +81,7 @@ run_fac_parallel <- function(x,
   zip_output_file <- file.path(
     ziplink_dir,
     paste0(
-      "ziplinks_",
+      "single_ziplinks_",
       subset$ID,
       "_",
       subset$start_day,
@@ -106,31 +107,33 @@ run_fac_parallel <- function(x,
       zip_output_file)
 
   ## Check if output parcel locations file already exists
-  tmp.exists <-
-    system(paste("ls -f", file.path(output_file)), intern = T)
+  tmp.exists <- system(paste("ls -f", file.path(output_file)), intern = TRUE)
 
+  ## function to negate
+  '%ni%' <- function(x, y) {
+    return(!('%in%'(x, y)))
+  }
 
-  if (output_file %ni% tmp.exists | overwrite == T) {
+  if (output_file %ni% tmp.exists | overwrite == TRUE) {
     message("Defining HYSPLIT model parameters and running the model.")
 
     ## Create run directory
-    run_dir <-
-      file.path(proc_dir, paste0(subset$ID, '_', paste(subset[, .(ID, start_day, start_hour)], collapse = '_')))
+    run_dir <- file.path(proc_dir, paste0(subset$ID, '_', paste(subset[, .(ID, start_day, start_hour)], collapse = '_')))
 
     ## preemptively remove if run_dir already exists, then create
-    unlink(run_dir, recursive = T)
+    unlink(run_dir, recursive = TRUE)
     dir.create(run_dir, showWarnings = FALSE)
 
     ## Define the dispersion model
     dispersion_model <-
-      create_disp_model() %>%
-      add_emissions(
+      disperseR::create_disp_model() %>%
+      disperseR::add_emissions(
         rate = 1,
         duration = subset$duration_emiss_hours,
         start_day = as(subset$start_day, 'character'),
         start_hour = subset$start_hour
       ) %>%
-      add_species(
+      disperseR::add_species(
         name = species_param$name,
         pdiam = species_param$pdiam,
         # okay
@@ -141,9 +144,9 @@ run_fac_parallel <- function(x,
         #resuspension = species_param$resuspension
         ddep_vel = species_param$ddep_vel
       ) %>% # okay
-      add_grid(range = c(0.5, 0.5),
+      disperseR::add_grid(range = c(0.5, 0.5),
         division = c(0.1, 0.1)) %>%
-      add_params(
+      disperseR::add_params(
         lat = subset$Latitude,
         lon = subset$Longitude,
         height = subset$Height,
@@ -151,10 +154,9 @@ run_fac_parallel <- function(x,
         start_day = as(subset$start_day, 'character'),
         start_hour = subset$start_hour,
         direction = "forward",
-        met_type = "reanalysis"#,
-        #    binary_path = bin_path
+        met_type = "reanalysis"
       ) %>%
-      disperseR::run_model(npart = npart, run_dir = run_dir)
+      disperseR::run_model(npart = npart, run.dir = run_dir)
 
 
     ## Extract output from the dispersion model
@@ -173,7 +175,7 @@ run_fac_parallel <- function(x,
     ## Save R data frame
     save.vars <- c('lon', 'lat', 'height', 'Pdate', 'hour')
     partial_trimmed_parcel_locs <-
-      disp_df_trim[, save.vars, with = F]
+      disp_df_trim[, save.vars, with = FALSE]
     write.csv(partial_trimmed_parcel_locs, output_file)
     out1 <-
       paste(
@@ -186,15 +188,15 @@ run_fac_parallel <- function(x,
       unlink(run_dir, recursive = TRUE)
   }
 
-  if (link2zip == T) {
+  if (link2zip == TRUE) {
     print("Linking parcel locations to ZIP codes. This could take a few minutes...")
 
-    # Check if hpbl_raster is defined
+    # Check if pbl.height is defined
     if (!hasArg(pbl.height))
-      stop("Please define a hpbl_raster file")
+      stop("Please define a pbl.height file")
 
     # Check if crosswalk is defined
-    if (!hasArg(crosswalk))
+    if (!hasArg(crosswalk.))
       stop("Please define a crosswalk file to link zips")
 
     #Read output file from hysplit
@@ -213,9 +215,9 @@ run_fac_parallel <- function(x,
     ## link to zips
     disp_df_link <- link_zip(
       disp_df_trim,
-      zc = zcta,
+      zc = zcta.,
       cw = crosswalk,
-      gridfirst = T,
+      gridfirst = TRUE,
       rasterin = pbl.height
     )
 

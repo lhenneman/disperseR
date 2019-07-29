@@ -1,88 +1,3 @@
-#' Read a `listing` file
-#' @param file_path The path to the \code{listing} file.
-#' @noRd
-read_listing_file <- function(file_path) {
-
-  as.vector(
-    read.table(
-      file = file_path,
-      sep = "\n"
-    )[, 1]
-  )
-}
-
-#' Create default `SETUP.CFG` and `ASCDATA.CFG` files
-#' @param dir The directory to which the files should be written.
-#' @noRd
-hysplit_config_init <- function(dir) {
-
-  # Default `SETUP.CFG` configuration file
-  cat(
-    " &SETUP", " tratio = 0.75,", " initd = 0,", " kpuff = 0,", " khmax = 9999,",
-    " kmixd = 0,", " kmix0 = 250,", " kzmix = 0,", " kdef = 0,", " kbls = 1,",
-    " kblt = 2,", " conage = 48,", " numpar = 2500,", " qcycle = 0.0,", " efile = '',",
-    " tkerd = 0.18,", " tkern = 0.18,", " ninit = 1,", " ndump = 1,", " ncycl = 1,",
-    " pinpf = 'PARINIT',", " poutf = 'PARDUMP',", " mgmin = 10,", " kmsl = 0,",
-    " maxpar = 10000,", " cpack = 1,", " cmass = 0,", " dxf = 1.0,", " dyf = 1.0,",
-    " dzf = 0.01,", " ichem = 0,", " maxdim = 1,", " kspl = 1,", " krnd = 6,",
-    " frhs = 1.0,", " frvs = 0.01,", " frts = 0.10,", " frhmax = 3.0,", " splitf = 1.0,",
-    " tm_pres = 0,", " tm_tpot = 0,", " tm_tamb = 0,", " tm_rain = 0,", " tm_mixd = 0,",
-    " tm_relh = 0,", " tm_sphu = 0,", " tm_mixr = 0,", " tm_dswf = 0,", " tm_terr = 0,",
-    " /",
-    sep = "\n",
-    file = paste0(dir, "/", "SETUP.CFG")
-  )
-
-  # Default `ASCDATA.CFG` file
-  cat(
-    "-90.0  -180.0  lat/lon of lower left corner (last record in file)",
-    "1.0  1.0	lat/lon spacing in degrees between data points",
-    "180  360	lat/lon number of data points",
-    "2  	default land use category",
-    "0.2  	default roughness length (meters)",
-    "'.'  directory location of data files",
-    sep = "\n",
-    file = paste0(dir, "/", "ASCDATA.CFG")
-  )
-}
-
-get_os <- function() {
-  if (.Platform$OS.type == "windows") {
-    return("win")
-  } else if (Sys.info()["sysname"] == "Darwin") {
-    return("mac")
-  } else if (.Platform$OS.type == "unix") {
-    return("unix")
-  } else {
-    stop("Unknown OS", call. = FALSE)
-  }
-}
-
-
-dispersion_read <- function(archive_folder) {
-
-  dispersion_file_list <-
-    list.files(
-      path = archive_folder,
-      pattern = "^GIS_part_[0-9][0-9][0-9]_ps.csv",
-      full.names = TRUE)
-
-  # Get each CSV file into a single data frame
-  for (i in 1:length(dispersion_file_list)) {
-    if (i == 1) {
-      dispersion <- as.data.frame(mat.or.vec(nr = 0, nc = 5))
-      colnames(dispersion) <- c("particle_no", "lon", "lat", "height", "hour")
-    }
-    disp <- read.csv(dispersion_file_list[i], header = FALSE)
-    colnames(disp) <-
-      c("particle_no", "lon", "lat", "height")
-    disp$hour <- i
-    dispersion <- rbind(dispersion, disp)
-  }
-
-  # Return the data frame
-  return(dispersion)
-}
 
 
 
@@ -169,7 +84,7 @@ dispersion_read <- function(archive_folder) {
 
 
 
-hysplit_dispersion2 <- function(lat = 49.263,
+hysplit_dispersion <- function(lat = 49.263,
   lon = -123.250,
   height = 50,
   duration = 24,
@@ -187,7 +102,7 @@ hysplit_dispersion2 <- function(lat = 49.263,
   return_disp_df = TRUE,
   write_disp_CSV = TRUE,
   disp_name = NULL,
-  run_dir2) {
+  run_dir) {
 
 
   if (length(start_day) == 1 &
@@ -203,11 +118,11 @@ hysplit_dispersion2 <- function(lat = 49.263,
   # config files
   if (!("SETUP.CFG" %in% list.files()) |
       !("ASCDATA.CFG" %in% list.files())) {
-    hysplit_config_init(run_dir2)
+    disperseR::hysplit_config_init(run_dir)
   }
 
   # Set number of particles to 1 in the SETUP.CFG file
-  setup.cfg <- readLines(paste0(run_dir2, "/SETUP.CFG"))
+  setup.cfg <- readLines(paste0(run_dir, "/SETUP.CFG"))
 
   setup.cfg <- gsub(" numpar = ([0-9]*),",
     paste0(" numpar = ", particle_num, ","),
@@ -217,7 +132,7 @@ hysplit_dispersion2 <- function(lat = 49.263,
     paste0(" maxpar = ", particle_max, ","),
     setup.cfg)
 
-  writeLines(setup.cfg, paste0(run_dir2, "/SETUP.CFG"))
+  writeLines(setup.cfg, paste0(run_dir, "/SETUP.CFG"))
 
   rm(setup.cfg)
 
@@ -421,13 +336,11 @@ hysplit_dispersion2 <- function(lat = 49.263,
     nc = 2)),
     nm = c("file", "available"))
 
-  if (any(c("mac", "unix") %in% get_os())) {
+  if (any(c("mac", "unix") %in%  disperseR::get_os())) {
     for (k in 1:length(met)) {
       met_file_df[k, 1] <- met[k]
       met_file_df[k, 2] <- as.character( file.exists(paste0(meteo_dir, "/", met[k])))
     }
-
-    print(met_file_df)
 
     # Write the met file availability to file
     write.table(
@@ -456,7 +369,7 @@ hysplit_dispersion2 <- function(lat = 49.263,
     }
   }
 
-  if (get_os() == "win") {
+  if (disperseR::get_os() == "win") {
 
     for (k in 1:length(met)) {
       met_file_df[k, 1] <- met[k]
@@ -507,12 +420,12 @@ hysplit_dispersion2 <- function(lat = 49.263,
     start_month_GMT, " ",
     start_day_GMT, " ",
     start_hour, "\n",
-    file = paste0(run_dir2, "/", "CONTROL"),
+    file = paste0(run_dir, "/", "CONTROL"),
     sep = '', append = FALSE)
 
   #Write number of starting locations to 'CONTROL'
   cat("1\n",
-    file = paste0(run_dir2, "/", "CONTROL"),
+    file = paste0(run_dir, "/", "CONTROL"),
     sep = '', append = TRUE)
 
   # Write starting latitude, longitude, and height
@@ -520,35 +433,35 @@ hysplit_dispersion2 <- function(lat = 49.263,
   cat(lat, " ",
     lon, " ",
     height, "\n",
-    file = paste0(run_dir2, "/", "CONTROL"),
+    file = paste0(run_dir, "/", "CONTROL"),
     sep = '', append = TRUE)
 
   # Write direction and number of simulation hours
   # to 'CONTROL'
   cat(ifelse(direction == "backward", "-", ""),
     duration, "\n",
-    file = paste0(run_dir2, "/", "CONTROL"),
+    file = paste0(run_dir, "/", "CONTROL"),
     sep = '', append = TRUE)
 
   # Write vertical motion option to 'CONTROL'
   cat(vert_motion, "\n",
-    file = paste0(run_dir2, "/", "CONTROL"),
+    file = paste0(run_dir, "/", "CONTROL"),
     sep = '', append = TRUE)
 
   # Write top of model domain in meters to 'CONTROL'
   cat(model_height, "\n",
-    file = paste0(run_dir2, "/", "CONTROL"),
+    file = paste0(run_dir, "/", "CONTROL"),
     sep = '', append = TRUE)
 
   # Write number of met files used to 'CONTROL'
   cat(length(met), "\n",
-    file = paste0(run_dir2, "/", "CONTROL"),
+    file = paste0(run_dir, "/", "CONTROL"),
     sep = '', append = TRUE)
 
   # Write met file paths to 'CONTROL'
   for (i in 1:length(met)) {
     cat(meteo_dir, "/\n", met[i], "\n",
-      file = paste0(run_dir2, "/", "CONTROL"),
+      file = paste0(run_dir, "/", "CONTROL"),
       sep = '', append = TRUE)
   }
 
@@ -560,7 +473,7 @@ hysplit_dispersion2 <- function(lat = 49.263,
       emissions[i, 3], "\n",
       paste0(paste(unlist(strsplit(substr(emissions[i, 4], 3, 10), "-")), collapse = " "), " ",
         formatC(emissions[i, 5], width = 2,format = "d", flag = "0"), " 00")), "\n",
-      file = paste0(run_dir2, "/", "CONTROL"),
+      file = paste0(run_dir, "/", "CONTROL"),
       sep = "", append = TRUE)
   }
 
@@ -614,7 +527,7 @@ hysplit_dispersion2 <- function(lat = 49.263,
         grids[1, 7]),
       paste(grids[1, 4],
         grids[1, 5]),
-      paste0(run_dir2, "/"),
+      paste0(run_dir, "/"),
       grids[1,1],
       "1", "50",
       paste0(paste(unlist(strsplit(substr(grids[i, 9], 3, 10), "-")),
@@ -658,7 +571,7 @@ hysplit_dispersion2 <- function(lat = 49.263,
   # Write grid blocks to 'CONTROL'
   for (i in 1:length(grids_text)) {
     cat(grids_text[i], "\n",
-      file = paste0(run_dir2, "/", "CONTROL"),
+      file = paste0(run_dir, "/", "CONTROL"),
       sep = '', append = TRUE)
   }
 
@@ -680,15 +593,15 @@ hysplit_dispersion2 <- function(lat = 49.263,
         species[1, 12]), "\n",
       species[1, 13], "\n",
       species[1, 14]), "\n",
-      file = paste0(run_dir2, "/", "CONTROL"),
+      file = paste0(run_dir, "/", "CONTROL"),
       sep = "", append = TRUE)
   }
 
   # CONTROL file is now complete and in the
   # working directory; execute the model run
 
-  if (get_os() == "mac") {
-    system(paste0("(cd ", run_dir2, " && ",
+  if (disperseR::get_os() == "mac") {
+    system(paste0("(cd ", run_dir, " && ",
       system.file("osx/hycs_std",
         package = "hyspdisp2"),
       " >> /dev/null 2>&1)"))
@@ -696,8 +609,8 @@ hysplit_dispersion2 <- function(lat = 49.263,
 
 
 
-  if (get_os() == "unix") {
-    system(paste0("(cd ",  run_dir2, " && ",
+  if (disperseR::get_os() == "unix") {
+    system(paste0("(cd ",  run_dir, " && ",
       system.file("linux-amd64/hycs_std",
         package = "hyspdisp2"),
       " >> /dev/null 2>&1)"))
@@ -705,89 +618,68 @@ hysplit_dispersion2 <- function(lat = 49.263,
   }
 
   ### finish these paths:
-  if (get_os() == "win") {
-    shell(paste0("(cd \"", run_dir2, "\" && \"",
+  if (disperseR::get_os() == "win") {
+    shell(paste0("(cd \"", run_dir, "\" && \"",
       system.file("win/hycs_std.exe",
         package = "hyspdisp2"),
       "\")"))
   }
 
 
-  print("1")
   # Extract the particle positions at every hour
-  if (get_os() == "mac") {
-    system(paste0("(cd ", run_dir2, "/", " && ",
+  if (disperseR::get_os() == "mac") {
+    system(paste0("(cd ", run_dir, "/", " && ",
       system.file("osx/parhplot",
         package = "hyspdisp2"),
       " -iPARDUMP -a1)"))
   }
 
-
-  if (get_os() == "unix") {
-    system(paste0("(cd ", run_dir2, "/", " && ",
+  if (disperseR::get_os() == "unix") {
+    system(paste0("(cd ", run_dir, "/", " && ",
       system.file("linux-amd64/parhplot",
         package = "hyspdisp2"),
       " -iPARDUMP -a1)"))
-    #    system(paste0("(cd ", getwd(), "/", " && /nfs/home/H/henneman/shared_space/ci3_nsaph_scratch/henneman_software/software/hysplit/trunk/exec/parhplot -iPARDUMP -a1)"))
   }
 
-
-  if (get_os() == "win") {
-    shell(paste0("(cd \"", run_dir2, "\" && \"",
+  if (disperseR::get_os() == "win") {
+    shell(paste0("(cd \"", run_dir, "\" && \"",
       system.file("win/parhplot.exe",
         package = "hyspdisp2"),
       "\" -iPARDUMP -a1)"))
   }
 
-  print("2")
   # Remove the .att files from the working directory
-  if (any(c("mac", "unix") %in% get_os())) {
-    system(paste0("(cd ", run_dir2,
+  if (any(c("mac", "unix") %in%  disperseR::get_os())) {
+    system(paste0("(cd ", run_dir,
       " && rm GIS_part*.att)"))
   }
 
   if (get_os() == "win") {
-    shell(paste0("(cd \"", run_dir2,
+    shell(paste0("(cd \"", run_dir,
       "\" && del GIS_part*.att)"))
   }
 
-  print("3")
   # Remove the postscript plot from the working directory
   if (any(c("mac", "unix") %in% get_os())) {
-    system(paste0("(cd ", run_dir2,
+    system(paste0("(cd ", run_dir,
       " && rm parhplot.ps)"))
   }
 
-
-  if (get_os() == "win") {
-    shell(paste0("(cd \"", run_dir2,
+  if ( disperseR::get_os() == "win") {
+    shell(paste0("(cd \"", run_dir,
       "\" && del parhplot.ps)"))
   }
-
-  print("4")
   # Rename the TXT files as CSV files
   if (any(c("mac", "unix") %in% get_os())) {
     system(
-      paste0("(cd ", run_dir2,
+      paste0("(cd ", run_dir,
         " && for files in GIS*.txt;",
         " do mv \"$files\" \"${files%.txt}.csv\"; done)"))
   }
 
-
-
-  # Remove the 'END' string near the end of
-  # each CSV file
-  #if (any(c("mac", "unix") %in% get_os())) {
-  # system(paste0("(cd ", getwd(),
-  #  " && sed -i .bk 's/END//g'",
-  #  " GIS_part_*.csv)"))
-  #}
-
-
-
   if (get_os() == "win") {
     temp_file_list <-
-      list.files(path = run_dir2,
+      list.files(path = run_dir,
         pattern = "*._ps.txt",
         full.names = TRUE)
 
@@ -803,18 +695,15 @@ hysplit_dispersion2 <- function(lat = 49.263,
     }
   }
 
-  print("5")
   # Move the .csv files from the working directory
   # to the output folder
   if (any(c("mac", "unix") %in% get_os())) {
-    print("6")
     if (is.null(disp_name)) {
       folder_name <-
         paste0("disp--",
           format(Sys.time(),
             "%Y-%m-%d--%H-%M-%S"))
     } else if (!is.null(disp_name)) {
-      print("7")
       folder_name <-
         paste0(disp_name, "--",
           format(Sys.time(),
@@ -823,20 +712,17 @@ hysplit_dispersion2 <- function(lat = 49.263,
 
     # Perform the movement of all dispersion files
     # into a folder residing in the output dir
-    print("8")
-    dir.create(path = paste0(hysp_dir, "/",
-      folder_name))
 
-    print("9")
-    system(paste0("(cd ", run_dir2,
+    dir.create(path = paste0(hysp_dir, "/", folder_name))
+
+    system(paste0("(cd ", run_dir,
       " && mv GIS_part*.csv ",
       hysp_dir, "/",
       folder_name,
       ")"))
-    print("10")
   }
 
-  if (get_os() == "win") {
+  if (disperseR::get_os() == "win") {
 
     if (is.null(disp_name)) {
       folder_name <-
@@ -850,13 +736,12 @@ hysplit_dispersion2 <- function(lat = 49.263,
             "%Y-%m-%d--%H-%M-%S"))
     }
 
-
     # Perform the movement of all dispersion files
     # into a folder residing in the output dir
     dir.create(path = paste0(hysp_dir, "/",
       folder_name))
 
-    shell(paste0("(cd \"", run_dir2,
+    shell(paste0("(cd \"", run_dir,
       "\" && move GIS_part*.csv \"",
       hysp_dir, "/",
       folder_name,
@@ -866,13 +751,12 @@ hysplit_dispersion2 <- function(lat = 49.263,
   # Write the dispersion data frame to a CSV if
   # it is requested
   if (write_disp_CSV) {
-    print("11")
     disp_df <-
-      dispersion_read(archive_folder =
+      disperseR::dispersion_read(archive_folder =
           paste0(hysp_dir, "/",
             folder_name))
-    print("12")
-    if (any(c("mac", "unix") %in% get_os())) {
+
+    if (any(c("mac", "unix") %in% disperseR::get_os())) {
       write.table(
         disp_df,
         file = paste0(hysp_dir, "/",
@@ -881,8 +765,8 @@ hysplit_dispersion2 <- function(lat = 49.263,
         sep = ",",
         row.names = FALSE)
     }
-    print("13")
-    if (get_os() == "win") {
+
+    if (disperseR::get_os() == "win") {
       write.table(
         disp_df,
         file = paste0("\"", hysp_dir, "/",
@@ -893,7 +777,6 @@ hysplit_dispersion2 <- function(lat = 49.263,
     }
   }
 
-  print("14")
   # Return a dispersion data frame if it is requested
   if (return_disp_df) {
 

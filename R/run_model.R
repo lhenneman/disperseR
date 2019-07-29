@@ -1,5 +1,5 @@
-run_model <- function(model,
-  npart = 2500, run_dir) {
+run_model <- function(model, npart = 2500, run.dir) {
+
   if (inherits(model, "traj_model")) {
     traj_df <-
       hysplit_trajectory(
@@ -53,7 +53,7 @@ run_model <- function(model,
         grids = model$grids,
         return_disp_df = TRUE,
         write_disp_CSV = TRUE,
-        run_dir2 = run_dir
+        run_dir = run.dir
       )
 
     model$disp_df <- disp_df

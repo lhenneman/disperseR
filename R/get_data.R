@@ -54,7 +54,7 @@ get_data <-
     linked_zips_data <- linked.zips.data
     linked_zips_data_position <- linked.zips.data.position
 
-    if (data == "zctashapefile" | data == "zcta_dataplot") {
+    if (data == "zctashapefile" | data == "zcta_dataset") {
       directory <- zcta_dir
       file <- file.path(directory, 'cb_2017_us_zcta510_500k.zip')
       url <-
@@ -116,7 +116,7 @@ get_data <-
       }
     }
 
-    if (data == "zcta_dataplot") {
+    if (data == "zcta_dataset") {
       message("Starting Preprocessing")
       zcta <- file.path(directory, 'cb_2017_us_zcta510_500k.shp')
       zcta <- st_read(zcta)
