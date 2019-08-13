@@ -68,9 +68,7 @@ plot_impact_single  <- function(data.linked,
     stringmonth <-
       month.abb[as.numeric(substring(map.month, 5, nchar(map.month)))]
     plot.title = paste(
-      stringmonth ,
-      substr(map.month, start = 1, stop = 4),
-      'HyADS Partial Raw Exposure from Plant:',
+      stringmonth , substr(map.month, start = 1, stop = 4), 'HyADS Partial Raw Exposure from Unit:',
       map.unitID
     )
   }

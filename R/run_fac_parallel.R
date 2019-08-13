@@ -1,17 +1,54 @@
-run_fac_parallel <- function(x,
-  input.refs = input_refs,
-  crosswalk. = NULL,
+
+run_fac_parallel<-function(sample,
+  input.refs = NULL,
   pbl.height = NULL,
+  crosswalk.= NULL,
   zcta. = NULL,
   species = 'so2',
-  npart = 100,
-  overwrite = FALSE,
-  link2zip = FALSE,
+  link2zip = F,
   proc_dir = proc_dir,
-  keep.hysplit.files = FALSE) {
+  overwrite = F,
+  npart =  npart,
+  mc.cores = parallel::detectCores(),
+  keep.hysplit.files = FALSE){
+
+  parallel::mclapply(X = sample,
+    FUN = run_fac,
+    input.refs = input.refs,
+    pbl.height = pbl.height,
+    crosswalk.= crosswalk.,
+    zcta. = zcta.,
+    species =   species,
+    link2zip = link2zip,
+    proc_dir = proc_dir,
+    overwrite = overwrite,
+    npart =  npart,
+    keep.hysplit.files,
+    mc.cores = mc.cores)
+}
+
+run_fac <- function(x,
+  input.refs = input.refs,
+  crosswalk. = crosswalk,
+  pbl.height = pbl.height,
+  zcta. = zcta.,
+  species = species,
+  npart = npart,
+  overwrite = overwrite,
+  link2zip = link2zip,
+  keep.hysplit.files,
+  proc_dir = proc_dir) {
+
+  subset <- input.refs[x]
+  print(subset)
 
   zcta <- zcta.
   crosswalk <- crosswalk.
+
+  ## function to negate
+  '%ni%' <- function(x, y) {
+    return(!('%in%'(x, y)))
+  }
 
   #########################################################################################################
   ## define speciec params depening on species.
@@ -24,8 +61,7 @@ run_fac_parallel <- function(x,
         density = 0,
         shape_factor = 0,
         resuspension = 1e-10,
-        ddep_vel = 0.002
-      )
+        ddep_vel = 0.002)
   } else if (species == 'so4') {
     # so4p (particulate sulfate)
     species_param <-
@@ -35,15 +71,13 @@ run_fac_parallel <- function(x,
         density = 1,
         shape_factor = 1,
         resuspension = 0,
-        ddep_vel = 0.002
-      )
+        ddep_vel = 0.002)
   } else {
     stop("No species or incorrect species defined!")
   }
 
   #########################################################################################################
   ## subset the data using the indexes provided.
-  subset <- input.refs[x]
   print(paste0(
     'Date: ',
     format(subset$start_day, format = "%Y-%m-%d"),
@@ -81,7 +115,7 @@ run_fac_parallel <- function(x,
   zip_output_file <- file.path(
     ziplink_dir,
     paste0(
-      "single_ziplinks_",
+      "single_ziplink_",
       subset$ID,
       "_",
       subset$start_day,
@@ -108,11 +142,6 @@ run_fac_parallel <- function(x,
 
   ## Check if output parcel locations file already exists
   tmp.exists <- system(paste("ls -f", file.path(output_file)), intern = TRUE)
-
-  ## function to negate
-  '%ni%' <- function(x, y) {
-    return(!('%in%'(x, y)))
-  }
 
   if (output_file %ni% tmp.exists | overwrite == TRUE) {
     message("Defining HYSPLIT model parameters and running the model.")
@@ -160,8 +189,7 @@ run_fac_parallel <- function(x,
 
 
     ## Extract output from the dispersion model
-    dispersion_df <-
-      dispersion_model %>% get_output_df() %>% data.table()
+    dispersion_df <- dispersion_model %>% get_output_df() %>% data.table()
 
     ## trim particles if they go below zero
     disp_df <- trim_zero(dispersion_df)
@@ -223,10 +251,9 @@ run_fac_parallel <- function(x,
 
     # Write to output csv file
     write.csv(disp_df_link[, .(ZIP, N)], zip_output_file)
-    out2 <-
-      paste("ZIP code parcel counts written to", zip_output_file)
+    out2 <- paste("ZIP code parcel counts written to", zip_output_file)
   }
-
   out <- data.table(out = c(out1, out2))
   return(out)
 }
+

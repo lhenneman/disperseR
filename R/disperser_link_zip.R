@@ -2,9 +2,9 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
   start.date = NULL,
   end.date = NULL,
   unit,
-  duration_run_hours = duration.run.hours,
-  hpbl_raster,
-  crosswalk,
+  duration.run.hours = duration.run.hours,
+  pbl.height=NULL,
+  crosswalk.,
   overwrite = F) {
   unitID <- unit$ID
 
@@ -41,7 +41,7 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
 
     vec_filedates <-
       seq.Date(
-        from = as.Date(start.date) - ceiling(duration_run_hours / 24),
+        from = as.Date(start.date) - ceiling(duration.run.hours / 24),
         to = as.Date(end.date),
         by = '1 day'
       )
@@ -69,8 +69,6 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
     ## Combine all parcels into single data table
     d <- rbindlist(l)
 
-    print(length(d) == 0)
-
     if (length(d) == 0) {
       return(paste("No files available to link in", month_YYYYMM))
     }
@@ -84,15 +82,15 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
     #Check if extent matches the hpbl raster
     d_xmin <- min(d$lon)
 
-    e_xmin <- extent(hpbl_raster)[1]
+    e_xmin <- extent(pbl.height)[1]
 
     if (d_xmin < e_xmin - 5) {
-      hpbl_raster <- rotate(hpbl_raster)
+      pbl.height <- rotate(pbl.height)
     }
 
 
     ## Trim PBL's
-    d_trim <- trim_pbl(d, rasterin = hpbl_raster)
+    d_trim <- trim_pbl(d, rasterin = pbl.height)
     print(paste(Sys.time(), "PBLs trimmed"))
 
     ## Link zips
@@ -100,9 +98,9 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
       link_zip(
         d = d_trim,
         zc = zcta,
-        cw = crosswalk,
+        cw = crosswalk.,
         gridfirst = T,
-        rasterin = hpbl_raster
+        rasterin = pbl.height
       )
 
     print(paste(Sys.time(), "ZIPs linked"))
@@ -118,7 +116,7 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
     if (nrow(out) != 0) {
       ## write to file
       write.csv(out, zip_output_file)
-      print(paste(Sys.time(), "Linked ZIPs  and saved to", zip_output_file))
+      print(paste(Sys.time(), "Linked ZIPs and saved to", zip_output_file))
     }
   } else {
     print(paste(

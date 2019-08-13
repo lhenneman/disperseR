@@ -582,7 +582,6 @@ subset_nc_date <- function(hpbl_file = NULL,
   return(rastersub)
 }
 
-
 #########################################################
 ################# link_zip
 
@@ -609,7 +608,6 @@ link_zip <- function(d,
       stop("Need PBL raster!")
     pbl_layer <- subset_nc_date(hpbl_brick = rasterin,
       vardate = d$Pdate[1])
-
 
     #   suppressWarnings(
     pbl_layer.t <- projectRaster(pbl_layer,
@@ -664,7 +662,6 @@ link_zip <- function(d,
           data.table(X = as.numeric(rep(NA, length(zc_dt[groups %in% group, ]))))
         setnames(dt, "X", names(raster_obj))
       }
-
       return(dt)
     }
 
@@ -675,8 +672,6 @@ link_zip <- function(d,
       groups = zc_groups,
       raster_obj = r3
     ))
-
-
 
     setnames(or, names(pbl_layer), 'N')
     D <- data.table(cbind(zc_trim@data,

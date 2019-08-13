@@ -36,6 +36,7 @@ Power [Plant Emissions Data](https://doi.org/10.7910/DVN/M3D2NR) and [Emission D
 We start by downloading the first datasets. We will download it to the process folder, unzip it and read the csv: "2014fd_cb6_14j/inputs/ptegu/ptegu_2014NEIv2_POINT_20171103_final_21dec2017_nf_v2.csv"
 
 ### Download and read in data
+
 ```{r}
 url <-"ftp://newftp.epa.gov/air/emismod/2014/v2/2014fd/emissions/2014fd_inputs_point.zip"
 directory <- proc_dir
@@ -188,5 +189,6 @@ file <- file.path(directory, "final_merge_nei_ampd_all_units_2005.csv")
 write.csv(data.frame(ampd), file)
 ```
 
-The ampd file present in your environment should be now ready to use. It was attached to the `disperser` package as `units2005`.  
+
+The ampd file present in your environment should be now ready to use. It was attached to the `disperseR` package as `units2005`.  
 
