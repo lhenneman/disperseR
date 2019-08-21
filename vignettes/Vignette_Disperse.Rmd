@@ -25,7 +25,6 @@ library(disperseR) # our package
 library(ncdf4)
 library(data.table)
 library(tidyverse)
-library(kableExtra)
 library(parallel)
 library(sf)
 library(viridis)
@@ -80,13 +79,13 @@ The `disperseR` package also includes monthly power plant emissions, load, and h
 
 ```{r}
 PP.units.monthly1995_2017 <- disperseR::PP.units.monthly1995_2017
-PP.units.monthly1995_2017
+head(PP.units.monthly1995_2017)
 ```
 
 
 ### Zip code coordinates 
 
-This package contains a data set with coordinates of zip codes. This might be usefull for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. You can access it as follows: 
+The `disperseR` package contains a data set with coordinates of zip codes. This might be usefull for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. If needed however, you can access it as follows: 
 
 ```{r}
 zipcodecoordinate <- disperseR::zipcodecoordinate
@@ -96,25 +95,32 @@ head(zipcodecoordinate)
 
 ### The shape files
 
-Equally important is the ZCTA shapefile. Using the `get_data()` function and setting the `data` argument to `"zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. 
+Equally important is the ZCTA shapefile. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. 
 
 ```{r}
 zcta <- disperseR::get_data(data = "zctashapefile")
+```
+
+```{r}
 zcta
 ```
 
+
 ### Monthly mean planetary boundary layer heights 
 
-Another input that we need are the monthly mean boundary layer heights. Again, using the `get_data()` function and setting the `data` argument to `"pblheight"`. If you need more information about how this data have been preprocessed just check the special vignette that is available with the package. We used the data available on the [ESRL website](https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j). 
+Another input that we need are the monthly mean boundary layer heights. We used the data available on the [ESRL website](https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j). Again, using the `get_data()` function and setting  `data = "pblheight"`. If you need more information about how these data have been preprocessed just check the special vignette that is available with the package.
+
 
 ```{r}
 pblheight <- disperseR::get_data(data = "pblheight")
+```
+```{r}
 pblheight
 ```
 
 ### The units data 
 
-Now, we need to select the power plants that we will run. In this case, we'll use the two units in 2005 with the greatest SOx emissions. This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency] (https://www.eia.gov/electricity/data/eia860/) for years 2003 to 2012 both included. If you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
+Now, we need to select the power plants whose impact we will analyse. In this case, we'll use the three units in 2005 with the greatest SOx emissions. This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
 
 
 ```{r}
@@ -123,19 +129,23 @@ unitsrun <- disperseR::units2005 %>%
 
 # transform to data table 
 unitsrun <- data.table::data.table(unitsrun) 
-knitr::kable(head(unitsrun))
+head(unitsrun)
 ```
 
 ### The meteorology files
 
 Download reanalysis meteorology files.
 
-Please download the files using the code below before the *first* run of `run_fac_parallel`. This package does not provide a function that would download the files in parallel because the parallel code does not handle the download well split over multiple cores. Below is shown code to test for the meteorology files needed for the present run. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
+Please download the files using the code below before the *first* run of `run_fac_parallel()`. This package does not provide a function that would download the files in parallel because the parallel code does not handle the download well split over multiple cores. Below we show code to test for the meteorology files needed for the present run. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
 
-If you, for example, you want to donwload files for Jan-Jul 2005, you just have to use the `get_data()` function specifying the `data` argument to `"metfiles"`, `start.year` to `"2005"`, `start.month` to `"01"`, `end.year` to `"2005"`, and `end.month` to `"03"`. See below.
+If you, for example, you want to donwload files for Jan-Jul 2005, you just have to use the `get_data()` function and set `data = "metfiles"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
 
 ```{r}
-disperseR::get_data(data="metfiles", start.year="2005", start.month="01", end.year="2005", end.month="07")
+disperseR::get_data(data = "metfiles", 
+  start.year = "2005", 
+  start.month = "01", 
+  end.year="2005", 
+  end.month="07")
 ```
 
 Now the data should be downloaded to your `meteo_dir` directory and we can start the analysis.
@@ -146,7 +156,8 @@ Now the data should be downloaded to your `meteo_dir` directory and we can start
 
 HYSPLIT, as applied here, tracks air parcels emitted at certain times and locations. `disperseR` refers to these as *emissions events*. Once HYSPLIT has been run for each emissions event, the simulated parcel locations are aggregated by source, time, and location. The functions below are written to enable runs of many emissions events.
 
-To define an object that includes all emission events in a given time period, we can use the helper function `define_input`. This takes as inputs a starting and ending day, and outputs a table of value whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the `start_hours` variable, and `duration = 240` denotes that the emitted air parces are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a data.table that you can see below. 
+To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending an day, and outputs a table of value whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the `start_hours` variable, and `duration = 240` denotes that the emitted air parces are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
+
 ```{r}
 input_refs <- disperseR::define_inputs(units = unitsrun,
   startday = '2005-01-01',
@@ -154,39 +165,50 @@ input_refs <- disperseR::define_inputs(units = unitsrun,
   start.hours =  c(0, 6, 12, 18),
   duration = 240)
 
-knitr::kable(head(input_refs))
+head(input_refs)
 ```
 
 ### Run HYSPLIT
 The following examples show how to run a small subset (chosen to provide workable examples on a laptop) of emissions events, link to ZIP codes, and plot the results.
 
-The `run_fac_parallel` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shapefile (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. With `link2zip = T` you can link dispersion patterns from individual emissions events to ZIP codes; this, however, somewhat violates the spirit of HyADS, since the large number of emissions events is used as a check on some other uncertainties introduced by the simplifying assumptions. 
+The `run_fac_parallel()` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shapefile (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. With `link2zip = T` you can link dispersion patterns from individual emissions events to ZIP codes; this, however, somewhat violates the spirit of HyADS, since the large number of emissions events is used as a check on some other uncertainties introduced by the simplifying assumptions. 
 
 **If you get an error running HYSPLIT, it is likely because the meteorology files did not download correctly. Check your `meteo_dir` to ensure all files are present and at least 100MB in size.**
 
 Below we subset the data to run the process on a local computer. We only choose the first day and first hour of each month for each of the units that we chose. 
 
 ```{r}
-input_refs <- input_refs[format(as.Date(input_refs$start_day,format="%Y-%m-%d"), format = "%d") =="01" & start_hour==0]
+input_refs <- input_refs[
+  format(as.Date(input_refs$start_day,
+  format = "%Y-%m-%d"), 
+  format = "%d") == "01" & start_hour==0]
 ```
 
-Now we need to get indeces of the correct rows with in this case will be all the indeces in this subset of data. 
+Now we need to get indeces of the correct rows. In this case will be all the indeces in this subset of data. 
+
 ```{r}
 run_sample <- seq(1, nrow(input_refs))
 ```
 
-So we will be using the following events. 
+Let's see the indeces.
+
 ```{r}
-knitr::kable(input_refs[run_sample])
+run_sample 
 ```
 
-Now we will run the fac model in parallel. The argument `sample` should take the vector of indeces that we created above, the `run_sample` vector. 
+So we will be using the following events. 
 
-`input.refs` should be the data table that is the result of the `define_input()` function. The `ztca.`, `crosswalk.`, and `plb.hight` arguments are `NULL` by default but you should provide them for the function to run properly. We use the `zcta`, `crosswalk`, and `pbl.heights` data respectively 
+```{r}
+input_refs[run_sample]
+```
 
-The package now has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`. 
+Now we will run the fac model in parallel. The argument `sample` should take the vector of indeces that we created above, so here it will be the `sample = run_sample` vector. 
 
-The `parallel::detectCores()` function automatically detects the number of cores on your machine. If you would like to change on how many cores the model should be run please specify the number of cores. Here, for example we specified the number of cores to be the number of the cores on our machine minus 1. If you would like to run this model sequentially please set the number of cores `mc.cores` to 1.
+`input.refs` should be the data table that is the result of the `define_input()` function. The `ztca.`, `crosswalk.`, and `pbl.height` arguments are `NULL` by default but you should provide them for the function to run properly. We use the `zcta`, `crosswalk`, and `pblheight` data respectively 
+
+The package has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`. 
+
+The `parallel::detectCores()` function automatically detects the number of cores on your machine. If you would like to change on how many cores the model should be run please specify the number of cores. Here, for example we specified the number of cores to be the number of the cores on our machine minus 1. If you would like to run this model sequentially please set `mc.cores = 1`.
 
 It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it. 
 
@@ -201,19 +223,20 @@ hysp_raw <- run_fac_parallel(sample = run_sample,
   proc_dir = proc_dir,
   overwrite = FALSE, ## FALSE BY DEFAULT
   npart = 100, 
-  mc.cores = 4)
+  mc.cores = parallel::detectCores())
 ```
 
 
 ### Link results to ZIP codes
 
 Most current implementations of HyADS, instead of linking dispersion patterns from individual emissions events, link the patterns by month. 
-With the `link_all_units_zip` function, users can link all air parcels to ZIP codes by month for specified units. Here, we define the variables `yearmons` with combinations of years and months. `link_all_units_zip` uses another function called `disperser_link_zip` that runs in the background and reads in all the relevant files (i.e., those that correspond to the provided units) produced by the `run_fac_parallel` function and saves them. Then links them to ZIP codes. `link_all_units_zip` can be set to paralelize the runs by splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. The result of `dipserser_link_zip` is data.table of ZIP codes and relative contributions `N`, and an identical `.csv` file is saved to the folder with a path specified by the `ziplink_dir` variable. `N` is not weighted by the `unit`'s emissions. 
+With the `link_all_units_zip()` function, users can link all air parcels to ZIP codes by month for specified units. Here, we define the variables `yearmons` with combinations of years and months. `link_all_units_zip()` uses another function called `disperser_link_zip` that runs in the background and reads in all the relevant files (i.e., those that correspond to the provided units) produced by the `run_fac_parallel()` function and saves them. Then it links them to ZIP codes. `link_all_units_zip()` can be set to paralelize the runs by splitting different months on different cores, but you can make it serial just by setting the `mc.cores = 1`. The result of `dipserser_link_zip` is a data.table of ZIP codes and relative contributions `N`, and an identical `.csv` file is saved to the folder with a path specified by the `ziplink_dir` variable. `N` is not weighted by the `unit`'s emissions. 
 
-Here we present how to use `link_all_units_zip` for chosen units. First choose the months that you would like to run the function for. Here we only choose Jan and Mar of 2005.
+Below we present how to use `link_all_units_zip()` for chosen units. First choose the months that you would like to run the function for. Here we only choose Jan and Jul of 2005.
 
 ```{r}
 yearmons <- paste0(2005, 1:7)
+yearmons
 ```
 
 Let's look again at our `unitsrun` data set. 
@@ -222,11 +245,12 @@ Let's look again at our `unitsrun` data set.
 unitsrun
 ```
 
-We only have two units in our `unitsrun` data set. "3136-1" and "3149-1". We will run the function for both of them. 
+We only have two units in our `unitsrun` data set. "3136-1", "3136-2" and "3149-1". We will run `link_all_units_zip()`  for all of them.
 
 The function will return only the values for units and months that could have been linked to one another. 
 
-If you wanted to run `link_all_units_zip` just for "3149-1" for example, run the code that we commented out below. 
+If you wanted to run `link_all_units_zip()
+` just for "3149-1" for example, run the code that we commented out below. 
 
 ```{r}
 #unitsrun<-unitsrun[ID=="3149-1"]

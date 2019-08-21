@@ -101,7 +101,7 @@ get_data <-
         get_met_reanalysis(files = metfiles, path_met_files = meteo_dir)
       }
       if (length(metfiles) == 0) {
-        message("No files to download")
+        message("No files to download. Requested files already available")
       }
     }
 
