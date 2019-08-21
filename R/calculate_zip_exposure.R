@@ -176,7 +176,6 @@ calculate_zip_exposure <- function(year.E,
           file = file.mo)
         monthly.filelist[i] <- file.mo
       }
-      print(ZIPexposures)
       #re-initiate ZIP exposure data.table
       ZIPexposures <-  data.frame()
     }

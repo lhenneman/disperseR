@@ -16,7 +16,7 @@ In this vignette, we show how we prepared the crosswalk dataset that is attached
 First, we load the packages that we will need for completing this task. 
 
 ```{r, message = FALSE, warning = FALSE}
-library(hyspdisp2)
+library(disperseR)
 library(data.table)
 library(tidyverse)
 ```
@@ -24,10 +24,10 @@ library(tidyverse)
 In case you have not yet created your project folder use the following command. 
 
 ```{r}
-createdirs()
+create_dirs()
 ```
 
-If the file does not exist, download it from "https://www.udsmapper.org/docs/zip_to_zcta_2017.xlsx". 
+If the file does not exist, download it from [USDMAPPER](https://www.udsmapper.org/docs/zip_to_zcta_2017.xlsx)
 Then, open it. 
 
 ```{r}

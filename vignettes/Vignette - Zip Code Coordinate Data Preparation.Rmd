@@ -1,0 +1,56 @@
+---
+title: "Vignette - Zip Code Coordinate Data Preparation "
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, message = FALSE, warning = FALSE}
+library(tidyverse)
+library(disperseR)
+```
+
+In this vignette we show you how we prepared the zip code coordinate data that we have attached to the `disperseR` package. 
+
+In case you have not yet created your project folder use the following command. 
+
+```{r}
+disperseR::createdirs()
+```
+
+We first download the data from [Open Data Soft](https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/table/)
+
+```{r}
+filename <- file.path(main_dir, 'zipcodecoordinate.csv')
+url <- 'https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/download/?format=csv&timezone=Europe/Berlin&use_labels_for_header=true'
+
+if(!file.exists(filename)){
+    download.file(url = url, destfile = filename)
+}
+```
+
+
+Read in the file. 
+
+```{r}
+zipcodecoordinate <- read.csv(filename, skip = 0, header = T, sep=";")
+```
+
+
+Select columns and rename them. 
+
+
+```{r}
+zipcodecoordinate <- zipcodecoordinate %>% 
+  select(Zip, City, Latitude, Longitude) %>% 
+  rename(ZIP=Zip)
+```
+
+Now the data set is ready to use in your plots! We added it to this package. 
+

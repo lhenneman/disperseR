@@ -33,6 +33,8 @@ library(ggplot2)
 library(scales)
 library(maps)
 library(ggsn)
+library(gridExtra)
+library(ggmap)
 ```
 
 The `create_dirs` function creates a project folder with all the necessary sub folders. We recommend that you begin by setting up your project with this function. Provide the path to where you would like your project to live in the `location` argument. By default, if you do not specify the path, this function will create a main directory on your desktop. It will also assign paths to string variables in your environment. 
@@ -62,23 +64,35 @@ The next step is to get the data necessary for the analysis.  Let's start by loa
 
 ### The crosswalk
 
-ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk mainted by UDS Mapper and preprocessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. 
+ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk mainted by [UDS Mapper]("https://www.udsmapper.org/zcta-crosswalk.cfm") and preprocessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. 
 
 Let's load the crosswalk file. 
 
 ```{r}
 crosswalk <- disperseR::crosswalk
-crosswalk 
+head(crosswalk)
 ```
 
-The `disperseR` package also includes monthly power plant emissions, load, and heat input data, accessible using the following command:
 
 ### The monthly powerplant emissions
+
+The `disperseR` package also includes monthly power plant emissions, load, and heat input data, accessible using the following command:
 
 ```{r}
 PP.units.monthly1995_2017 <- disperseR::PP.units.monthly1995_2017
 PP.units.monthly1995_2017
 ```
+
+
+### Zip code coordinates 
+
+This package contains a data set with coordinates of zip codes. This might be usefull for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. You can access it as follows: 
+
+```{r}
+zipcodecoordinate <- disperseR::zipcodecoordinate
+head(zipcodecoordinate)
+```
+
 
 ### The shape files
 
@@ -140,7 +154,7 @@ input_refs <- disperseR::define_inputs(units = unitsrun,
   start.hours =  c(0, 6, 12, 18),
   duration = 240)
 
-knitr::kable(input_refs)
+knitr::kable(head(input_refs))
 ```
 
 ### Run HYSPLIT
@@ -208,8 +222,6 @@ Let's look again at our `unitsrun` data set.
 unitsrun
 ```
 
-
-
 We only have two units in our `unitsrun` data set. "3136-1" and "3149-1". We will run the function for both of them. 
 
 The function will return only the values for units and months that could have been linked to one another. 
@@ -223,14 +235,13 @@ If you wanted to run `link_all_units_zip` just for "3149-1" for example, run the
 If you want to run the function for a specific start and end date you can specify the `start.date` and the `end.date` arguments. For example, `start.date="2005-01-02"` for 2 January 2005. These arguments are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided. `pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximatelly) that sulfur stays in the atmosphere before it deposits to the ground.
 
 ```{r}
-
 data_linked <- disperseR::link_all_units_zip(units.run=unitsrun, 
-  mc.cores = 4, 
+  mc.cores = 1, 
   year.mons = yearmons,
   pbl.height = pblheight,
   crosswalk. = crosswalk,
   duration.run.hours = 240,
-  overwrite = TRUE)
+  overwrite = FALSE)
 
 knitr::kable(head(data_linked))
 ```
@@ -265,12 +276,12 @@ impact_table_single <- create_impact_table_single(data.linked=data_linked,
   map.month = "20051", 
   metric = 'N')
 
-knitr::kable(impact_table_single)
+knitr::kable(head(impact_table_single))
 ```
 
 In a similar way we can just plot the results using the `plot_impact_single` function. A costumized title can be set using the `plot.title` argument.
 
-```{r}
+```{r, fig.height = 4, fig.width = 7}
 ziplink_plot <- plot_impact_single(data.linked=data_linked, 
   map.unitID = "3136-1",
   map.month = "20051", 
@@ -315,7 +326,7 @@ zip_exp_ann <-disperseR::calculate_zip_exposure(
 
 We can plot the results as following using the `plot_impact_weighted` function. Again, a costumized title can be set using the `plot.title` argument. You can also zoom in to a specific part of the map by setting the `x.lim` and `y.lim` arguments. By default they are set to `c(-123, -69)` and `c(24, 50)` respectivelly. 
 
-```{r}
+```{r, fig.height = 4, fig.width = 7}
 zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked=zip_exp_ann,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
@@ -344,7 +355,7 @@ zip_exp_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir,
 
 Here we also ilustrate how to use the limit functions to zoom in on the map. 
 
-```{r}
+```{r, fig.height = 4, fig.width = 7}
 zip_exp_mon_plot <- plot_impact_weighted(data.linked=zip_exp_mon,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
@@ -373,10 +384,9 @@ zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata
                                      return.monthly.data = T)
 ```
 
-```{r}
+```{r, fig.height = 4, fig.width = 7}
 zipcodes <- c(16226, 10003)
 plot_impact_unit(data.linked = zip_exp_unit_mon, zip.codes=zipcodes)
 ```
-
 
 

@@ -13,7 +13,7 @@ link_all_units_zip<- function(units.run,
   }
   zip_link_parallel <- function(unit){
     linked_zips <- mclapply(yearmons,
-      dipserseR::disperser_zip_link,
+      disperseR::disperser_zip_link,
       unit = unit,
       pbl.height = pbl.height,
       crosswalk. = crosswalk.,
@@ -26,7 +26,6 @@ link_all_units_zip<- function(units.run,
   }
 
   out<-unitsrun[, zip_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
-  print(out)
   out<-out[,comb:=paste("month: ",out[,month]," unitID :",out[,unitID],sep="")]
   return(out)
 }
