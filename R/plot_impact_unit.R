@@ -28,7 +28,7 @@ plot_impact_unit<-function(
     theme_bw()+
     labs(y = "Exposure", x = "Month")+
     labs(colour = "Unit ID")+
-    facet_grid(ZIP~.)+
+    facet_grid(ZIP~., scales = "free")+
     theme(legend.position = "bottom")
 
   #################################################################################

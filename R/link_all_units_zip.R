@@ -12,7 +12,7 @@ link_all_units_zip<- function(units.run,
     stop( "Define either a start.date and an end.date OR a year.mons")
   }
   zip_link_parallel <- function(unit){
-    linked_zips <- mclapply(yearmons,
+    linked_zips <- parallel::mclapply(yearmons,
       disperseR::disperser_zip_link,
       unit = unit,
       pbl.height = pbl.height,
@@ -21,11 +21,12 @@ link_all_units_zip<- function(units.run,
       overwrite = overwrite,
       mc.cores = mc.cores)
 
-    linked_zips<-data.table::rbindlist(Filter(is.data.table, linked_zips))
+    print(ncol(linked_zips))
+    linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
     return(linked_zips)
   }
 
-  out<-unitsrun[, zip_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
-  out<-out[,comb:=paste("month: ",out[,month]," unitID :",out[,unitID],sep="")]
+  out <- unitsrun[,zip_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
+  out < -out[,comb:=paste("month: ", out[,month], " unitID :", out[,unitID], sep="")]
   return(out)
 }

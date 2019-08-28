@@ -30,7 +30,6 @@ library(sf)
 library(viridis)
 library(ggplot2)
 library(scales)
-library(maps)
 library(ggsn)
 library(gridExtra)
 library(ggmap)
@@ -145,7 +144,7 @@ disperseR::get_data(data = "metfiles",
   start.year = "2005", 
   start.month = "01", 
   end.year="2005", 
-  end.month="07")
+  end.month="12")
 ```
 
 Now the data should be downloaded to your `meteo_dir` directory and we can start the analysis.
@@ -161,7 +160,7 @@ To define an object that includes all emission events in a given time period, we
 ```{r}
 input_refs <- disperseR::define_inputs(units = unitsrun,
   startday = '2005-01-01',
-  endday = '2005-07-30',
+  endday = '2005-12-30',
   start.hours =  c(0, 6, 12, 18),
   duration = 240)
 
@@ -235,7 +234,7 @@ With the `link_all_units_zip()` function, users can link all air parcels to ZIP 
 Below we present how to use `link_all_units_zip()` for chosen units. First choose the months that you would like to run the function for. Here we only choose Jan and Jul of 2005.
 
 ```{r}
-yearmons <- paste0(2005, 1:7)
+yearmons <- paste0(2005, 1:12)
 yearmons
 ```
 
@@ -260,7 +259,7 @@ If you want to run the function for a specific start and end date you can specif
 
 ```{r}
 data_linked <- disperseR::link_all_units_zip(units.run=unitsrun, 
-  mc.cores = 1, 
+  mc.cores = 4, 
   year.mons = yearmons,
   pbl.height = pblheight,
   crosswalk. = crosswalk,
@@ -377,7 +376,7 @@ zip_exp_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir,
   return.monthly.data = T)
 ```
 
-Here we also ilustrate how to use the limit functions to zoom in on the map. 
+Here we also ilustrate how to use the limit arguments to zoom in on the map. By setting `x.lim = c(-65, -85)`, for example, we restrict the map only to the map to display only points within the 65$^{\circ}$W and 85$^{\circ}$W longitude points. 
 
 ```{r, fig.height = 4, fig.width = 7}
 zip_exp_mon_plot <- plot_impact_weighted(data.linked=zip_exp_mon,
@@ -387,7 +386,7 @@ zip_exp_mon_plot <- plot_impact_weighted(data.linked=zip_exp_mon,
   map.month = "20051", 
   metric = 'hyads',
   legend.title = 'Montly HyADS exposure', 
-  x.lim = c(-65, -85), 
+  x.lim = c(-65, -85), # specify coordinates here 
   y.lim = c(35, 45))
 
 zip_exp_mon_plot
@@ -395,7 +394,8 @@ zip_exp_mon_plot
 
 ### Plot unit-specific impacts over time
 
-Next, we calculate the monthly emissions weighted HyADS exposure (again, only from the select few runs we initiated above). Code below plots the monthly exposure contributions of the two units in ZIP code 21613, which is located in Maryland. Note that this ZIP code was not impacted by the facilities in all the modeled months in 2005.
+Next, we calculate the monthly emissions weighted HyADS exposure (again, only from the select few runs we initiated above). Code below plots the monthly exposure contributions of the three units in ZIP codes 16226, 10003. The location of the zip codes can be seen on the small map on the right side of the plot. Please note that the axis values are different for the two ZIP codes. 
+
 ```{r}
 zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted_2005.RData"),
                                      units.mo = PP.units.monthly1995_2017,
@@ -410,7 +410,7 @@ zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata
 
 ```{r, fig.height = 4, fig.width = 7}
 zipcodes <- c(16226, 10003)
-plot_impact_unit(data.linked = zip_exp_unit_mon, zip.codes=zipcodes)
+disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, zip.codes=zipcodes)
 ```
 
 
