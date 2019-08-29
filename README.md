@@ -9,9 +9,10 @@ disperseR is a new version of the hispdisp package. What has been improved?
 
 
 # Data attached with the package 
-- crosswalk 
+- crosswalk : attached vignette 
 - PP.units.monthly1995_2017.RData
 - units2003 - units2009
+- zipcode coordinate data
 
 # disperseR
 New version of the hyspdisp package
