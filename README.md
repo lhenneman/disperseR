@@ -1,4 +1,4 @@
-# This package is under development as well as this readme. 
+# This package as well as this readme is under development. 
 
 # What is improved? 
 
