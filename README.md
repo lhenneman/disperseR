@@ -1,3 +1,18 @@
+# This package is under development as well as this readme. 
+
+# What is improved? 
+
+disperseR is a new version of the hispdisp package. What has been improved?
+
+- All the data data manipulation that had to be done by the user in order to prepare these data for calculations has been handled at the package level. The user has to read the data in. We show how to do it in the main vignette. We also created additional vignettes should the user want to see how the attached data was preprocessed. We show every single step of preprocessing starting from the step of data download. This is key for reproducible research. 
+
+
+
+# Data attached with the package 
+- crosswalk 
+- PP.units.monthly1995_2017.RData
+- units2003 - units2009
+
 # disperseR
 New version of the hyspdisp package
 https://github.com/lhenneman/hyspdisp
