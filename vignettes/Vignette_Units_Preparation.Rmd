@@ -14,11 +14,12 @@ knitr::opts_chunk$set(
 )
 ```
 
+Load packages 
+
 ```{r}
 library(data.table)
 library(measurements)
 library(disperseR)
-library(kableExtra)
 ```
 
 In this vignette we show how we prepare the units data attached to this function. 
@@ -26,7 +27,7 @@ In this vignette we show how we prepare the units data attached to this function
 If you have not done so yet please create the project folders as follows. 
 
 ```{r}
-create_dirs()
+disperseR::create_dirs()
 ```
 
 First, we need to download two files: Power Plant Emissions Data and 
@@ -38,29 +39,44 @@ We start by downloading the first datasets. We will download it to the process f
 ### Download and read in data
 
 ```{r}
-url <-"ftp://newftp.epa.gov/air/emismod/2014/v2/2014fd/emissions/2014fd_inputs_point.zip"
-directory <- proc_dir
-file <- file.path(directory, '2014fd_inputs_point.zip')
-if (!file.exists(file)) {  # if file does not exist, download it 
+url <-
+  "ftp://newftp.epa.gov/air/emismod/2014/v2/2014fd/emissions/2014fd_inputs_point.zip"
+  directory <- proc_dir
+  file <- file.path(directory, '2014fd_inputs_point.zip')
+  if (!file.exists(file)) {
+  # if file does not exist, download it
   download.file(url = url, destfile = file)
-}
-unzip(file, exdir = directory) # unzip the file 
-file <- file.path(directory, "2014fd_cb6_14j", "inputs", "ptegu", "ptegu_2014NEIv2_POINT_20171103_final_21dec2017_nf_v2.csv")
-d_nei <- data.table::fread(file, skip = 18)
-names(d_nei)
+  }
+  unzip(file, exdir = directory) # unzip the file
+  file <-
+  file.path(
+  directory,
+  "2014fd_cb6_14j",
+  "inputs",
+  "ptegu",
+  "ptegu_2014NEIv2_POINT_20171103_final_21dec2017_nf_v2.csv"
+  )
+  d_nei <- data.table::fread(file, skip = 18)
+  names(d_nei)
 ```
 
 The other data set is hosted on "https://dataverse.harvard.edu/api/access/datafile/3086908?gbrecs=true". We specify this location and download it the same way. 
 
 ```{r}
-url <-"https://dataverse.harvard.edu/api/access/datafile/3086908?gbrecs=true"
-directory <- proc_dir
-file <- file.path(directory, 'AMPD_Unit_with_Sulfur_Content_and_Regulations_with_Facility_Attributes.csv')
-if (!file.exists(file)) { # if file does not exist, download it 
+url <-
+  "https://dataverse.harvard.edu/api/access/datafile/3086908?gbrecs=true"
+  directory <- proc_dir
+  file <-
+  file.path(
+  directory,
+  'AMPD_Unit_with_Sulfur_Content_and_Regulations_with_Facility_Attributes.csv'
+  )
+  if (!file.exists(file)) {
+  # if file does not exist, download it
   download.file(url = url, destfile = file)
-}
-d_ampd <- data.table::fread(file)
-names(d_ampd)
+  }
+  d_ampd <- data.table::fread(file)
+  names(d_ampd)
 ```
 
 ### Manipulation 
@@ -78,9 +94,11 @@ d_nei_unique <- unique(d_nei[, .(
   longitude
   )])
   
-d_nei_unique <- d_nei_unique[Facility.ID..ORISPL. != "" & Unit.ID != ""]
-d_nei_unique<- d_nei_unique[, Facility.ID..ORISPL.:=as.numeric(d_nei_unique$Facility.ID..ORISPL.)]
-knitr::kable(head(d_nei_unique))
+  d_nei_unique <-
+  d_nei_unique[Facility.ID..ORISPL. != "" & Unit.ID != ""]
+  d_nei_unique <-
+  d_nei_unique[, Facility.ID..ORISPL. := as.numeric(d_nei_unique$Facility.ID..ORISPL.)]
+  head(d_nei_unique)
 ```
 
 Here we show you how to prepare the 2005 set but you can choose other years. 
@@ -120,8 +138,8 @@ d_ampd_subset <- d_ampd[Fuel1.IsCoal == 1][, .(
   Steam.Load..1000lb.,
   Max.Hourly.HI.Rate..MMBtu.hr.
   )]
-
-names(d_ampd_subset)
+  
+  names(d_ampd_subset)
 ```
 
 ```{r}
@@ -133,21 +151,30 @@ d_ampd_annual <- d_ampd_subset[, .(
   NOx..tons. = sum(NOx..tons., na.rm = TRUE)
   ),
   by = c("Facility.ID..ORISPL.", "Unit.ID", "Year")]
-
-
-names(d_ampd_annual)
+  
+  
+  names(d_ampd_annual)
 ```
 
 ```{r}
-d_ampd_annual <- unique(d_ampd_annual, by = c("Facility.ID..ORISPL.", "Unit.ID"))
-d_ampd_annual<- d_ampd_annual[, Facility.ID..ORISPL.:=as.numeric(d_ampd_annual$Facility.ID..ORISPL.)]
-knitr::kable(head(d_ampd_annual))
+d_ampd_annual <-
+  unique(d_ampd_annual, by = c("Facility.ID..ORISPL.", "Unit.ID"))
+  d_ampd_annual <-
+  d_ampd_annual[, Facility.ID..ORISPL. := as.numeric(d_ampd_annual$Facility.ID..ORISPL.)]
+  head(d_ampd_annual)
 ```
 
 ```{r}
-M <- merge(d_ampd_annual, d_nei_unique, by = c("Facility.ID..ORISPL.", "Unit.ID"), all.x = TRUE)
-file <- file.path(directory, 'merge_no_missing_info_coal_only_2005.csv')
-fwrite(M, file)
+M <-
+  merge(
+  d_ampd_annual,
+  d_nei_unique,
+  by = c("Facility.ID..ORISPL.", "Unit.ID"),
+  all.x = TRUE
+  )
+  file <-
+  file.path(directory, 'merge_no_missing_info_coal_only_2005.csv')
+  fwrite(M, file)
 ```
 
 ```{r}
@@ -168,20 +195,20 @@ ampd <- ampd[, .(
   Diam = conv_unit(stkdiam, "ft", "m"),
   Velocity = conv_unit(stktemp, "ft_per_sec", "m_per_sec"),
   Temp = conv_unit(stkvel, "F", "K")
-)]
+  )]
 ```
 
-Many of the units in the provided datasets do not have stack height data. In these cases, it is suggested in [Henneman et al. (2019)](https://www.sciencedirect.com/science/article/pii/S1352231019300731) to fill with the average stack height of all units. We do that and create a variable that flags if the height was inputed. 
+Many of the units in the provided datasets do not have stack height data. In these cases, it is suggested in [Henneman et al. (2019)](https://www.sciencedirect.com/science/article/pii/S1352231019300731) to fill with the average stack height of all units. We do that and create a variable that flags if the height was imputed. 
 
 ```{r}
 # create flag if Height is missing
-ampd <- ampd[, inputed:=0]
-ampd$inputed[is.na(ampd$Height)]<-1
+ampd <- ampd[, inputed := 0]
+ampd$inputed[is.na(ampd$Height)] <- 1
 # impute
-ampd$Height[is.na(ampd$Height)]<-mean(ampd$Height, na.rm=T)
+ampd$Height[is.na(ampd$Height)] <- mean(ampd$Height, na.rm = T)
 ```
 
-There are duplicates from the NEI datbase, where for the same stack  (= same facility + same unit) may be reported several times for the same pollutant with different stack info
+There are duplicates from the NEI database, where for the same stack  (= same facility + same unit) may be reported several times for the same pollutant with different stack info
 
 ```{r}
 ampd <- unique(ampd, by = "ID")

@@ -62,7 +62,7 @@ The next step is to get the data necessary for the analysis.  Let's start by loa
 
 ### The crosswalk
 
-ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk mainted by [UDS Mapper]("https://www.udsmapper.org/zcta-crosswalk.cfm") and preprocessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. 
+ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by [UDS Mapper]("https://www.udsmapper.org/zcta-crosswalk.cfm") and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. 
 
 Let's load the crosswalk file. 
 
@@ -84,7 +84,7 @@ head(PP.units.monthly1995_2017)
 
 ### Zip code coordinates 
 
-The `disperseR` package contains a data set with coordinates of zip codes. This might be usefull for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. If needed however, you can access it as follows: 
+The `disperseR` package contains a data set with coordinates of zip codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. If needed however, you can access it as follows: 
 
 ```{r}
 zipcodecoordinate <- disperseR::zipcodecoordinate
@@ -94,7 +94,7 @@ head(zipcodecoordinate)
 
 ### The shape files
 
-Equally important is the ZCTA shapefile. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. 
+Equally important is the ZCTA shape file. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. 
 
 ```{r}
 zcta <- disperseR::get_data(data = "zctashapefile")
@@ -137,7 +137,7 @@ Download reanalysis meteorology files.
 
 Please download the files using the code below before the *first* run of `run_fac_parallel()`. This package does not provide a function that would download the files in parallel because the parallel code does not handle the download well split over multiple cores. Below we show code to test for the meteorology files needed for the present run. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
 
-If you, for example, you want to donwload files for Jan-Jul 2005, you just have to use the `get_data()` function and set `data = "metfiles"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
+If you, for example, you want to download files for Jan-Jul 2005, you just have to use the `get_data()` function and set `data = "metfiles"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
 
 ```{r}
 disperseR::get_data(data = "metfiles", 
@@ -155,7 +155,7 @@ Now the data should be downloaded to your `meteo_dir` directory and we can start
 
 HYSPLIT, as applied here, tracks air parcels emitted at certain times and locations. `disperseR` refers to these as *emissions events*. Once HYSPLIT has been run for each emissions event, the simulated parcel locations are aggregated by source, time, and location. The functions below are written to enable runs of many emissions events.
 
-To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending an day, and outputs a table of value whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the `start_hours` variable, and `duration = 240` denotes that the emitted air parces are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
+To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending an day, and outputs a table of value whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the `start_hours` variable, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
 
 ```{r}
 input_refs <- disperseR::define_inputs(units = unitsrun,
@@ -170,7 +170,7 @@ head(input_refs)
 ### Run HYSPLIT
 The following examples show how to run a small subset (chosen to provide workable examples on a laptop) of emissions events, link to ZIP codes, and plot the results.
 
-The `run_fac_parallel()` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shapefile (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. With `link2zip = T` you can link dispersion patterns from individual emissions events to ZIP codes; this, however, somewhat violates the spirit of HyADS, since the large number of emissions events is used as a check on some other uncertainties introduced by the simplifying assumptions. 
+The `run_fac_parallel()` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shape file (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. With `link2zip = T` you can link dispersion patterns from individual emissions events to ZIP codes; this, however, somewhat violates the spirit of HyADS, since the large number of emissions events is used as a check on some other uncertainties introduced by the simplifying assumptions. 
 
 **If you get an error running HYSPLIT, it is likely because the meteorology files did not download correctly. Check your `meteo_dir` to ensure all files are present and at least 100MB in size.**
 
@@ -183,13 +183,13 @@ input_refs <- input_refs[
   format = "%d") == "01" & start_hour==0]
 ```
 
-Now we need to get indeces of the correct rows. In this case will be all the indeces in this subset of data. 
+Now we need to get indexes of the correct rows. In this case will be all the indexes in this subset of data. 
 
 ```{r}
 run_sample <- seq(1, nrow(input_refs))
 ```
 
-Let's see the indeces.
+Let's see the indexes.
 
 ```{r}
 run_sample 
@@ -201,7 +201,7 @@ So we will be using the following events.
 input_refs[run_sample]
 ```
 
-Now we will run the fac model in parallel. The argument `sample` should take the vector of indeces that we created above, so here it will be the `sample = run_sample` vector. 
+Now we will run the fac model in parallel. The argument `sample` should take the vector of indexes that we created above, so here it will be the `sample = run_sample` vector. 
 
 `input.refs` should be the data table that is the result of the `define_input()` function. The `ztca.`, `crosswalk.`, and `pbl.height` arguments are `NULL` by default but you should provide them for the function to run properly. We use the `zcta`, `crosswalk`, and `pblheight` data respectively 
 
@@ -255,10 +255,10 @@ If you wanted to run `link_all_units_zip()
 #unitsrun<-unitsrun[ID=="3149-1"]
 ```
 
-If you want to run the function for a specific start and end date you can specify the `start.date` and the `end.date` arguments. For example, `start.date="2005-01-02"` for 2 January 2005. These arguments are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided. `pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximatelly) that sulfur stays in the atmosphere before it deposits to the ground.
+If you want to run the function for a specific start and end date you can specify the `start.date` and the `end.date` arguments. For example, `start.date="2005-01-02"` for 2 January 2005. These arguments are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided. `pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
 
 ```{r}
-data_linked <- disperseR::link_all_units_zip(units.run=unitsrun, 
+data_linked <- link_all_units_zip(units.run=unitsrun, 
   mc.cores = 4, 
   year.mons = yearmons,
   pbl.height = pblheight,
@@ -266,7 +266,7 @@ data_linked <- disperseR::link_all_units_zip(units.run=unitsrun,
   duration.run.hours = 240,
   overwrite = FALSE)
 
-knitr::kable(head(data_linked))
+head(data_linked)
 ```
 
 We can also take a look at the combinations of units and months that were linked. 
@@ -299,10 +299,10 @@ impact_table_single <- create_impact_table_single(data.linked=data_linked,
   map.month = "20051", 
   metric = 'N')
 
-knitr::kable(head(impact_table_single))
+head(impact_table_single)
 ```
 
-In a similar way we can just plot the results using the `plot_impact_single` function. A costumized title can be set using the `plot.title` argument.
+In a similar way we can just plot the results using the `plot_impact_single` function. A customized title can be set using the `plot.title` argument.
 
 ```{r, fig.height = 4, fig.width = 7}
 ziplink_plot <- plot_impact_single(data.linked=data_linked, 
@@ -347,7 +347,7 @@ zip_exp_ann <-disperseR::calculate_zip_exposure(
   exp_dir = exp_dir)
 ```
 
-We can plot the results as following using the `plot_impact_weighted` function. Again, a costumized title can be set using the `plot.title` argument. You can also zoom in to a specific part of the map by setting the `x.lim` and `y.lim` arguments. By default they are set to `c(-123, -69)` and `c(24, 50)` respectivelly. 
+We can plot the results as following using the `plot_impact_weighted` function. Again, a customized title can be set using the `plot.title` argument. You can also zoom in to a specific part of the map by setting the `x.lim` and `y.lim` arguments. By default they are set to `c(-123, -69)` and `c(24, 50)` respectively. 
 
 ```{r, fig.height = 4, fig.width = 7}
 zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked=zip_exp_ann,
@@ -360,7 +360,7 @@ zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked=zip_exp_ann,
 zip_exp_ann_plot
 ```
 
-Let's now see how to plot a montly exposure. 
+Let's now see how to plot a monthly exposure. 
 
 Results are saved to the `exp_dir` and returned, but `return.monthly.data` must be set to true to return data when `time.agg = 'month'` (the default was set to save working memory space).
 
@@ -376,7 +376,7 @@ zip_exp_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir,
   return.monthly.data = T)
 ```
 
-Here we also ilustrate how to use the limit arguments to zoom in on the map. By setting `x.lim = c(-65, -85)`, for example, we restrict the map only to the map to display only points within the 65$^{\circ}$W and 85$^{\circ}$W longitude points. 
+Here we also illustrate how to use the limit arguments to zoom in on the map. By setting `x.lim = c(-66, -84)`, for example, we restrict the map only to the map to display only points within the 65$^{\circ}$W and 85$^{\circ}$W longitude points. 
 
 ```{r, fig.height = 4, fig.width = 7}
 zip_exp_mon_plot <- plot_impact_weighted(data.linked=zip_exp_mon,
@@ -386,15 +386,15 @@ zip_exp_mon_plot <- plot_impact_weighted(data.linked=zip_exp_mon,
   map.month = "20051", 
   metric = 'hyads',
   legend.title = 'Montly HyADS exposure', 
-  x.lim = c(-65, -85), # specify coordinates here 
-  y.lim = c(35, 45))
+  x.lim = c(-66, -84), # specify coordinates here 
+  y.lim = c(36, 44))
 
 zip_exp_mon_plot
 ```
 
 ### Plot unit-specific impacts over time
 
-Next, we calculate the monthly emissions weighted HyADS exposure (again, only from the select few runs we initiated above). Code below plots the monthly exposure contributions of the three units in ZIP codes 16226, 10003. The location of the zip codes can be seen on the small map on the right side of the plot. Please note that the axis values are different for the two ZIP codes. 
+Next, we calculate the monthly emissions weighted HyADS exposure (again, only from the select few runs we initiated above). Code below plots the monthly exposure contributions of the three units in ZIP codes 16226, 10003,  10001, 26720. The location of the zip codes can be seen on the small map on the right side of the plot. Please note that the axis values are different for different ZIP codes. 
 
 ```{r}
 zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted_2005.RData"),
@@ -409,7 +409,7 @@ zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata
 ```
 
 ```{r, fig.height = 4, fig.width = 7}
-zipcodes <- c(16226, 10003)
+zipcodes <- c(16226, 10003,  10001, 26720)
 disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, zip.codes=zipcodes)
 ```
 

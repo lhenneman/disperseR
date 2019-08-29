@@ -21,12 +21,11 @@ link_all_units_zip<- function(units.run,
       overwrite = overwrite,
       mc.cores = mc.cores)
 
-    print(ncol(linked_zips))
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
     return(linked_zips)
   }
 
   out <- unitsrun[,zip_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
-  out < -out[,comb:=paste("month: ", out[,month], " unitID :", out[,unitID], sep="")]
+  out <- out[,comb:=paste("month: ", out[,month], " unitID :", out[,unitID], sep="")]
   return(out)
 }

@@ -24,10 +24,10 @@ library(tidyverse)
 In case you have not yet created your project folder use the following command. 
 
 ```{r}
-create_dirs()
+disperseR::create_dirs()
 ```
 
-If the file does not exist, download it from [USDMAPPER](https://www.udsmapper.org/docs/zip_to_zcta_2017.xlsx)
+If the file does not exist, download it from [USDMAPPER](https://www.udsmapper.org/docs/zip_to_zcta_2017.xlsx).
 Then, open it. 
 
 ```{r}
@@ -41,7 +41,8 @@ crosswalk <- readxl::read_excel(filename, skip = 0)
 Next step is to rename the `ZIP_CODE` variable.
 
 ```{r}
-crosswalk <- crosswalk %>% dplyr::rename(.,ZIP=ZIP_CODE)
+crosswalk <- crosswalk %>% 
+  dplyr::rename(.,ZIP=ZIP_CODE)
 ```
 
 We use the 2017 census data packaged by [American Fact Finder](https://factfinder.census.gov/bkmk/table/1.0/en/ACS/17_5YR/B01003/0100000US.86000).
@@ -57,7 +58,8 @@ names(ZCTApop2017) <- c('ID', 'ID2', 'GEOGRAPHY', 'TOTALESTIMATE', 'MARGINOFERRO
 Now, we create a ZCTA code variable by extracting the 5 last digits from the `id` variable. 
 
 ```{r}
-ZCTApop2017 <- ZCTApop2017 %>% dplyr::mutate(ZCTA=stringr::str_sub(ID,-5,-1))
+ZCTApop2017 <- ZCTApop2017 %>% 
+  dplyr::mutate(ZCTA=stringr::str_sub(ID,-5,-1))
 ```
 
 Merge the data to the crosswalk. 
@@ -69,7 +71,8 @@ crosswalk <- dplyr::inner_join(crosswalk, ZCTApop2017)
 Keep only some of the variables.
 
 ```{r}
-crosswalk<- crosswalk %>% dplyr::select(ZIP, PO_NAME, ZCTA, STATE, TOTALESTIMATE, MARGINOFERROR)
+crosswalk<- crosswalk %>% 
+  dplyr::select(ZIP, PO_NAME, ZCTA, STATE, TOTALESTIMATE, MARGINOFERROR)
 ```
 
 Transform to data.table.
