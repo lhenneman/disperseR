@@ -1,0 +1,41 @@
+---
+title: "Vignette - EPA AMPD Data Preparation"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{vignette}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+In this vignette, we show how we prepared the monthly power plant emissions data that we have attached to the package. 
+
+First, we load the packages that we will need for completing this task. 
+
+```{r, message = FALSE, warning = FALSE}
+library(disperseR)
+library(data.table)
+library(tidyverse)
+```
+
+In case you have not yet created your project folder use the following command. 
+
+```{r}
+disperseR::create_dirs()
+```
+
+Unfortunately, these data cannot be downloaded with a script, but we have prepared bookmarks for you.  Please download the following data. Here we download it and place it in the `main_dir` folder. 
+
+[Data 2010 - 2018](http://ampd.epa.gov/ampd/#?bookmark=12264)
+
+
+[Data 2000 - 2009](http://ampd.epa.gov/ampd/#?bookmark=12265)
+
+
+[Data 1980 - 1999](http://ampd.epa.gov/ampd/#?bookmark=12266)
+
+
+
+

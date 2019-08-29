@@ -1,9 +1,7 @@
-
-
 ##########################################################################################
 ##########################################################################################
 
-## This function is used in get_data
+## This function is used below in get_data().
 download_file <- function(url, file, dir) {
   out <- tryCatch({
     download.file(url = url, destfile = file)
@@ -30,11 +28,12 @@ download_file <- function(url, file, dir) {
       return(NULL)
     },
     finally = {
-
     })
   return(out)
 }
 
+##########################################################################################
+##########################################################################################
 
 get_data <-
   function(data,
@@ -98,7 +97,7 @@ get_data <-
       if (length(metfiles) > 0) {
         message("Downloading the following files:")
         message(metfiles)
-        get_met_reanalysis(files = metfiles, path_met_files = meteo_dir)
+        disperseR::get_met_reanalysis(files = metfiles, path_met_files = meteo_dir)
       }
       if (length(metfiles) == 0) {
         message("No files to download. Requested files already available")
@@ -119,8 +118,8 @@ get_data <-
     if (data == "zcta_dataset") {
       message("Starting Preprocessing")
       zcta <- file.path(directory, 'cb_2017_us_zcta510_500k.shp')
-      zcta <- st_read(zcta)
-      setnames(zcta, 'ZCTA5CE10', 'ZCTA')
+      zcta <- sf::st_read(zcta)
+      data.table::setnames(zcta, 'ZCTA5CE10', 'ZCTA')
       zcta <-
         merge(
           zcta,
@@ -151,7 +150,7 @@ get_data <-
         suppressWarnings(raster::brick(x = file, varname = 'hpbl'))
       # The following is done to fix error in the dataset. For more information please see
       # https://stackoverflow.com/questions/56806894/raster-warning-message-in-cbindmi-vals-number-of-rows-of-result-is-not/56807318#56807318
-      crs(hpbl_rasterin) <- "+proj=lcc +x_0=5632642.22547 +y_0=4612545.65137 +lat_0=50 +lon_0=-107 +lat_1=50"
+      raster::crs(hpbl_rasterin) <- "+proj=lcc +x_0=5632642.22547 +y_0=4612545.65137 +lat_0=50 +lon_0=-107 +lat_1=50"
       message("Preprocessing complete")
       return(hpbl_rasterin)
     }

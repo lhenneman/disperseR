@@ -95,7 +95,7 @@ head(zipcodecoordinate)
 
 ### The shape files
 
-Equally important is the ZCTA shape file. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. 
+Equally important is the ZCTA shape file. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. We have also attached a vignette explaining this preprocessing in detail. 
 
 ```{r}
 zcta <- disperseR::get_data(data = "zctashapefile")
@@ -353,6 +353,8 @@ zip_exp_ann <-disperseR::calculate_zip_exposure(
 
 We can plot the results as following using the `plot_impact_weighted` function. Again, a customized title can be set using the `plot.title` argument. You can also zoom in to a specific part of the map by setting the `x.lim` and `y.lim` arguments. By default they are set to `c(-123, -69)` and `c(24, 50)` respectively. 
 
+Please note that the produced graphwwill be automatically saved in the folder specified in the `graph.dir` argument. Here we set `graph.dir  = graph_dir`. `graph_dir` should have been automatically created by the `create_dirs()` function. 
+
 ```{r, fig.height = 4, fig.width = 7}
 zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked=zip_exp_ann,
   data.units = unitsrun,
@@ -417,7 +419,7 @@ zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata
 ```{r, fig.height = 4, fig.width = 7}
 zipcodes <- c(16226, 10003,  10001, 26720)
 
-disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, 
+zip_exp_unit <- disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, 
   zip.codes = zipcodes,
   graph.dir = graph_dir)
 ```

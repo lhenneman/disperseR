@@ -1,6 +1,6 @@
 Package: disperseR
 Type: Package
-Title: Run HYSPLIT many times in parallel, aggregate to zip code level
+Title: Run HYSPLIT many times in parallel, aggregate to zip code level, plot the results, save the plots. 
 Version: 0.1.0
 Author: person("Lucas", "Henneman", email = "lhenneman@gmail.com", role = c("aut", "cre"))
 Authors@R: c(
@@ -9,7 +9,7 @@ Authors@R: c(
     person("Maja", "Garbulinska", role = "aut")
     )
 Maintainer: Lucas Henneman <lhenneman@gmail.com>
-Description: disperseR is a restructured version of the hispdisp package. It is an R package that runs HYSPLIT many times and calculates the HYSPLIT Average Dispersion (or HyADS) exposure metric.The results can then be aggregated to ZIP code level to create national estimates of exposure from various sources. For example, plumes from several power plants can be tracked for many days and cumulative impacts estimated. The package relies on a modified version of the SplitR package.
+Description: disperseR is a restructured version of the hispdisp package. It is an R package that runs HYSPLIT many times and calculates the HYSPLIT Average Dispersion (or HyADS) exposure metric.The results can then be aggregated to ZIP code level to create national estimates of exposure from various sources. For example, plumes from several power plants can be tracked for many days and cumulative impacts estimated. The package uses code borrowed from the SplitR package in a slightly modified version.
 URL: https://github.com/garbulinskamaja/disperseR
 BugReports: https://github.com/garbulinskamaja/disperseR/issues
 License: GPL-3

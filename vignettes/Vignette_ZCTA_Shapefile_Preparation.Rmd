@@ -11,12 +11,12 @@ vignette: >
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-In this vignette, we show how we prepared the ZCTA shape that can be downloaded using the `get_data()` function specifying the `data = "zctashapefile"`. In case you want to use different files you can follow some of these preprocessing steps. 
+In this vignette, we show how we prepared the ZCTA shape data that can be downloaded using the `get_data()` function specifying the `data = "zctashapefile"`. In case you want to use different files you can follow some of these preprocessing steps. 
 
 First, we load the packages that we will need for completing this task. 
 
 ```{r, message = FALSE, warning = FALSE}
-library(hyspdisp2)
+library(disperseR)
 library(data.table)
 library(tidyverse)
 ```
@@ -42,8 +42,8 @@ if(!file.exists(file)){
 You can can load these files into your R session as follows. 
 
 ```{r}
-zcta <- file.path(zcta_dir, 'cb_2017_us_zcta510_500k.shp')
-zcta <- raster::shapefile(x = zcta)
+zcta <- file.path(zcta_dir, 'cb_2017_us_zcta510_500k.shp') # define path
+zcta <- raster::shapefile(x = zcta) 
 ```
 
 It is recommended to transform the ZCTA shapefile to a known projection to maintain consistency throughout the allocation process. Lat-lon projections are preferred, such as the [North American Albers Equal Area Conic](https://epsg.io/102008):
