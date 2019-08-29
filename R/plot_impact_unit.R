@@ -5,7 +5,8 @@ plot_impact_unit <- function(data.linked = NULL,
   plot.title = "Zip Code Locations",
   legend.lims = NULL,
   legend.title = NULL,
-  legend.text.angle = 0) {
+  legend.text.angle = 0,
+  graph.dir = NULL) {
   #################################################################################
 
   if (is.null(data.linked)) {
@@ -119,4 +120,8 @@ plot_impact_unit <- function(data.linked = NULL,
         c(1, NA)),
       widths = c(2, 1))
 
+  if (!(is.null(graph.dir))) {
+    path <- file.path(graph.dir, "plot_impact_unit.pdf")
+    ggsave(path, width = 20, height = 20, units = "cm")
+  }
 }

@@ -7,6 +7,7 @@ plot_impact_single  <- function(data.linked,
   metric = 'N',
   legend.lims = NULL,
   legend.title = NULL,
+  graph.dir = NULL,
   legend.text.angle = 0) {
 
   datareduced <- data.linked[month == map.month & unitID == map.unitID]
@@ -114,6 +115,14 @@ plot_impact_single  <- function(data.linked,
       legend.key.size = unit(.05, 'npc'),
       legend.direction = 'horizontal'
     )
+
+  if (!(is.null(graph.dir))) {
+    path <- file.path(graph.dir, "plot_impact_single.pdf")
+    ggsave(path, width = 20, height = 20, units = "cm")
+  }
+
+  return(gg)
+
 }
 
 

@@ -53,6 +53,12 @@ create_dirs <- function(location=file.path('~', 'Desktop')) {
   dir.create(exp_dir, showWarnings = FALSE)
   exp_dir
 
+  ########### Graph
+  graph_dir <- file.path(output_dir, 'graph')
+  assign("graph_dir", graph_dir, envir = .GlobalEnv)
+  dir.create(graph_dir, showWarnings = FALSE)
+  graph_dir
+
   ########### Rdata
   rdata_dir <- file.path(output_dir, 'rdata')
   assign("rdata_dir", rdata_dir, envir = .GlobalEnv)

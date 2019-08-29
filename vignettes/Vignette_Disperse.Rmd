@@ -49,6 +49,7 @@ The set up is the following:
     * `ziplink`: files containing ZIP code linkages
     * `rdata`: RData files containing HyADS source-receptor matrices
     * `exp`: exposure per zipcode data 
+    * `graph`: graphs saved here as pdf when running functions
   + `process`: temporary files that are created when the model is running and then deleted
 
 
@@ -258,7 +259,7 @@ If you wanted to run `link_all_units_zip()
 If you want to run the function for a specific start and end date you can specify the `start.date` and the `end.date` arguments. For example, `start.date="2005-01-02"` for 2 January 2005. These arguments are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided. `pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
 
 ```{r}
-data_linked <- link_all_units_zip(units.run=unitsrun, 
+data_linked <- disperseR::link_all_units_zip(units.run=unitsrun, 
   mc.cores = 4, 
   year.mons = yearmons,
   pbl.height = pblheight,
@@ -284,7 +285,7 @@ At this point, it makes sense to take a look at the results to see which ZIP cod
 First we need to bring in the zcta data set as follows. 
 
 ```{r}
-zcta_dataset <- get_data("zcta_dataset")
+zcta_dataset <- disperseR::get_data("zcta_dataset")
 ```
 
 And now we can use the `create_impact_table_single` function to see the computed impact for a single month and a single unit. 
@@ -311,6 +312,7 @@ ziplink_plot <- plot_impact_single(data.linked=data_linked,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   metric = 'N',
+  graph.dir = graph_dir, 
   legend.title = 'HyADS raw exposure')
   
 ziplink_plot
@@ -333,7 +335,9 @@ Up until now, this vignette has focused on producing unweighted HyADS results.On
 
 ### Weight the results by emissions
 
-The `create_impact_table_weighted` function takes as input the .RData file created by `combine_monthly_ziplinks` and monthly power plant emissions. The user can select the disperseR year (`year.D`), the emissions year (`year.E`), the weighting pollutant (although it does not necessarily have to be a pollutant), the source aggregation (`source.agg` can be designated 'total', 'facility', or 'unit'), the time aggregation (`time.agg` can be set to 'month' or year'). Here, we first calculate the annual HyADS emissions weighted exposure for all emissions modeled above and plot the results. The plots require a large amount of working memory, and may require you to clear your image history (if using RStudio).
+The `create_impact_table_weighted()` function takes as input the .RData file created by `combine_monthly_ziplinks()` and monthly power plant emissions. The user can select the disperseR year (`year.D`), the emissions year (`year.E`), the weighting pollutant (although it does not necessarily have to be a pollutant), the source aggregation (you can choose `source.agg = "total"`, `source.agg "facility"`, or `source.agg = "unit"`), the time aggregation (`time.agg = "month"` or `time.agg = "year"`). 
+
+Here, we first calculate the annual HyADS emissions weighted exposure for all emissions modeled above and plot the results. The plots require a large amount of working memory, and may require you to clear your image history (if using RStudio).
 
 ```{r}
 zip_exp_ann <-disperseR::calculate_zip_exposure(
@@ -355,7 +359,8 @@ zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked=zip_exp_ann,
   zcta.dataset = zcta_dataset,  
   time.agg = 'year',
   metric = 'hyads',
-  legend.title = 'Aggregate HyADS exposure')
+  legend.title = 'Aggregate HyADS exposure',  
+  graph.dir = graph_dir)
 
 zip_exp_ann_plot
 ```
@@ -379,7 +384,7 @@ zip_exp_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir,
 Here we also illustrate how to use the limit arguments to zoom in on the map. By setting `x.lim = c(-66, -84)`, for example, we restrict the map only to the map to display only points within the 65$^{\circ}$W and 85$^{\circ}$W longitude points. 
 
 ```{r, fig.height = 4, fig.width = 7}
-zip_exp_mon_plot <- plot_impact_weighted(data.linked=zip_exp_mon,
+zip_exp_mon_plot <- disperseR::plot_impact_weighted(data.linked = zip_exp_mon,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   time.agg = 'month',
@@ -387,7 +392,8 @@ zip_exp_mon_plot <- plot_impact_weighted(data.linked=zip_exp_mon,
   metric = 'hyads',
   legend.title = 'Montly HyADS exposure', 
   x.lim = c(-66, -84), # specify coordinates here 
-  y.lim = c(36, 44))
+  y.lim = c(36, 44),
+  graph.dir = graph_dir)
 
 zip_exp_mon_plot
 ```
@@ -410,7 +416,10 @@ zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata
 
 ```{r, fig.height = 4, fig.width = 7}
 zipcodes <- c(16226, 10003,  10001, 26720)
-disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, zip.codes=zipcodes)
+
+disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, 
+  zip.codes = zipcodes,
+  graph.dir = graph_dir)
 ```
 
 
