@@ -466,10 +466,11 @@ In this function, the input ZIP-code linkage dataset is defined by  `zip_exp_ann
 
 
 ```{r}
-unitRanks2005 <- disperseR::rankfacs_by_popwgt_location(data.linked = zip_exp_ann_unit,
+unitRanks2005 <- rankfacs_by_popwgt_location(data.linked = zip_exp_ann_unit,
   crosswalk. = crosswalk,
   rank.by = c('hyads'),
-  state.value = 'PA')
+  state.value = 'PA', 
+  year = 2005)
 
 unitRanks2005
 ```
@@ -486,8 +487,5 @@ plotUnitsRanked <- disperseR::plot_units_ranked(data.units = unitsrun,
   graph.dir = graph_dir)
 ```
 
-```{r}
-
-```
 
 

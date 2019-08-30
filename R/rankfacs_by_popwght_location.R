@@ -4,7 +4,8 @@ rankfacs_by_popwgt_location <- function(link.files = NULL,
   rank.by = c('hyads'),
   zip.value = '*',
   state.value = '*',
-  city.value = '*') {
+  city.value = '*',
+  year = NULL) {
 
   crosswalk. <- data.table(crosswalk.)[, year := year]
   data.linked <- data.table(data.linked)[, year := year]
