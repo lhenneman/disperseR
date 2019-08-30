@@ -24,7 +24,7 @@ plot_impact_single  <- function(data.linked,
   long <- dataunits$Longitude
   lat <- dataunits$Latitude
 
-  facility_loc = data.table(x = long, y = lat)
+  facility_loc <- data.table(x = long, y = lat)
 
   if (is.null(legend.lims)) {
     legend.lims <- c(0, quantile(zip_dataset_sf$metric, .95))

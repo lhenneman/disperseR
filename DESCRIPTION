@@ -32,6 +32,7 @@ Suggests:
     scales,
     gridExtra,
     ggmap,
+    ggrepel,
     sf,
     viridis
 VignetteBuilder: knitr
