@@ -1,3 +1,37 @@
+#' run the fac model in parallel
+#'
+#' \code{run_fac_parallel} takes the following arguments
+#'
+#' It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it.
+#'
+#' @param sample starting day for HyADS runs, must be in standard YYY-MM-DD format
+#'
+#' @param input.refs should be the data table that is the result of the `define_input()` function
+#'
+#' @param pbl.height Monthly mean planetary boundary layer heights. See vignettes for more information
+#'
+#' @param crosswalk. Crosswalk ZCTA-to-ZIP. See vignettes for more information
+#'
+#' @param zcta. ZCTA shape file. See vignette for more information
+#'
+#' @param species The package has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`.
+#'
+#' @param link2zip
+#'
+#' @param proc_dir directory where the function saves temporary files while running. This is automatically defined by `create_dirs()`
+#'
+#' @param overwrite if output files already exist should they be overwritten? This is `false` by default.
+#'
+#' @param npart
+#'
+#' @param mc.cores on how many cores should R split the computations
+#'
+#' @param keep.hysplit.files
+#'
+#'
+#' @return This function returns fac model results.
+
+## define species parameters
 
 run_fac_parallel<-function(sample,
   input.refs = NULL,

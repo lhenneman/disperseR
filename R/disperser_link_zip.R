@@ -133,5 +133,6 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
     out$unitID <- unitID
   }
 
+  out <- out[, .(ZIP, N, month, unitID)]
   return(out)
 }

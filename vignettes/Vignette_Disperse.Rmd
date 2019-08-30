@@ -208,12 +208,6 @@ Let's see the indexes.
 run_sample 
 ```
 
-So we will be using the following events. 
-
-```{r}
-input_refs[run_sample]
-```
-
 Now we will run the fac model in parallel. The argument `sample` should take the vector of indexes that we created above, so here it will be the `sample = run_sample` vector. 
 
 `input.refs` should be the data table that is the result of the `define_input()` function. The `ztca.`, `crosswalk.`, and `pbl.height` arguments are `NULL` by default but you should provide them for the function to run properly. We use the `zcta`, `crosswalk`, and `pblheight` data respectively 
@@ -247,10 +241,8 @@ With the `link_all_units_zip()` function, users can link all air parcels to ZIP 
 Below we present how to use `link_all_units_zip()` for chosen units. First choose the months that you would like to run the function for. Here we only choose Jan and Jul of 2005.
 
 ```{r}
-yearmons <- paste0(2005, 1:12)
-yearmons
+yearmons<- c(paste0(2005, 7:12),  paste0(2006, 1:6))
 ```
-
 Let's look again at our `unitsrun` data set. 
 
 ```{r}
@@ -271,7 +263,7 @@ If you wanted to run `link_all_units_zip()
 If you want to run the function for a specific start and end date you can specify the `start.date` and the `end.date` arguments. For example, `start.date="2005-01-02"` for 2 January 2005. These arguments are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided. `pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
 
 ```{r}
-data_linked <- disperseR::link_all_units_zip(units.run=unitsrun, 
+data_linked <- link_all_units_zip(units.run=unitsrun, 
   mc.cores = 4, 
   year.mons = yearmons,
   pbl.height = pblheight,
@@ -309,7 +301,7 @@ impact_table_single <- create_impact_table_single(data.linked=data_linked,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   map.unitID = "3136-1",
-  map.month = "20051", 
+  map.month = "20058", 
   metric = 'N')
 
 head(impact_table_single)
@@ -353,10 +345,10 @@ Here, we first calculate the annual HyADS emissions weighted exposure for all em
 
 ```{r}
 zip_exp_ann <-disperseR::calculate_zip_exposure(
-  rda_file = file.path(rdata_dir, "hyads_unwgted_2005.RData"),
+  rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
   units.mo = PP.units.monthly1995_2017,
-  year.E = 2005,
-  year.D = 2005,
+  year.E = 2006,
+  year.D = 2006,
   pollutant = 'SO2.tons',
   source.agg = 'total',
   time.agg = 'year',
@@ -384,7 +376,7 @@ Let's now see how to plot a monthly exposure.
 Results are saved to the `exp_dir` and returned, but `return.monthly.data` must be set to true to return data when `time.agg = 'month'` (the default was set to save working memory space).
 
 ```{r}
-zip_exp_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted_2005.RData"),
+zip_exp_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
   units.mo = PP.units.monthly1995_2017,
   year.E = 2005,
   year.D = 2005,
@@ -402,7 +394,7 @@ zip_exp_mon_plot <- disperseR::plot_impact_weighted(data.linked = zip_exp_mon,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   time.agg = 'month',
-  map.month = "20051", 
+  map.month = "20059", 
   metric = 'hyads',
   legend.title = 'Montly HyADS exposure', 
   x.lim = c(-66, -84), # specify coordinates here 
@@ -414,10 +406,10 @@ zip_exp_mon_plot
 
 ### Plot unit-specific impacts over time
 
-Next, we calculate the monthly emissions weighted HyADS exposure (again, only from the select few runs we initiated above). Code below plots the monthly exposure contributions of the three units in ZIP codes 16226, 10003,  10001, 26720. The location of the zip codes can be seen on the small map on the right side of the plot. Please note that the axis values are different for different ZIP codes. 
+Next, we calculate the monthly emissions weighted HyADS exposure (again, only from the select few runs we initiated above). Code below plots the monthly exposure contributions of the three units in ZIP codes 17815, 08210, 13849, 17229. The location of the zip codes can be seen on the small map on the right side of the plot. Please note that the axis values are different for different ZIP codes. 
 
 ```{r}
-zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted_2005.RData"),
+zip_exp_unit_mon2005 <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
                                      units.mo = PP.units.monthly1995_2017,
                                      year.E = 2005,
                                      year.D = 2005,
@@ -426,10 +418,23 @@ zip_exp_unit_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata
                                      time.agg = 'month',
                                      exp_dir = exp_dir,
                                      return.monthly.data = T)
+
+
+zip_exp_unit_mon2006 <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
+                                     units.mo = PP.units.monthly1995_2017,
+                                     year.E = 2006,
+                                     year.D = 2006,
+                                     pollutant = 'SO2.tons',
+                                     source.agg = 'unit', # note! 
+                                     time.agg = 'month',
+                                     exp_dir = exp_dir,
+                                     return.monthly.data = T)
+
+zip_exp_unit_mon <- rbind(zip_exp_unit_mon2005, zip_exp_unit_mon2006)
 ```
 
 ```{r, fig.height = 4, fig.width = 7}
-zipcodes <- c(16226, 10003,  10001, 26720)
+zipcodes <- c(17815, 08210, 13849, 17229)
 
 zip_exp_unit <- disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, 
   zip.codes = zipcodes,

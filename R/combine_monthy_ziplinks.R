@@ -1,8 +1,8 @@
 combine_monthly_ziplinks <- function(month_YYYYMMs) {
 
-  if (length(unique(substr(month_YYYYMMs, 1, 4))) > 1) {
-    stop('please provide only month_YYYYMMs from only one year')
-  }
+  #if (length(unique(substr(month_YYYYMMs, 1, 4))) > 1) {
+    #stop('please provide only month_YYYYMMs from only one year')
+  #}
 
   names.map <- c()
 
@@ -54,7 +54,7 @@ combine_monthly_ziplinks <- function(month_YYYYMMs) {
     }
   }
 
-  rda.filename <- file.path(rdata_dir, paste0('hyads_unwgted_', year.h, '.RData'))
+  rda.filename <- file.path(rdata_dir, 'hyads_unwgted.RData')
   save(list = names.map, file = rda.filename)
 
   print(paste("Monthly RData file written to", rda.filename))

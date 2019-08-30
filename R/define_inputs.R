@@ -5,7 +5,7 @@
 #'
 #' @param startday starting day for HyADS runs, must be in standard YYY-MM-DD format
 #' @param endday starting day for HyADS runs, must be in standard YYY-MM-DD format
-#' @return This function returns a data table of run parameters accepted by `run_fac_parallel`.
+#' @return This function returns a data table of run parameters accepted by `run_fac_parallel()`.
 
 ## define species parameters
 define_inputs <-
@@ -33,7 +33,7 @@ define_inputs <-
       )
     )
 
-    out <- merge(out, units, by = c('ID', 'year'))
+    out <- unique(merge(out, units, by = c('ID', 'year')))
 
     return(out)
   }
