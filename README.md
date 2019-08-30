@@ -23,9 +23,11 @@ disperseR is a new version of the hispdisp package. What has been improved?
 
 - Graph functions are automatized. For example titles are automatic but they can be changed by the user. 
 
+- Data download been handled at the package level. The user does not have to go through all the data download and manipulation. 
+
 # Data attached with the package 
 - crosswalk : attached vignette 
-- PP.units.monthly1995_2017.RData
+- PP.units.monthly1995_2017.RData server problems
 - units2003 - units2009 : attached vignette 
 - zipcode coordinate data: attached vignette 
 
