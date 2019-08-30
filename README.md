@@ -21,6 +21,8 @@ disperseR is a new version of the hispdisp package. What has been improved?
 
 - Until now units data for different years was separated. One could only do an analysis for one year. disperseR allows to process all the needed years together. 
 
+- Graph functions are automatized. For example titles are automatic but they can be changed by the user. 
+
 # Data attached with the package 
 - crosswalk : attached vignette 
 - PP.units.monthly1995_2017.RData
