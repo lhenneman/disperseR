@@ -1,4 +1,6 @@
-<<<<<<< HEAD
+
+# This package as well as this readme is under development. 
+
 # What is disperseR?
 
 
@@ -6,7 +8,7 @@ disperseR is a packaged designed based on the hyspdisp package and the SplitR pa
 
 
 https://github.com/lhenneman/hyspdisp https://rdrr.io/github/rich-iannone/SplitR/
-=======
+
 # This package as well as this readme is under development. 
 
 # What is improved? 
