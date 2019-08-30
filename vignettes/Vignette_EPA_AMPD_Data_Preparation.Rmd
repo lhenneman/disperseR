@@ -28,13 +28,13 @@ disperseR::create_dirs()
 
 Unfortunately, these data cannot be downloaded with a script, but we have prepared bookmarks for you.  Please download the following data. Here we download it and place it in the `main_dir` folder. 
 
-[Data 2010 - 2018](http://ampd.epa.gov/ampd/#?bookmark=12264)
+[Data 2010 - 2018](https://ampd.epa.gov/ampd/#?bookmark=12264)
 
 
-[Data 2000 - 2009](http://ampd.epa.gov/ampd/#?bookmark=12265)
+[Data 2000 - 2009](https://ampd.epa.gov/ampd/#?bookmark=12265)
 
 
-[Data 1980 - 1999](http://ampd.epa.gov/ampd/#?bookmark=12266)
+[Data 1980 - 1999](https://ampd.epa.gov/ampd/#?bookmark=12266)
 
 
 

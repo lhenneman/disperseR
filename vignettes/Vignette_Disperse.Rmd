@@ -321,8 +321,8 @@ ziplink_plot
 ### Combine all results into RData file.
 So far, we have run two worker functions important to the implementation of HyADS:
 
-`run_fac_parallel`: ran HYSPLIT for unit-date-time emission event combinations and saved an output file for each gathered output files from `run_fac_parallel`, `link_all_units_zip` grouped them by month and unit, and linked the HYSPLIT parcel locations contained in the files to ZIP codes.
-In practice, these two worker functions may need to be implemented in parallel R sessions on a cluster to improve efficiency. It helps for future analyses to gather the relevant monthly files and save them as a single RData file. This is made possible by `combine_monthly_ziplinks`, which saves an RData file of annual monthly results to the `rda_dir`.
+`run_fac_parallel()` ran HYSPLIT for unit-date-time emission event combinations and saved an output file for each gathered output files from `run_fac_parallel()`, `link_all_units_zip()` grouped them by month and unit, and linked the HYSPLIT parcel locations contained in the files to ZIP codes.
+In practice, these two worker functions may need to be implemented in parallel R sessions on a cluster to improve efficiency. It helps for future analyses to gather the relevant monthly files and save them as a single RData file. This is made possible by `combine_monthly_ziplinks()`, which saves an RData file of annual monthly results to the `rda_dir`.
 
 
 ```{r}

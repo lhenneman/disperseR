@@ -1,4 +1,5 @@
 combine_monthly_ziplinks <- function(month_YYYYMMs) {
+
   if (length(unique(substr(month_YYYYMMs, 1, 4))) > 1) {
     stop('please provide only month_YYYYMMs from only one year')
   }
@@ -6,6 +7,7 @@ combine_monthly_ziplinks <- function(month_YYYYMMs) {
   names.map <- c()
 
   for (ym in month_YYYYMMs) {
+    print(ym)
     year.h <- substr(ym, 1, 4)
     month.m <- as.integer(substr(ym, 5, 6))
     month.h <- formatC(month.m, width = 2, format = "d", flag = "0")

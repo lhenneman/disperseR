@@ -41,42 +41,38 @@ We start by downloading the first datasets. We will download it to the process f
 ```{r}
 url <-
   "ftp://newftp.epa.gov/air/emismod/2014/v2/2014fd/emissions/2014fd_inputs_point.zip"
-  directory <- proc_dir
-  file <- file.path(directory, '2014fd_inputs_point.zip')
-  if (!file.exists(file)) {
-  # if file does not exist, download it
+directory <- proc_dir
+file <- file.path(directory, '2014fd_inputs_point.zip')
+  
+if (!file.exists(file)) {
+# if file does not exist, download it
   download.file(url = url, destfile = file)
-  }
-  unzip(file, exdir = directory) # unzip the file
-  file <-
-  file.path(
-  directory,
-  "2014fd_cb6_14j",
-  "inputs",
-  "ptegu",
-  "ptegu_2014NEIv2_POINT_20171103_final_21dec2017_nf_v2.csv"
-  )
-  d_nei <- data.table::fread(file, skip = 18)
-  names(d_nei)
+}
+unzip(file, exdir = directory) # unzip the file
+  
+file <- file.path( directory, "2014fd_cb6_14j", "inputs", "ptegu",
+  "ptegu_2014NEIv2_POINT_20171103_final_21dec2017_nf_v2.csv")
+  
+d_nei <- data.table::fread(file, skip = 18)
 ```
 
 The other data set is hosted on "https://dataverse.harvard.edu/api/access/datafile/3086908?gbrecs=true". We specify this location and download it the same way. 
 
 ```{r}
-url <-
-  "https://dataverse.harvard.edu/api/access/datafile/3086908?gbrecs=true"
-  directory <- proc_dir
-  file <-
-  file.path(
-  directory,
-  'AMPD_Unit_with_Sulfur_Content_and_Regulations_with_Facility_Attributes.csv'
-  )
-  if (!file.exists(file)) {
-  # if file does not exist, download it
+url <- "https://dataverse.harvard.edu/api/access/datafile/3086908?gbrecs=true"
+  
+directory <- proc_dir
+  
+file <- file.path(directory, 'AMPD_Unit_with_Sulfur_Content_and_Regulations_with_Facility_Attributes.csv'
+)
+ 
+# if file does not exist, download it
+if (!file.exists(file)) {
   download.file(url = url, destfile = file)
-  }
-  d_ampd <- data.table::fread(file)
-  names(d_ampd)
+  print("data downloaded")
+}
+d_ampd <- data.table::fread(file)
+d_ampd2 <- d_ampd
 ```
 
 ### Manipulation 
@@ -94,21 +90,14 @@ d_nei_unique <- unique(d_nei[, .(
   longitude
   )])
   
-  d_nei_unique <-
-  d_nei_unique[Facility.ID..ORISPL. != "" & Unit.ID != ""]
-  d_nei_unique <-
-  d_nei_unique[, Facility.ID..ORISPL. := as.numeric(d_nei_unique$Facility.ID..ORISPL.)]
-  head(d_nei_unique)
+  d_nei_unique <- d_nei_unique[Facility.ID..ORISPL. != "" & Unit.ID != ""]
+  d_nei_unique <- d_nei_unique[, Facility.ID..ORISPL. := as.numeric(d_nei_unique$Facility.ID..ORISPL.)]
 ```
 
 Here we show you how to prepare the 2005 set but you can choose other years. 
 
 ```{r}
 d_ampd <- d_ampd[Year == 2005][, V1 := NULL]
-file <- file.path(directory, "AMPD_2005.csv")
-fwrite(d_ampd, file)
-
-names(d_ampd)
 ```
 
 ```{r}
@@ -136,13 +125,8 @@ d_ampd_subset <- d_ampd[Fuel1.IsCoal == 1][, .(
   Heat.Input..MMBtu.,
   Gross.Load..MW.h.,
   Steam.Load..1000lb.,
-  Max.Hourly.HI.Rate..MMBtu.hr.
-  )]
-  
-  names(d_ampd_subset)
-```
+  Max.Hourly.HI.Rate..MMBtu.hr.)]
 
-```{r}
 d_ampd_annual <- d_ampd_subset[, .(
   Facility.Latitude,
   Facility.Longitude,
@@ -151,39 +135,21 @@ d_ampd_annual <- d_ampd_subset[, .(
   NOx..tons. = sum(NOx..tons., na.rm = TRUE)
   ),
   by = c("Facility.ID..ORISPL.", "Unit.ID", "Year")]
+
+d_ampd_annual <- unique(d_ampd_annual, by = c("Facility.ID..ORISPL.", "Unit.ID"))
+d_ampd_annual <- d_ampd_annual[, Facility.ID..ORISPL. := as.numeric(d_ampd_annual$Facility.ID..ORISPL.)]
   
-  
-  names(d_ampd_annual)
+head(d_ampd_annual)
 ```
 
-```{r}
-d_ampd_annual <-
-  unique(d_ampd_annual, by = c("Facility.ID..ORISPL.", "Unit.ID"))
-  d_ampd_annual <-
-  d_ampd_annual[, Facility.ID..ORISPL. := as.numeric(d_ampd_annual$Facility.ID..ORISPL.)]
-  head(d_ampd_annual)
-```
 
 ```{r}
-M <-
-  merge(
-  d_ampd_annual,
+ampd <- merge(d_ampd_annual,
   d_nei_unique,
   by = c("Facility.ID..ORISPL.", "Unit.ID"),
-  all.x = TRUE
-  )
-  file <-
-  file.path(directory, 'merge_no_missing_info_coal_only_2005.csv')
-  fwrite(M, file)
-```
+  all.x = TRUE)
 
-```{r}
-ampd <- M
 ampd[, ID := paste(Facility.ID..ORISPL., Unit.ID, sep = "-")]
-names(ampd)
-```
-
-```{r}
 ampd <- ampd[, .(
   ID = ID,
   Latitude = Facility.Latitude,
@@ -196,6 +162,7 @@ ampd <- ampd[, .(
   Velocity = conv_unit(stktemp, "ft_per_sec", "m_per_sec"),
   Temp = conv_unit(stkvel, "F", "K")
   )]
+names(ampd)
 ```
 
 Many of the units in the provided datasets do not have stack height data. In these cases, it is suggested in [Henneman et al. (2019)](https://www.sciencedirect.com/science/article/pii/S1352231019300731) to fill with the average stack height of all units. We do that and create a variable that flags if the height was imputed. 
@@ -212,10 +179,107 @@ There are duplicates from the NEI database, where for the same stack  (= same fa
 
 ```{r}
 ampd <- unique(ampd, by = "ID")
-file <- file.path(directory, "final_merge_nei_ampd_all_units_2005.csv")
-write.csv(data.frame(ampd), file)
 ```
 
 
-The ampd file present in your environment should be now ready to use. It was attached to the `disperseR` package as `units2005`.  
+The `ampd` data are present in your environment should be now ready to use. You can rename it to `units2005` or whatever you wish. 
+
+
+
+This works however we wanted to attached all the years in the same file. We write a function to get these data. 
+
+
+```{r}
+get_units_data <- function(year, d_ampd) {
+  
+  d_ampd <- d_ampd[Year == year][, V1 := NULL]
+
+  d_ampd_subset <- d_ampd[Fuel1.IsCoal == 1][, .(
+    Facility.ID..ORISPL.,
+    Unit.ID,
+    Year,
+    Month,
+    Initial.Year.of.Operation,
+    Sulfur.Content,
+    Program.s. = Program.s..x,
+    SO2.Phase = SO2.Phase.y,
+    NOx.Phase = NOx.Phase.y,
+    EPA.Region,
+    NERC.Region,
+    Source.Category = Source.Category.y,
+    State = State.x,
+    Facility.Latitude = Facility.Latitude.x,
+    Facility.Longitude = Facility.Longitude.x,
+    Has.SO2.Scrub,
+    SO2..tons.,
+    Has.NOx.Scrub,
+    NOx..tons.,
+    CO2..short.tons.,
+    Heat.Input..MMBtu.,
+    Gross.Load..MW.h.,
+    Steam.Load..1000lb.,
+    Max.Hourly.HI.Rate..MMBtu.hr.)]
+
+  d_ampd_annual <- d_ampd_subset[, .(
+    Facility.Latitude,
+    Facility.Longitude,
+    SO2..tons. = sum(SO2..tons., na.rm = TRUE),
+    CO2..short.tons. = sum(CO2..short.tons., na.rm = TRUE),
+    NOx..tons. = sum(NOx..tons., na.rm = TRUE)
+    ),
+    by = c("Facility.ID..ORISPL.", "Unit.ID", "Year")]
+
+  d_ampd_annual <- unique(d_ampd_annual, by = c("Facility.ID..ORISPL.", "Unit.ID"))
+  d_ampd_annual <- d_ampd_annual[, Facility.ID..ORISPL. :=
+      as.numeric(d_ampd_annual$Facility.ID..ORISPL.)]
+  
+  ampd <- merge(d_ampd_annual,
+    d_nei_unique,
+    by = c("Facility.ID..ORISPL.", "Unit.ID"),
+    all.x = TRUE)
+  
+  ampd[, ID := paste(Facility.ID..ORISPL., Unit.ID, sep = "-")]
+  ampd <- ampd[, .(
+    ID = ID,
+    Latitude = Facility.Latitude,
+    Longitude = Facility.Longitude,
+    SOx = SO2..tons.,
+    CO2 = CO2..short.tons.,
+    NOx = NOx..tons.,
+    Height = conv_unit(stkhgt, "ft", "m"),
+    Diam = conv_unit(stkdiam, "ft", "m"),
+    Velocity = conv_unit(stktemp, "ft_per_sec", "m_per_sec"),
+    Temp = conv_unit(stkvel, "F", "K")
+    )]
+
+  ampd <- ampd[, inputed := 0]
+  ampd$inputed[is.na(ampd$Height)] <- 1
+  
+  # impute
+  ampd$Height[is.na(ampd$Height)] <- mean(ampd$Height, na.rm = T)
+  ampd <- unique(ampd, by = "ID")
+  
+  # add year variable 
+  ampd <- ampd[, year := year]
+}
+```
+
+Vectors of years that we will be adding to our data
+
+```{r}
+vector_years<-c(2003:2012)
+```
+
+Run the function for all the years and combine results:
+```{r}
+units <- data.table::setDF(data.table::rbindlist(lapply(vector_years, 
+  get_units_data, 
+  d_ampd=d_ampd2)))
+```
+
+Now the units data should be in your environment. You can go ahead and use it. We have attached it to the disperseR package. 
+
+
+
+
 
