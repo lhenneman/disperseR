@@ -441,7 +441,7 @@ zip_exp_unit <- disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon,
   graph.dir = graph_dir)
 ```
 
-### Plot ranked facilities. 
+### Rank facilities. 
 
 In the examples provided above, we selected coal units a priori to analyze. However, a benefit of HyADS over more complex models is the ability to easily rank-order emissions sources to identify the sources that contribute the most to exposure in a given area. 
 
@@ -475,3 +475,7 @@ unitRanks2005 <- disperseR::rankfacs_by_popwgt_location(data.linked = zip_exp_an
 unitRanks2005
 ```
 
+
+### Plot ranked facilities.
+
+unitRanks2005 <- merge( unitRanks2005, units2005, by = 'uID')

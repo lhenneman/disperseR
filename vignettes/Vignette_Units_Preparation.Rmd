@@ -90,8 +90,8 @@ d_nei_unique <- unique(d_nei[, .(
   longitude
   )])
   
-  d_nei_unique <- d_nei_unique[Facility.ID..ORISPL. != "" & Unit.ID != ""]
-  d_nei_unique <- d_nei_unique[, Facility.ID..ORISPL. := as.numeric(d_nei_unique$Facility.ID..ORISPL.)]
+d_nei_unique <- d_nei_unique[Facility.ID..ORISPL. != "" & Unit.ID != ""]
+d_nei_unique <- d_nei_unique[, Facility.ID..ORISPL. := as.numeric(d_nei_unique$Facility.ID..ORISPL.)]
 ```
 
 Here we show you how to prepare the 2005 set but you can choose other years. 
@@ -275,8 +275,9 @@ Run the function for all the years and combine results.
 units <- data.table::setDF(data.table::rbindlist(lapply(vector_years, 
   get_units_data, 
   d_ampd=d_ampd2)))
-class(units)
 
+units <- units %>%
+  mutate(uID=gsub("-", ".", ID))
 ```
 
 Now the units data should be in your environment. You can go ahead and use it. We have attached it to the disperseR package. 
