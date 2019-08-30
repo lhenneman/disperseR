@@ -275,6 +275,8 @@ Run the function for all the years and combine results.
 units <- data.table::setDF(data.table::rbindlist(lapply(vector_years, 
   get_units_data, 
   d_ampd=d_ampd2)))
+class(units)
+
 ```
 
 Now the units data should be in your environment. You can go ahead and use it. We have attached it to the disperseR package. 

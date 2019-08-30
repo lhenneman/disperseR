@@ -14,12 +14,14 @@ define_inputs <-
     endday,
     start.hours =  c(0, 6, 12, 18),
     duration = 240) {
+
     startday.date <- as.Date(startday)
     endday.date   <- as.Date(endday)
 
     out <- data.table(
       expand.grid(
         ID = units$ID,
+        year = units$year,
         start_hour = start.hours,
         start_day = seq.Date(
           from = as.Date(startday.date),
@@ -31,7 +33,7 @@ define_inputs <-
       )
     )
 
-    out <- merge(out, units, by = 'ID')
+    out <- merge(out, units, by = c('ID', 'year'))
 
     return(out)
   }

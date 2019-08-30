@@ -120,15 +120,27 @@ pblheight
 
 ### The units data 
 
-Now, we need to select the power plants whose impact we will analyse. In this case, we'll use the three units in 2005 with the greatest SOx emissions. This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
+This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
+
+Now, we need to select the power plants whose impact we will analyse. In this case, we'll use the two units in 2005 with the greatest SOx emissions, and two with the greatest SOx emissions in 2006. You are free to choose your own units. You can see that unit "3136-1" is on top of the ranking in both years. 
 
 
 ```{r}
-unitsrun <- disperseR::units2005 %>% 
-  dplyr::top_n(3, SOx) # get the two most polluting plants
+unitsrun2005 <- disperseR::units %>% 
+  dplyr::filter(year ==2005)%>% 
+  dplyr::top_n(2, SOx) 
 
+unitsrun2006 <- disperseR::units %>% 
+  dplyr::filter(year ==2006)%>% 
+  dplyr::top_n(2, SOx) 
+
+head(unitsrun2005)
+head(unitsrun2006)
+```
+
+```{r}
 # transform to data table 
-unitsrun <- data.table::data.table(unitsrun) 
+unitsrun <- data.table::data.table(rbind(unitsrun2005, unitsrun2006)) 
 head(unitsrun)
 ```
 
@@ -143,9 +155,9 @@ If you, for example, you want to download files for Jan-Jul 2005, you just have 
 ```{r}
 disperseR::get_data(data = "metfiles", 
   start.year = "2005", 
-  start.month = "01", 
-  end.year="2005", 
-  end.month="12")
+  start.month = "07", 
+  end.year="2006", 
+  end.month="06")
 ```
 
 Now the data should be downloaded to your `meteo_dir` directory and we can start the analysis.
@@ -159,9 +171,9 @@ HYSPLIT, as applied here, tracks air parcels emitted at certain times and locati
 To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending an day, and outputs a table of value whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the `start_hours` variable, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
 
 ```{r}
-input_refs <- disperseR::define_inputs(units = unitsrun,
-  startday = '2005-01-01',
-  endday = '2005-12-30',
+input_refs <- define_inputs(units = unitsrun,
+  startday = '2005-07-01',
+  endday = '2006-06-30',
   start.hours =  c(0, 6, 12, 18),
   duration = 240)
 
