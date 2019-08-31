@@ -2,7 +2,7 @@
 title: "Vignette - ZCTA Shapefile Preparation (Optional)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vignette}
+  %\VignetteIndexEntry{Vignette - ZCTA Shapefile Preparation (Optional)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

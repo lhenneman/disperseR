@@ -2,7 +2,7 @@
 title: "Vignette - Units Data Preparation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vignette}
+  %\VignetteIndexEntry{Vignette - Units Data Preparation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -267,7 +267,7 @@ get_units_data <- function(year, d_ampd) {
 Vectors of years that we will be adding to our data.
 
 ```{r}
-vector_years<-c(2003:2012)
+vector_years<-c(1995:2015)
 ```
 
 Run the function for all the years and combine results.
@@ -281,7 +281,6 @@ units <- units %>%
 ```
 
 Now the units data should be in your environment. You can go ahead and use it. We have attached it to the disperseR package. 
-
 
 
 

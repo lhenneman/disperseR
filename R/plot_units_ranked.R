@@ -5,11 +5,11 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
 
   ## coordinates
   long <- unitRanks$Longitude
-  minlong <-min(long)-6
-  maxlong <-max(long)+6
+  minlong <-min(long)-10
+  maxlong <-max(long)+10
   lat <- unitRanks$Latitude
-  minlat <-min(lat)-6
-  maxlat <-max(lat)+6
+  minlat <-min(lat)-10
+  maxlat <-max(lat)+10
 
   uID <- unitRanks$uID
   hyads.py.sum<-unitRanks$hyads.py.sum
@@ -21,7 +21,7 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
 
   title <- paste("Ranking for year:", year)
 
-  ggmap <- ggplot2::ggplot(data = unitRanks2005) +
+  ggmap <- ggplot2::ggplot(data = unitRanks) +
     ggplot2::theme_bw() +
     labs(title = title) +
     ggplot2::geom_polygon(
@@ -35,23 +35,22 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
       data = facility_loc,
       aes(x = x, y = y),
       shape = 1,
-      colour = "red",
+      colour = "forestgreen",
       inherit.aes = F,
       size = 2,
       stroke = 2
     ) +
-    ggrepel::geom_label_repel(data = facility_loc, aes(x=x, y=y,label = label),
-      nudge_x = 3,
+    ggrepel::geom_label_repel(data = facility_loc,
+      aes(x=x, y=y,label = label),
+      nudge_x = 10,
+      nudge_y = 10,
+      segment.size = 0.7,
       na.rm = TRUE) +
     ggplot2::scale_shape_discrete(solid = T) +
     ggplot2::coord_sf(xlim = c(minlong, maxlong),
       ylim = c(minlat, maxlat),
       datum = NA) +
     ggplot2::theme(
-      axis.title = element_blank(),
-      axis.text = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
       legend.position = "bottom")
 
   if (!(is.null(graph.dir))) {
@@ -68,16 +67,16 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
       "Hyads Exposure",
       "SOx emission"))
 
-  ggbar <- ggplot2::ggplot(data=unitRanks, aes(x=as.character(uID), y=Measurement))+
-    ggplot2::geom_bar(stat='identity',
-      color="navyblue",
-      fill="grey",
-      width=0.5)+
+  ggbar <- ggplot2::ggplot(data=unitRanks, aes(x = as.character(uID), y = Measurement))+
+    ggplot2::geom_bar(stat = 'identity',
+      color = "navyblue",
+      fill = "grey",
+      width = 0.3)+
     ggplot2::facet_wrap(.~type, scales="free")+
     ggplot2::theme_bw()+
     ggplot2::scale_y_continuous(labels = scales::comma)+
     xlab("Unit ID")
 
-  return(list(ggbar=ggbar, ggmap=ggmap))
+  return(list(ggbar = ggbar, ggmap = ggmap))
 
 }

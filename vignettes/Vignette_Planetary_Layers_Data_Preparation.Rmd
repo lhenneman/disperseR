@@ -2,7 +2,7 @@
 title: "Vignette Planetary Layers Data Preparation (Optional)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vignette}
+  %\VignetteIndexEntry{Vignette Planetary Layers Data Preparation (Optional)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

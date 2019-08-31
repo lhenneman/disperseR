@@ -2,7 +2,7 @@
 title: "Vignette - Crosswalk Preparation (Optional)"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vignette}
+  %\VignetteIndexEntry{Vignette - Crosswalk Preparation (Optional)}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

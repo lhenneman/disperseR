@@ -1,8 +1,8 @@
 ---
-title: "Vignette - Zip Code Coordinate Data Preparation "
+title: "Vignette - Zip Code Coordinate Data Preparation"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{vignette}
+  %\VignetteIndexEntry{Vignette - Zip Code Coordinate Data Preparation}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -21,7 +21,7 @@ In this vignette we show you how we prepared the zip code coordinate data that w
 In case you have not yet created your project folder use the following command. 
 
 ```{r}
-disperseR::createdirs()
+disperseR::create_dirs()
 ```
 
 We first download the data from [Open Data Soft](https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/table/)
@@ -48,8 +48,8 @@ Select columns and rename them.
 
 ```{r}
 zipcodecoordinate <- zipcodecoordinate %>% 
-  select(Zip, City, Latitude, Longitude) %>% 
-  rename(ZIP=Zip)
+  dplyr::select(Zip, City, Latitude, Longitude) %>% 
+  dplyr::rename(ZIP=Zip)
 ```
 
 Now the data set is ready to use in your plots! We added it to this package. 
