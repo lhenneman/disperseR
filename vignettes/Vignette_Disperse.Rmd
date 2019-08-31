@@ -485,6 +485,8 @@ plotUnitsRanked <- plot_units_ranked(data.units = unitsrun,
   data.ranked=unitRanks2005,
   year=2005, 
   graph.dir = graph_dir)
+
+plotUnitsRanked
 ```
 
 The result of this function 
