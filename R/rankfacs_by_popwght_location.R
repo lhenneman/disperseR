@@ -9,7 +9,6 @@ rankfacs_by_popwgt_location <- function(link.files = NULL,
 
   crosswalk. <- data.table(crosswalk.)[, year := year]
   data.linked <- data.table(data.linked)[, year := year]
-  data.units <- data.units[year==2005]
 
   # make sure either link.files or data.linked edist
   if ((is.null(link.files) &

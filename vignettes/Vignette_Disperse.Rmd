@@ -480,12 +480,13 @@ unitRanks2005
 
 `plotUnitsRanked()` works very similary to other plotting function in `disperseR`. Choose the dataset of ranked facilities as well as year. 
 
-```{r}
-plotUnitsRanked <- disperseR::plot_units_ranked(data.units = unitsrun, 
+```{r, fig.height = 4, fig.width = 7}
+plotUnitsRanked <- plot_units_ranked(data.units = unitsrun, 
   data.ranked=unitRanks2005,
   year=2005, 
   graph.dir = graph_dir)
 ```
 
+The result of this function 
 
 
