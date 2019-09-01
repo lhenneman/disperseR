@@ -96,6 +96,29 @@ Load `disperseR` into your R session.
 library(disperseR)
 ```
 
+### See the vignettes
+
+You should be able to see the main vignette like this. This will be opened by your RStudio.
+
+``` r
+vignette("Vignette_DisperseR")
+```
+
+The rest of the vignettes can be accessed by typing the corresponding commands.
+
+``` r
+vignette("Vignette_Crosswalk_Preparation")
+vignette("Vignette_Load_Data_One_by_One")
+vignette("Vignette_Units_Preparation")
+vignette("Vignette_Zip_Code_Coordinate_Data_Preparation")
+vignette("Vignette_Planetary_Layers_Data_Preparation")
+vignette("Vignette_ZCTA_Shapefile_Preparation")
+```
+
+\*\* NOTE: IF THIS DOES NOT WORK:\*\*
+
+In case this does not work for you. We have rendered all the vignettes for you and you can access them from your browser by clicking at the corresponding hyperlinks in **Vignettes attached with the package** section above.
+
 ### Set up the project.
 
 The vignettes will instruct you to do so but you can already start by creating the project folder. Use `disperseR::create_dirs()` function to do so. Point `disperseR` to the location where you want your project to be created. For example the following code will create the project in the user's Dropbox. If you do not specify the location and just type `disperseR::create_dirs()` it will still work and the project will be created on your desktop.
