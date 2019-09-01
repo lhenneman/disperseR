@@ -15,7 +15,7 @@ In this vignette, we show how we prepared the ZCTA shape data that can be downlo
 
 First, we load the packages that we will need for completing this task. 
 
-```{r, message = FALSE, warning = FALSE}
+```{r, message = FALSE, warning = FALSE, eval = FALSE}
 library(disperseR)
 library(data.table)
 library(tidyverse)
@@ -23,13 +23,13 @@ library(tidyverse)
 
 In case you have not yet created your project folder use the following command. 
 
-```{r}
+```{r, eval = FALSE}
 disperseR::create_dirs()
 ```
 
 We use use ZCTA shapefiles from the US census website [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip). It is important to note that this website sometimes fails and the download should be postponed. 
 
-```{r}
+```{r, eval = FALSE}
 file <- file.path(zcta_dir, 'cb_2017_us_zcta510_500k.zip')
 url <- 'ftp://ftp2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip'
 
@@ -41,14 +41,14 @@ if(!file.exists(file)){
 
 You can can load these files into your R session as follows. 
 
-```{r}
+```{r, eval = FALSE}
 zcta <- file.path(zcta_dir, 'cb_2017_us_zcta510_500k.shp') # define path
 zcta <- raster::shapefile(x = zcta) 
 ```
 
 It is recommended to transform the ZCTA shapefile to a known projection to maintain consistency throughout the allocation process. Lat-lon projections are preferred, such as the [North American Albers Equal Area Conic](https://epsg.io/102008):
 
-```{r}
+```{r, eval = FALSE}
 p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
 zcta <- sp::spTransform(x = zcta, CRSobj = p4s)
 ```
