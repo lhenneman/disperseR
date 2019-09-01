@@ -22,13 +22,13 @@ What is disperseR?
 
 `disperseR` is an R package designed based on the [hyspdisp package](https://github.com/lhenneman/hyspdisp) and the [SplitR package](https://rdrr.io/github/rich-iannone/SplitR/). It is very important to note that many functions in `disperseR` are just sightly redesigned functions from the two mentioned packages.
 
-It runs the [HYSPLIT](https://www.ready.noaa.gov/HYSPLIT.php) many times and calculates the HYSPLIT Average Dispersion (or HyADS) exposure metric. The results can then be aggregated to ZIP code level to create national estimates of exposure from various sources.
+`disperseR` runs the [HYSPLIT](https://www.ready.noaa.gov/HYSPLIT.php) many times and calculates the HYSPLIT Average Dispersion (or HyADS) exposure metric. The results can then be aggregated to ZIP code level to create national estimates of exposure from various sources. `disperseR` includes functions that make it possible for the user to plot the results easily.
 
 Thanks to the [hyspdisp package](https://github.com/lhenneman/hyspdisp), for example, plumes from several power plants can be tracked for many days and cumulative impacts estimated. disperseR laverages [hyspdisp package](https://github.com/lhenneman/hyspdisp) and allows the user have a more friendly interaction with the package.
 
 ### What is improved?
 
-`disperseR` is a new version of the hispdisp package. What has been improved?
+`disperseR` is a new version of the `hyspdisp` package. What has been improved?
 
 -   Input data manipulation is handled at the package level. The user only has to read the data in using the `disperseR::get_data()` function. We show how to do it in the main vignette.
 
@@ -77,10 +77,22 @@ Instructions
 
 ### Download and installation.
 
-Start by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes. This might take some minutes.
+First, not having the `Rccp` package installed on your computer can lead to problems with `disperseR` installation. We recommend you first type the following into your R console.
+
+``` r
+install.packages("Rccp")
+```
+
+Continue by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes. This might take some minutes.
 
 ``` r
 devtools::install_github("garbulinskamaja/disperseR", force = TRUE, build_vignettes = TRUE)
+library(disperseR)
+```
+
+Load `disperseR` into your R session.
+
+``` r
 library(disperseR)
 ```
 

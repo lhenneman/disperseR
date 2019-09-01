@@ -15,6 +15,7 @@ knitr::opts_chunk$set(
 ```
 
 Load packages 
+
 ```{r, message = FALSE, warning = FALSE}
 library(disperseR) # our package
 library(ncdf4)
