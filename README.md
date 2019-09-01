@@ -77,11 +77,13 @@ Instructions
 
 ### Download and installation.
 
-First, not having the `Rccp` package installed on your computer can lead to problems with `disperseR` installation. We recommend you first type the following into your R console.
+First, not having the `Rccp` package installed on your computer can lead to problems with `disperseR` installation (problems with version installation). We recommend you first type the following into your R console.
 
 ``` r
 install.packages("Rccp")
 ```
+
+If you are using a Windows machine and you want R to render the vignettes for you, you will need to download Rtools from [here](https://cran.rstudio.com/bin/windows/Rtools/). If you prefer to avoid this step you can go ahead and proceed with the instalation as we have added links to access already rendered vignettes on GitHub.
 
 Continue by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes. This might take some minutes.
 

@@ -5,14 +5,7 @@ bibliography: bibliography.bib
 nocite: '@*'
 ---
 
-```{r, include = FALSE}
-knitr::opts_chunk$set(
-  collapse = TRUE,
-  comment = "#>",
-  fig.path = "man/figures/README-",
-  out.width = "100%"
-)
-```
+
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
@@ -93,7 +86,8 @@ Unfortunatelly, `disperseR` requires a lot of data to run the models. We could n
 
 First, not having the `Rccp` package installed on your computer can lead to problems with `disperseR` installation (problems with version installation). We recommend you first type the following into your R console. 
 
-```{r, eval = FALSE}
+
+```r
 install.packages("Rccp")
 ```
 
@@ -101,14 +95,16 @@ If you are using a Windows machine and you want R to render the vignettes for yo
 
 Continue by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes. This might take some minutes. 
 
-```{r, eval = FALSE}
+
+```r
 devtools::install_github("garbulinskamaja/disperseR", force = TRUE, build_vignettes = TRUE)
 library(disperseR)
 ```
 
 Load `disperseR` into your R session. 
 
-```{r, eval = FALSE}
+
+```r
 library(disperseR)
 ```
 
@@ -116,13 +112,15 @@ library(disperseR)
 
 You should be able to see the main vignette like this. This will be opened by your RStudio.
 
-```{r, eval = FALSE}
+
+```r
 vignette("Vignette_DisperseR")
 ```
 
 The rest of the vignettes can be accessed by typing the corresponding commands. 
 
-```{r, eval = FALSE}
+
+```r
 vignette("Vignette_Crosswalk_Preparation")
 vignette("Vignette_Load_Data_One_by_One")
 vignette("Vignette_Units_Preparation")
@@ -140,7 +138,8 @@ In case this does not work for you. We have rendered all the vignettes for you a
 The vignettes will instruct you to do so but you can already start by creating the project folder. Use `disperseR::create_dirs()` function to do so. Point `disperseR` to the location where you want your project to be created. For example the following code will create the project in the user's Dropbox. If you do not specify the location and just type `disperseR::create_dirs()` it will still work and the project will be created on your desktop. 
 
 
-```{r, eval = FALSE}
+
+```r
 disperseR::create_dirs(location="/Users/username/Dropbox")
 ```
 
