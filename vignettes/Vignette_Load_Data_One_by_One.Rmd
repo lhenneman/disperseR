@@ -1,0 +1,155 @@
+---
+title: "Vignette - Load Data One by One"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Vignette - Load Data One by One}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+Load packages 
+```{r, message = FALSE, warning = FALSE}
+library(disperseR) # our package
+library(ncdf4)
+library(data.table)
+library(tidyverse)
+library(sf)
+library(scales)
+library(ggsn)
+```
+
+
+In this vignette we will show you how you can use the `disperseR::get_data()` function to download load your data one by one.
+
+In case you have not yet created your project folder use the following command. 
+
+```{r}
+disperseR::create_dirs()
+```
+
+### The crosswalk
+
+ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by [UDS Mapper]("https://www.udsmapper.org/zcta-crosswalk.cfm") and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. 
+
+Let's load the crosswalk file and assign it to `crosswalk`
+
+```{r}
+crosswalk <- disperseR::crosswalk
+```
+
+Let's see the first rows of the dataset. 
+
+```{r}
+head(crosswalk)
+```
+
+
+### The monthly powerplant emissions
+
+The `disperseR` package also includes monthly power plant emissions, load, and heat input data, accessible using the following command:
+
+```{r}
+PP.units.monthly1995_2017 <- disperseR::PP.units.monthly1995_2017
+```
+
+Let's see the first rows of the dataset. 
+
+```{r}
+head(PP.units.monthly1995_2017)
+```
+
+
+### ZIP code coordinates 
+
+The `disperseR` package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. We are using data from: [Open Data Soft](https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/table/)
+If needed however, you can access it as follows: 
+
+```{r}
+zipcodecoordinate <- disperseR::zipcodecoordinate
+```
+
+Let's see the first rows of the dataset. 
+
+```{r}
+head(zipcodecoordinate)
+```
+
+
+### The shape files
+
+Equally important is the ZCTA shape file. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. We have also attached a vignette explaining this preprocessing in detail. 
+
+```{r}
+zcta <- disperseR::get_data(data = "zctashapefile")
+```
+
+```{r}
+zcta
+```
+
+
+### Monthly mean planetary boundary layer heights 
+
+Another input that we need are the monthly mean boundary layer heights. We used the data available on the [ESRL website](https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j). Again, using the `get_data()` function and setting  `data = "pblheight"`. If you need more information about how these data have been preprocessed just check the special vignette that is available with the package.
+
+
+```{r}
+pblheight <- disperseR::get_data(data = "pblheight")
+```
+```{r}
+pblheight
+```
+
+### The units data 
+
+This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
+
+Now, we need to select the power plants whose impact we will analyse. In this case, we'll use the two units in 2005 with the greatest SOx emissions, and two with the greatest SOx emissions in 2006. You are free to choose your own units. You can see that unit "3136-1" is on top of the ranking in both years. 
+
+
+```{r}
+unitsrun2005 <- disperseR::units %>% 
+  dplyr::filter(year ==2005)%>% 
+  dplyr::top_n(2, SOx) 
+
+unitsrun2006 <- disperseR::units %>% 
+  dplyr::filter(year ==2006)%>% 
+  dplyr::top_n(2, SOx) 
+
+head(unitsrun2005)
+head(unitsrun2006)
+```
+
+
+Below append the two datasets together and transform it to `data.table` format.  
+
+```{r}
+unitsrun <- data.table::data.table(rbind(unitsrun2005, unitsrun2006)) 
+```
+Let's look at the data. 
+```{r}
+unitsrun
+```
+
+### The meteorology files
+
+Download reanalysis meteorology files. Below we show code to test for the meteorology files needed for the present run. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
+
+If you, for example, you want to download files for Jan-Jul 2005, you just have to use the `get_data()` function and set `data = "metfiles"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
+
+```{r}
+disperseR::get_data(data = "metfiles", 
+  start.year = "2005", 
+  start.month = "07", 
+  end.year="2006", 
+  end.month="06")
+```
+
+Now the data should be downloaded to your `meteo_dir` directory and we can start the analysis.

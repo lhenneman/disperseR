@@ -63,7 +63,8 @@ Thanks to the [hyspdisp package](https://github.com/lhenneman/hyspdisp), for exa
 We know it is sometimes difficult to start working with a new package, especially if you are not very familiar with R. We also believe in reproducible research. This is why we have included several vignettes to help you with the process. 
 
 - [The main vignette for disperseR](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Disperse.html)
-- [Crosswalk data preparation (optional)](vignettes/Vignette_Crosswalk_Preparation/html)
+- [Load data one by one](Vignette - Load Data One by One)
+- [Crosswalk data preparation (optional)](vignettes/Vignette_Crosswalk_Preparation.html)
 - [Planetary layers data preparation (optional)](vignettes/Vignette_Planetary_Layers_Data_Preparation.html)
 - [ZIP Code coordinate data preparation (optional)](vignettes/Vignette_Zip_Code_Coordinate_Data_Preparation.html)
 - [Vignette ZCTA shapefile preparation (optional)](vignettes/Vignette_ZCTA_Shapefile_Preparation.html)
@@ -81,7 +82,7 @@ Unfortunatelly, `disperseR` requires a lot of data to run the models. We could n
 
 - **zipcode coordinate data**: The `disperseR` package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. Please click [here](vignettes/Vignette_Zip_Code_Coordinate_Data_Preparation.html) for more information.
 
-#### Example output
+### Example output
 
 <img width="676" alt="Screen Shot 2019-09-01 at 16 35 53" src="https://user-images.githubusercontent.com/43005886/64078059-9f592d00-ccd6-11e9-942a-e708d6e4e8ad.png">
 
@@ -120,6 +121,10 @@ This will set up is the following folders and paths to them :
     * `exp`: exposure per zipcode data 
     * `graph`: graphs saved here as pdf when running functions
   + `process`: temporary files that are created when the model is running and then deleted
+  
+Here is a screen shot of what it should look like: 
+
+<img width="856" alt="Screen Shot 2019-09-01 at 16 43 58" src="https://user-images.githubusercontent.com/43005886/64078186-c2381100-ccd7-11e9-96e4-be8f6ef97875.png">
 
 ### Analysis
 
