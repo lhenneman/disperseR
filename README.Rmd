@@ -21,6 +21,7 @@ knitr::opts_chunk$set(
 
 # PLEASE NOTE:This package as well as this readme are still under development. 
 
+
 # Welcome to disperseR
 
 ## Package Authors: 
@@ -167,7 +168,7 @@ Here is a screen shot of what it should look like:
 
 We suggest you have a look at our main vignette [here](vignettes/Vignette_Disperse.html) for details about the analysis. 
 
-## Packages used 
+## Packages used in functions and vignettes. 
 
 - base [@base]
 - data.table [@data.table]

@@ -152,8 +152,8 @@ Here is a screen shot of what it should look like:
 
 We suggest you have a look at our main vignette [here](vignettes/Vignette_Disperse.html) for details about the analysis.
 
-Packages used
--------------
+Packages used in functions and vignettes.
+-----------------------------------------
 
 -   base (R Core Team 2019a)
 -   data.table (Dowle and Srinivasan 2019)
