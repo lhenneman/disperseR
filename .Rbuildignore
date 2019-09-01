@@ -1,3 +1,9 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
+
+
+^vignettesHTML$
+^vignettesHTML/Vignette.html$
+
+
