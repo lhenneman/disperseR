@@ -37,9 +37,17 @@ Thanks to the [hyspdisp package](https://github.com/lhenneman/hyspdisp), for exa
 
 ### Vignettes attached with the package
 
+-   [The main vignette for disperseR](vignettes/Vignette_Disperse.html)
+-   [Crosswalk data preparation](vignettes/Vignette_Crosswalk_Preparation/html)
+-   [Planetary layers data preparation](vignettes/Vignette_Planetary_Layers_Data_Preparation.html)
+-   [ZIP Code coordinate data preparation](vignettes/Vignette_Zip_Code_Coordinate_Data_Preparation.html)
+-   [Vignette\_ZCTA\_Shapefile\_Preparation](vignettes/Vignette_ZCTA_Shapefile_Preparation.html)
+-   [Vignette\_Units\_Preparation](vignettes/Vignette_Units_Preparation.html)
+
 ### Data attached with the package
 
--   crosswalk
+-   **crosswalk**: ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by [UDS Mapper](%22https://www.udsmapper.org/zcta-crosswalk.cfm%22) and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. You can see it by clicking [here](vignettes/Vignette_Crosswalk_Preparation/html)
+
 -   PP.units.monthly1995\_2017.RData (we currently do not have a vignette for these data due to server problems of the data owner)
 -   units1995 - units2015
 -   zipcode coordinate data
@@ -47,12 +55,37 @@ Thanks to the [hyspdisp package](https://github.com/lhenneman/hyspdisp), for exa
 Instructions
 ------------
 
-Start by typing the following in your R console.
+### Download and installation.
+
+Start by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes.
 
 ``` r
 devtools::install_github("garbulinskamaja/disperseR", force = TRUE, build_vignettes = TRUE)
 library(disperseR)
 ```
+
+### Set up the project.
+
+The vignettes will instruct you to do so but you can already start by creating the project folder. Use `disperseR::create_dirs()` function to do so. Point `disperseR` to the location where you want your project to be created. For example the following code will create the project in the user's Dropbox. If you do not specify the location and just type `disperseR::create_dirs()` it will still work and the project will be created on your desktop.
+
+``` r
+disperseR::create_dirs(location="/Users/username/Dropbox")
+```
+
+This will set up is the following folders and paths to them :
+
+-   `main`: the main folder where the project will be located.
+-   `input`: the input that we need for calculations.
+    -   `zcta_500k`: ZCTA (A Zip Code Tabulation Area) shape files
+    -   `hpbl`: monthly global planetary boundary layer files.
+    -   `meteo`: (reanalysis) meteorology files
+-   `output`
+    -   `hysplit`: disperseR output (one file for each emissions event)
+    -   `ziplink`: files containing ZIP code linkages
+    -   `rdata`: RData files containing HyADS source-receptor matrices
+    -   `exp`: exposure per zipcode data
+    -   `graph`: graphs saved here as pdf when running functions
+-   `process`: temporary files that are created when the model is running and then deleted
 
 References / Resources Used
 ---------------------------

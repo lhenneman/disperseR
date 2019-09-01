@@ -40,10 +40,10 @@ Next, we will use the `create_dirs()` function that creates a project folder wit
 
 This will set up is the following folders and paths to them :
 
-* `main`: The main folder where the project will be located. 
+* `main`: the main folder where the project will be located. 
   + `input`: the input that we need for calculations. 
     * `zcta_500k`: ZCTA (A Zip Code Tabulation Area) shape files
-    * `hpbl`: Monthly global planetary boundary layer files.
+    * `hpbl`: monthly global planetary boundary layer files.
     * `meteo`: (reanalysis) meteorology files
   + `output`
     * `hysplit`: disperseR output (one file for each emissions event)
