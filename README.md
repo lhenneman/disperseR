@@ -13,7 +13,7 @@ What is disperseR?
 
 `disperseR` is an R package designed based on the [hyspdisp package](https://github.com/lhenneman/hyspdisp) and the [SplitR package](https://rdrr.io/github/rich-iannone/SplitR/). It is very important to note that many functions in `disperseR` are just sightly redesigned functions from the two mentioned packages.
 
-It runs the [HYSPLIT](https://www.ready.noaa.gov/HYSPLIT.php) many times and calculates the HYSPLIT Average Dispersion (or HyADS) exposure metric The results can then be aggregated to ZIP code level to create national estimates of exposure from various sources.
+It runs the [HYSPLIT](https://www.ready.noaa.gov/HYSPLIT.php) many times and calculates the HYSPLIT Average Dispersion (or HyADS) exposure metric. The results can then be aggregated to ZIP code level to create national estimates of exposure from various sources.
 
 Thanks to the [hyspdisp package](https://github.com/lhenneman/hyspdisp), for example, plumes from several power plants can be tracked for many days and cumulative impacts estimated. disperseR laverages [hyspdisp package](https://github.com/lhenneman/hyspdisp) and allows the user have a more friendly interaction with the package.
 
@@ -61,7 +61,7 @@ Instructions
 
 ### Download and installation.
 
-Start by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes.
+Start by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes. This might take some minutes.
 
 ``` r
 devtools::install_github("garbulinskamaja/disperseR", force = TRUE, build_vignettes = TRUE)
@@ -91,11 +91,87 @@ This will set up is the following folders and paths to them :
     -   `graph`: graphs saved here as pdf when running functions
 -   `process`: temporary files that are created when the model is running and then deleted
 
+### Analysis
+
+We suggest you have a look at our main vignette [here](vignettes/Vignette_Disperse.html) for details about the analysis.
+
+Packages used
+-------------
+
+-   base (R Core Team 2019a)
+-   data.table (Dowle and Srinivasan 2019)
+-   dplyr (Wickham et al. 2019)
+-   ggmap (Kahle and Wickham 2013)
+-   ggplot2 (Wickham 2016)
+-   ggrepel (Slowikowski 2019)
+-   ggsn (Santos Baquero 2019)
+-   gridExtra (Auguie 2017)
+-   lubridate (Grolemund and Wickham 2011)
+-   measurements (Birk 2019)
+-   ncdf4 (Pierce 2019)
+-   parallel (R Core Team 2019b)
+-   raster (Hijmans 2019)
+-   readxl (Wickham and Bryan 2019)
+-   scales (Wickham 2018)
+-   sf (Pebesma 2018)
+-   sp (Pebesma and Bivand 2005)
+-   tidyr (Wickham and Henry 2019)
+-   tidyverse (Wickham 2017)
+-   viridis (Garnier 2018)
+
 References / Resources Used
 ---------------------------
 
--   NCEP Reanalysis data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at <https://www.esrl.noaa.gov/psd/>
+NCEP Reanalysis data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at <https://www.esrl.noaa.gov/psd/> Mesinger, F., G. DiMego, E. Kalnay, K. Mitchell, P.C. Shafran, W. Ebisuzaki, D. Jović, J. Woollen, E. Rogers, E.H. Berbery, M.B. Ek, Y. Fan, R. Grumbine, W. Higgins, H. Li, Y. Lin, G. Manikin, D. Parrish, and W. Shi, 2006: North American Regional Reanalysis. Bull. Amer. Meteor. Soc., 87, 343–360, <https://doi.org/10.1175/BAMS-87-3-343>
 
--   
+Auguie, Baptiste. 2017. *GridExtra: Miscellaneous Functions for “Grid” Graphics*. <https://CRAN.R-project.org/package=gridExtra>.
 
-Citation: Mesinger, F., G. DiMego, E. Kalnay, K. Mitchell, P.C. Shafran, W. Ebisuzaki, D. Jović, J. Woollen, E. Rogers, E.H. Berbery, M.B. Ek, Y. Fan, R. Grumbine, W. Higgins, H. Li, Y. Lin, G. Manikin, D. Parrish, and W. Shi, 2006: North American Regional Reanalysis. Bull. Amer. Meteor. Soc., 87, 343–360, <https://doi.org/10.1175/BAMS-87-3-343> )
+Birk, Matthew A. 2019. *Measurements: Tools for Units of Measurement*. <https://CRAN.R-project.org/package=measurements>.
+
+“Crosswalk Zip Code to Zcta Crosswalk Table Developed by John Snow, Inc. (Jsi) for Use with Uds Service Area Data. Not an Official Usps or Census Product.” n.d. <https://www.udsmapper.org/zcta-crosswalk.cfm>.
+
+Dowle, Matt, and Arun Srinivasan. 2019. *Data.table: Extension of ‘Data.frame‘*. <https://CRAN.R-project.org/package=data.table>.
+
+“EIA Data.” n.d. <https://www.eia.gov/electricity/data/eia860/>.
+
+“EPA’s Air Markets Program Data Data.” n.d. <https://ampd.epa.gov/ampd/>.
+
+Garnier, Simon. 2018. *Viridis: Default Color Maps from ’Matplotlib’*. <https://CRAN.R-project.org/package=viridis>.
+
+Grolemund, Garrett, and Hadley Wickham. 2011. “Dates and Times Made Easy with lubridate.” *Journal of Statistical Software* 40 (3): 1–25. <http://www.jstatsoft.org/v40/i03/>.
+
+Henneman, Lucas, Christine Choirat, and Maja Garbulinska. n.d. *DisperseR: Run Hysplit Many Times in Parallel, Aggregate to Zip Code Level, Plot the Results, Save the Plots.* <https://github.com/garbulinskamaja/disperseR>.
+
+Hijmans, Robert J. 2019. *Raster: Geographic Data Analysis and Modeling*. <https://CRAN.R-project.org/package=raster>.
+
+Kahle, David, and Hadley Wickham. 2013. “Ggmap: Spatial Visualization with Ggplot2.” *The R Journal* 5 (1): 144–61. <https://journal.r-project.org/archive/2013-1/kahle-wickham.pdf>.
+
+Pebesma, Edzer. 2018. “Simple Features for R: Standardized Support for Spatial Vector Data.” *The R Journal* 10 (1): 439–46. doi:[10.32614/RJ-2018-009](https://doi.org/10.32614/RJ-2018-009).
+
+Pebesma, Edzer J., and Roger S. Bivand. 2005. “Classes and Methods for Spatial Data in R.” *R News* 5 (2): 9–13. <https://CRAN.R-project.org/doc/Rnews/>.
+
+Pierce, David. 2019. *Ncdf4: Interface to Unidata NetCDF (Version 4 or Earlier) Format Data Files*. <https://CRAN.R-project.org/package=ncdf4>.
+
+R Core Team. 2019a. *R: A Language and Environment for Statistical Computing*. Vienna, Austria: R Foundation for Statistical Computing. <https://www.R-project.org/>.
+
+———. 2019b. *R: A Language and Environment for Statistical Computing*. Vienna, Austria: R Foundation for Statistical Computing. <https://www.R-project.org/>.
+
+Santos Baquero, Oswaldo. 2019. *Ggsn: North Symbols and Scale Bars for Maps Created with ’Ggplot2’ or ’Ggmap’*. <https://CRAN.R-project.org/package=ggsn>.
+
+Slowikowski, Kamil. 2019. *Ggrepel: Automatically Position Non-Overlapping Text Labels with ’Ggplot2’*. <https://CRAN.R-project.org/package=ggrepel>.
+
+“United States Census Bureau Zcta Shape Files.” n.d. <http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip>.
+
+Wickham, Hadley. 2016. *Ggplot2: Elegant Graphics for Data Analysis*. Springer-Verlag New York. <https://ggplot2.tidyverse.org>.
+
+———. 2017. *Tidyverse: Easily Install and Load the ’Tidyverse’*. <https://CRAN.R-project.org/package=tidyverse>.
+
+———. 2018. *Scales: Scale Functions for Visualization*. <https://CRAN.R-project.org/package=scales>.
+
+Wickham, Hadley, and Jennifer Bryan. 2019. *Readxl: Read Excel Files*. <https://CRAN.R-project.org/package=readxl>.
+
+Wickham, Hadley, and Lionel Henry. 2019. *Tidyr: Easily Tidy Data with ’Spread()’ and ’Gather()’ Functions*. <https://CRAN.R-project.org/package=tidyr>.
+
+Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2019. *Dplyr: A Grammar of Data Manipulation*. <https://CRAN.R-project.org/package=dplyr>.
+
+“ZIP code latitude and longitude Public Open Datasoft.” n.d. ['https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/download/?format=csv&timezone=Europe/Berlin&use\_labels\_for\_header=true']('https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/download/?format=csv&timezone=Europe/Berlin&use_labels_for_header=true').

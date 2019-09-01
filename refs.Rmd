@@ -1,0 +1,29 @@
+---
+title: R packages used
+bibliography: pkg-refs.bib
+#csl: null.csl
+---
+
+- base [@base]
+- data.table [@data.table]
+- disperseR [@disperseR]
+- dplyr [@dplyr]
+- ggmap [@ggmap]
+- ggplot2 [@ggplot2]
+- ggrepel [@ggrepel]
+- ggsn [@ggsn]
+- gridExtra [@gridExtra]
+- lubridate [@lubridate]
+- measurements [@measurements]
+- ncdf4 [@ncdf4]
+- parallel [@parallel]
+- raster [@raster]
+- readxl [@readxl]
+- scales [@scales]
+- sf [@sf]
+- sp [@sp]
+- tidyr [@tidyr]
+- tidyverse [@tidyverse]
+- viridis [@viridis]
+
+## References

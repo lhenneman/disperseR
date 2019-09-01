@@ -99,7 +99,8 @@ head(PP.units.monthly1995_2017)
 
 ### ZIP code coordinates 
 
-The `disperseR` package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. If needed however, you can access it as follows: 
+The `disperseR` package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. We are using data from: [Open Data Soft](https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/table/)
+If needed however, you can access it as follows: 
 
 ```{r}
 zipcodecoordinate <- disperseR::zipcodecoordinate

@@ -1,5 +1,7 @@
 ---
 output: github_document
+bibliography: bibliography.bib
+nocite: '@*'
 ---
 
 ```{r, include = FALSE}
@@ -25,7 +27,7 @@ knitr::opts_chunk$set(
 `disperseR` is an R package designed based on the [hyspdisp package](https://github.com/lhenneman/hyspdisp) and the [SplitR package](https://rdrr.io/github/rich-iannone/SplitR/). It is very important to note that many functions in `disperseR` are just sightly redesigned functions from the two mentioned packages. 
 
 
-It runs the [HYSPLIT](https://www.ready.noaa.gov/HYSPLIT.php) many times and calculates the HYSPLIT Average Dispersion (or HyADS) exposure metric
+It runs the [HYSPLIT](https://www.ready.noaa.gov/HYSPLIT.php) many times and calculates the HYSPLIT Average Dispersion (or HyADS) exposure metric.
 The results can then be aggregated to ZIP code level to create national estimates of exposure from various sources. 
 
 Thanks to the [hyspdisp package](https://github.com/lhenneman/hyspdisp), for example, plumes from several power plants can be tracked for many days and cumulative impacts estimated. disperseR laverages [hyspdisp package](https://github.com/lhenneman/hyspdisp) and allows the user have a more friendly interaction with the package.
@@ -74,7 +76,7 @@ Unfortunatelly, `disperseR` requires a lot of data to run the models. We could n
 
 ### Download and installation. 
 
-Start by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes. 
+Start by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes. This might take some minutes. 
 
 ```{r, eval = FALSE}
 devtools::install_github("garbulinskamaja/disperseR", force = TRUE, build_vignettes = TRUE)
@@ -105,13 +107,39 @@ This will set up is the following folders and paths to them :
     * `graph`: graphs saved here as pdf when running functions
   + `process`: temporary files that are created when the model is running and then deleted
 
+### Analysis
+
+We suggest you have a look at our main vignette [here](vignettes/Vignette_Disperse.html) for details about the analysis. 
+
+## Packages used 
+
+- base [@base]
+- data.table [@data.table]
+- dplyr [@dplyr]
+- ggmap [@ggmap]
+- ggplot2 [@ggplot2]
+- ggrepel [@ggrepel]
+- ggsn [@ggsn]
+- gridExtra [@gridExtra]
+- lubridate [@lubridate]
+- measurements [@measurements]
+- ncdf4 [@ncdf4]
+- parallel [@parallel]
+- raster [@raster]
+- readxl [@readxl]
+- scales [@scales]
+- sf [@sf]
+- sp [@sp]
+- tidyr [@tidyr]
+- tidyverse [@tidyverse]
+- viridis [@viridis]
 
 
 ## References / Resources Used
 
-- NCEP Reanalysis data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at https://www.esrl.noaa.gov/psd/
+NCEP Reanalysis data provided by the NOAA/OAR/ESRL PSD, Boulder, Colorado, USA, from their Web site at https://www.esrl.noaa.gov/psd/ Mesinger, F., G. DiMego, E. Kalnay, K. Mitchell, P.C. Shafran, W. Ebisuzaki, D. Jović, J. Woollen, E. Rogers, E.H. Berbery, M.B. Ek, Y. Fan, R. Grumbine, W. Higgins, H. Li, Y. Lin, G. Manikin, D. Parrish, and W. Shi, 2006: North American Regional Reanalysis. Bull. Amer. Meteor. Soc., 87, 343–360, https://doi.org/10.1175/BAMS-87-3-343
 
-- 
 
-Citation: Mesinger, F., G. DiMego, E. Kalnay, K. Mitchell, P.C. Shafran, W. Ebisuzaki, D. Jović, J. Woollen, E. Rogers, E.H. Berbery, M.B. Ek, Y. Fan, R. Grumbine, W. Higgins, H. Li, Y. Lin, G. Manikin, D. Parrish, and W. Shi, 2006: North American Regional Reanalysis. Bull. Amer. Meteor. Soc., 87, 343–360, https://doi.org/10.1175/BAMS-87-3-343
-) 
+
+
+
