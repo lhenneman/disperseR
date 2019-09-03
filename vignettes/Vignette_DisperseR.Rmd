@@ -66,84 +66,17 @@ The next step is to get the data necessary for the analysis.  Let's start by loa
 
 ### Get the data with the `get_data()` function. 
 
-You can get most of the data required for the analysis by using the following function. This function will download the data necessary and for the data that is already attached with the package it will automatically assign it to variables in your R environment. If you want to load the data step by step check our vignette [here](). It also contains more information about the data and their sources. 
+You can get most of the data required for the analysis by using the following function. This function will download the data necessary and for the data that is already attached with the package it will automatically assign it to variables in your R environment. If you want to load the data step by step check our vignette [here]("https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html"). It also contains more information about the data and their sources. 
+
+The arguments `start.year`, `start.month`,`end.year`, and `end.month` are necessary to download the meteorology reanalysis files. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
+
+If you, for example, you want to download files for Jan-March 2005, you just have to use the `get_data()` function and set `data = "metfiles"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
+
 
 ```{r}
 disperseR::get_data(data = "all", start.year = "2005", start.month = "07", end.year="2006", end.month="06")
 ```
 
-
-ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by [UDS Mapper]("https://www.udsmapper.org/zcta-crosswalk.cfm") and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. 
-
-Let's load the crosswalk file and assign it to `crosswalk`
-
-```{r}
-crosswalk <- disperseR::crosswalk
-```
-
-Let's see the first rows of the dataset. 
-
-```{r}
-head(crosswalk)
-```
-
-
-
-### The monthly powerplant emissions
-
-The `disperseR` package also includes monthly power plant emissions, load, and heat input data, accessible using the following command:
-
-```{r}
-PP.units.monthly1995_2017 <- disperseR::PP.units.monthly1995_2017
-```
-
-Let's see the first rows of the dataset. 
-
-```{r}
-head(PP.units.monthly1995_2017)
-```
-
-
-### ZIP code coordinates 
-
-The `disperseR` package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. We are using data from: [Open Data Soft](https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/table/)
-If needed however, you can access it as follows: 
-
-```{r}
-zipcodecoordinate <- disperseR::zipcodecoordinate
-```
-
-Let's see the first rows of the dataset. 
-
-```{r}
-head(zipcodecoordinate)
-```
-
-
-### The shape files
-
-Equally important is the ZCTA shape file. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. We have also attached a vignette explaining this preprocessing in detail. 
-
-```{r}
-zcta <- disperseR::get_data(data = "zctashapefile")
-```
-
-```{r}
-zcta
-```
-
-
-### Monthly mean planetary boundary layer heights 
-
-Another input that we need are the monthly mean boundary layer heights. We used the data available on the [ESRL website](https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j). Again, using the `get_data()` function and setting  `data = "pblheight"`. If you need more information about how these data have been preprocessed just check the special vignette that is available with the package.
-
-
-```{r}
-pblheight <- disperseR::get_data(data = "pblheight")
-```
-```{r}
-pblheight
-```
 
 ### The units data 
 
@@ -165,16 +98,6 @@ head(unitsrun2005)
 head(unitsrun2006)
 ```
 
-
-Below append the two datasets together and transform it to `data.table` format.  
-
-```{r}
-unitsrun <- data.table::data.table(rbind(unitsrun2005, unitsrun2006)) 
-```
-Let's look at the data. 
-```{r}
-unitsrun
-```
 
 ### The meteorology files
 
