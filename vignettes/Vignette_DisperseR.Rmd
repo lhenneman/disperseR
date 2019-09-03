@@ -70,7 +70,7 @@ You can get most of the data required for the analysis by using the following fu
 
 The arguments `start.year`, `start.month`,`end.year`, and `end.month` are necessary to download the meteorology reanalysis files. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
 
-If you, for example, you want to download files for Jan-March 2005, you just have to use the `get_data()` function and set `data = "metfiles"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
+If you, for example, you want to download files for Jan-March 2005, you just have to use the `get_data()` function and set `data = "all"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
 
 
 ```{r}

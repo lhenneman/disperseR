@@ -149,6 +149,26 @@ Here is a screen shot of what it should look like:
 
 <img width="856" alt="Screen Shot 2019-09-01 at 16 43 58" src="https://user-images.githubusercontent.com/43005886/64078186-c2381100-ccd7-11e9-96e4-be8f6ef97875.png">
 
+And these are the variables with paths that will appear in your environment.
+
+![Screen Shot 2019-09-03 at 19 06 54](https://user-images.githubusercontent.com/43005886/64193883-167cf580-ce7e-11e9-9833-2f1a482d3f58.png)
+
+### Get the data
+
+You can get most of the data required for the analysis by using the following function. This function will download the data necessary and for the data that is already attached with the package it will automatically assign it to variables in your R environment. If you want to load the data step by step check our vignette [here](%22https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html%22). It also contains more information about the data and their sources.
+
+The arguments `start.year`, `start.month`,`end.year`, and `end.month` are necessary to download the meteorology reanalysis files. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
+
+If you, for example, you want to download files for January-March 2005, you just have to use the `get_data()` function and set `data = "all"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
+
+``` r
+disperseR::get_data(data = "all", start.year = "2005", start.month = "01", end.year="2005", end.month="03")
+```
+
+If it runs correctly you should see the following in our R environment.
+
+![Screen Shot 2019-09-03 at 19 10 34](https://user-images.githubusercontent.com/43005886/64194080-88edd580-ce7e-11e9-95a7-a52f5d5f7677.png)
+
 ### Analysis
 
 We suggest you have a look at our main vignette [here](vignettes/Vignette_Disperse.html) for details about the analysis.
