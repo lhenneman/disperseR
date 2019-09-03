@@ -80,6 +80,8 @@ disperseR::get_data(data = "all", start.year = "2005", start.month = "07", end.y
 
 ### The units data 
 
+The units data should be loaded separately so that you are able to select which units to process. 
+
 This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
 
 Now, we need to select the power plants whose impact we will analyse. In this case, we'll use the two units in 2005 with the greatest SOx emissions, and two with the greatest SOx emissions in 2006. You are free to choose your own units. You can see that unit "3136-1" is on top of the ranking in both years. 

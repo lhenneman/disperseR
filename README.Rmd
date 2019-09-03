@@ -143,7 +143,7 @@ The vignettes will instruct you to do so but you can already start by creating t
 
 
 ```{r, eval = FALSE}
-disperseR::create_dirs(location="/Users/username/Dropbox")
+disperseR::create_dirs(location = "/Users/username/Dropbox")
 ```
 
 This will set up is the following folders and paths to them :
@@ -178,13 +178,20 @@ The arguments `start.year`, `start.month`,`end.year`, and `end.month` are necess
 If you, for example, you want to download files for January-March 2005, you just have to use the `get_data()` function and set `data = "all"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
 
 ```{r, eval = FALSE}
-disperseR::get_data(data = "all", start.year = "2005", start.month = "01", end.year="2005", end.month="03")
+disperseR::get_data(data = "all", 
+  start.year = "2005", 
+  start.month = "01", 
+  end.year="2005", 
+  end.month="03")
 ```
 
 If it runs correctly you should see the following in our R environment.
 
 ![Screen Shot 2019-09-03 at 19 10 34](https://user-images.githubusercontent.com/43005886/64194080-88edd580-ce7e-11e9-95a7-a52f5d5f7677.png)
 
+#### The units data
+
+The units data should be loaded separately in case you want to select which units to process. 
 
 ### Analysis
 
