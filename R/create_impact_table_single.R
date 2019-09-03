@@ -14,7 +14,7 @@ create_impact_table_single <- function(data.linked,
       all.y = T
     ))
   setnames(zip_dataset_sf, metric, 'metric')
-  myVector<-c("unitID", "Latitude", "Longitude", "metric", "ZIP", "ZCTA", "PO_NAME", "STATE", "TOTALESTIMATE", "MARGINOFERROR")
+  myVector<-c("unitID", "Latitude", "Longitude", "metric", "ZIP", "ZCTA", "CITY", "STATE", "TOTALESTIMATE", "MARGINOFERROR")
   zip_dataset_sf <- zip_dataset_sf[, myVector, with=FALSE]
   return(zip_dataset_sf)
 }

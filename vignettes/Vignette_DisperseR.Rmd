@@ -66,7 +66,7 @@ The next step is to get the data necessary for the analysis.  Let's start by loa
 
 ### Get the data with the `get_data()` function. 
 
-You can get most of the data required for the analysis by using the following function. This function will download the data necessary and for the data that is already attached with the package it will automatically assign it to variables in your R environment. If you want to load the data step by step check our vignette [here]("https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html"). It also contains more information about the data and their sources. 
+You can get most of the data required for the analysis by using the following function. This function will download the data necessary and for the data that is already attached with the package it will automatically assign it to variables in your R environment. If you want to load the data step by step check our vignette [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html). It also contains more information about the data and their sources. 
 
 The arguments `start.year`, `start.month`,`end.year`, and `end.month` are necessary to download the meteorology reanalysis files. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
 
@@ -74,48 +74,44 @@ If you, for example, you want to download files for Jan-March 2005, you just hav
 
 
 ```{r}
-disperseR::get_data(data = "all", start.year = "2005", start.month = "07", end.year="2006", end.month="06")
-```
-
-
-### The units data 
-
-The units data should be loaded separately so that you are able to select which units to process. 
-
-This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
-
-Now, we need to select the power plants whose impact we will analyse. In this case, we'll use the two units in 2005 with the greatest SOx emissions, and two with the greatest SOx emissions in 2006. You are free to choose your own units. You can see that unit "3136-1" is on top of the ranking in both years. 
-
-
-```{r}
-unitsrun2005 <- disperseR::units %>% 
-  dplyr::filter(year ==2005)%>% 
-  dplyr::top_n(2, SOx) 
-
-unitsrun2006 <- disperseR::units %>% 
-  dplyr::filter(year ==2006)%>% 
-  dplyr::top_n(2, SOx) 
-
-head(unitsrun2005)
-head(unitsrun2006)
-```
-
-
-### The meteorology files
-
-Download reanalysis meteorology files. Below we show code to test for the meteorology files needed for the present run. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
-
-If you, for example, you want to download files for Jan-Jul 2005, you just have to use the `get_data()` function and set `data = "metfiles"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`. See below.
-
-```{r}
-disperseR::get_data(data = "metfiles", 
+disperseR::get_data(data = "all", 
   start.year = "2005", 
   start.month = "07", 
   end.year="2006", 
   end.month="06")
 ```
 
-Now the data should be downloaded to your `meteo_dir` directory and we can start the analysis.
+### The units data 
+
+The units data should be loaded separately so that you are able to select which units to process. 
+
+This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. Access it  [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html)
+
+You can visualize the data like this in RStudio:
+
+```{r}
+view(disperseR::units)
+```
+
+
+Now, we need to select the power plants whose impact we will analyse. In this case, we'll use the two units in 2005 with the greatest SOx emissions, and two with the greatest SOx emissions in 2006. You are free to choose your own units. You can see that unit "3136-1" is on top of the ranking in both years. 
+
+
+```{r}
+unitsrun2005 <- disperseR::units %>% 
+  dplyr::filter(year == 2005) %>% # only get data for 2005
+  dplyr::top_n(2, SOx)  # sort and take the two rows with the biggest value for SOx
+
+unitsrun2006 <- disperseR::units %>% 
+  dplyr::filter(year == 2006) %>%  # only get data for 2006
+  dplyr::top_n(2, SOx)  # sort and take the two rows with the biggest value for SOx
+
+head(unitsrun2005)
+head(unitsrun2006)
+
+# append together and transform to data table 
+unitsrun<-data.table::data.table(rbind(unitsrun2005, unitsrun2006))
+```
 
 ## Analysis
 
@@ -126,7 +122,7 @@ HYSPLIT, as applied here, tracks air parcels emitted at certain times and locati
 To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the `start_hours` variable, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
 
 ```{r}
-input_refs <- define_inputs(units = unitsrun,
+input_refs <- disperseR::define_inputs(units = unitsrun,
   startday = '2005-07-01',
   endday = '2006-06-30',
   start.hours =  c(0, 6, 12, 18),
@@ -142,16 +138,15 @@ The `run_fac_parallel()` function runs HYSPLIT for each emissions event. Inputs 
 
 **If you get an error running HYSPLIT, it is likely because the meteorology files did not download correctly. Check your `meteo_dir` to ensure all files are present and at least 100MB in size.**
 
-Below we subset the data to run the process on a local computer. We only choose the first day and first hour of each month for each of the units that we chose. 
+Below we subset the data to run the process on a local computer. We only choose the first day and first hour of each month for each of the units that we chose. You can choose the events you are interested in. 
 
 ```{r}
-input_refs_subset <- input_refs[
-  format(as.Date(input_refs$start_day,
-  format = "%Y-%m-%d"), 
-  format = "%d") == "01" & start_hour==0]
+input_refs_subset <- input_refs[format(as.Date(input_refs$start_day,
+  format = "%Y-%m-%d"),
+  format = "%d") == "01" & start_hour == 0]
 ```
 
-Now we need to get indexes of the correct rows. In this case will be all the indexes in this subset of data. 
+Now we need to get indexes of the correct rows. In this case will be all the indexes in this subset of data. If you selected your own `input_refs_subset` you can also use the line below to create your indexes. 
 
 ```{r}
 run_sample <- seq(1, nrow(input_refs_subset))
@@ -254,7 +249,7 @@ First we need to bring in the zcta data set as follows.
 zcta_dataset <- disperseR::get_data("zcta_dataset")
 ```
 
-And now we can use the `create_impact_table_single` function to see the computed impact for a single month and a single unit. 
+And now we can use the `create_impact_table_single()` function to see the computed impact for a single month and a single unit. 
 
 Keep in mind, since we only modeled a subset of the potential model runs defined in `input_refs`, the impacts contained in `impact_table_single` and plotted below include only results from a single emissions event (is it actually a single event of single month?). Further, the plotted values are "HyADS raw exposure", and are comparable only to a relative exposure of 0. So, a value of 0.01 represents 10x more exposure than a value of 0.001, but only in relation to unit 3136-1.
 
@@ -269,12 +264,12 @@ impact_table_single <- create_impact_table_single(data.linked=data_linked,
 head(impact_table_single)
 ```
 
-In a similar way we can just plot the results using the `plot_impact_single` function. A customized title can be set using the `plot.title` argument.
+In a similar way we can just plot the results using the `plot_impact_single()` function. A customized title can be set using the `plot.title` argument.
 
 ```{r, fig.height = 4, fig.width = 7}
 ziplink_plot <- plot_impact_single(data.linked=data_linked, 
   map.unitID = "3136-1",
-  map.month = "20058", 
+  map.month = "200510", 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   metric = 'N',
