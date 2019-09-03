@@ -37,7 +37,7 @@ disperseR::create_dirs()
 
 ### The crosswalk
 
-ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by [UDS Mapper]("https://www.udsmapper.org/zcta-crosswalk.cfm") and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. 
+ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by [UDS Mapper]("https://www.udsmapper.org/zcta-crosswalk.cfm") and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it  [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html)
 
 Let's load the crosswalk file and assign it to `crosswalk`
 
@@ -82,10 +82,11 @@ Let's see the first rows of the dataset.
 head(zipcodecoordinate)
 ```
 
+Click [here](vignettes/Vignette_Zip_Code_Coordinate_Data_Preparation.html) for an optional vignette on how we prepared these data. 
 
 ### The shape files
 
-Equally important is the ZCTA shape file. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. We have also attached a vignette explaining this preprocessing in detail. 
+Equally important is the ZCTA shape file. Using the `get_data()` function and setting `data = "zctashapefile"` you can download and preprocess the file from the [US census website](http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip) automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. We have also attached a vignette explaining this preprocessing in detail and you can see it [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_ZCTA_Shapefile_Preparation.html).
 
 ```{r}
 zcta <- disperseR::get_data(data = "zctashapefile")
@@ -98,7 +99,7 @@ zcta
 
 ### Monthly mean planetary boundary layer heights 
 
-Another input that we need are the monthly mean boundary layer heights. We used the data available on the [ESRL website](https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j). Again, using the `get_data()` function and setting  `data = "pblheight"`. If you need more information about how these data have been preprocessed just check the special vignette that is available with the package.
+Another input that we need are the monthly mean boundary layer heights. We used the data available on the [ESRL website](https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j). Again, using the `get_data()` function and setting  `data = "pblheight"`. If you need more information about how these data have been preprocessed just check the special vignette that is available with the package. You can see it [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Planetary_Layers_Data_Preparation.html).
 
 
 ```{r}
@@ -110,7 +111,7 @@ pblheight
 
 ### The units data 
 
-This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. 
+This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. Click to see it. [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html)
 
 Now, we need to select the power plants whose impact we will analyse. In this case, we'll use the two units in 2005 with the greatest SOx emissions, and two with the greatest SOx emissions in 2006. You are free to choose your own units. You can see that unit "3136-1" is on top of the ranking in both years. 
 
@@ -134,6 +135,7 @@ Below append the two datasets together and transform it to `data.table` format.
 ```{r}
 unitsrun <- data.table::data.table(rbind(unitsrun2005, unitsrun2006)) 
 ```
+
 Let's look at the data. 
 ```{r}
 unitsrun

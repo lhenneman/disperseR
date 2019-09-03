@@ -110,7 +110,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co">#&gt; Project created in :  ~/Desktop</span></code></pre></div>
 <div id="the-crosswalk" class="section level3">
 <h3>The crosswalk</h3>
-<p>ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by <a href="%22https://www.udsmapper.org/zcta-crosswalk.cfm%22">UDS Mapper</a> and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it.</p>
+<p>ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by <a href="%22https://www.udsmapper.org/zcta-crosswalk.cfm%22">UDS Mapper</a> and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it <a href="https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html">here</a></p>
 <p>Let’s load the crosswalk file and assign it to <code>crosswalk</code></p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">crosswalk &lt;-<span class="st"> </span>disperseR::crosswalk</code></pre></div>
 <p>Let’s see the first rows of the dataset.</p>
@@ -157,10 +157,11 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <span class="co">#&gt; 4 60401    Beecher 41.35048  -87.62408</span>
 <span class="co">#&gt; 5 80432       Como 39.24344 -105.79431</span>
 <span class="co">#&gt; 6 66081 Wolf River 39.77314  -95.23382</span></code></pre></div>
+<p>Click <a href="vignettes/Vignette_Zip_Code_Coordinate_Data_Preparation.html">here</a> for an optional vignette on how we prepared these data.</p>
 </div>
 <div id="the-shape-files" class="section level3">
 <h3>The shape files</h3>
-<p>Equally important is the ZCTA shape file. Using the <code>get_data()</code> function and setting <code>data = &quot;zctashapefile&quot;</code> you can download and preprocess the file from the <a href="http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip">US census website</a> automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. We have also attached a vignette explaining this preprocessing in detail.</p>
+<p>Equally important is the ZCTA shape file. Using the <code>get_data()</code> function and setting <code>data = &quot;zctashapefile&quot;</code> you can download and preprocess the file from the <a href="http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip">US census website</a> automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. We have also attached a vignette explaining this preprocessing in detail and you can see it <a href="https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_ZCTA_Shapefile_Preparation.html">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">zcta &lt;-<span class="st"> </span>disperseR::<span class="kw">get_data</span>(<span class="dt">data =</span> <span class="st">&quot;zctashapefile&quot;</span>)
 <span class="co">#&gt; File already exist, not downloading.</span>
 <span class="co">#&gt; Starting Preprocessing</span>
@@ -177,7 +178,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="monthly-mean-planetary-boundary-layer-heights" class="section level3">
 <h3>Monthly mean planetary boundary layer heights</h3>
-<p>Another input that we need are the monthly mean boundary layer heights. We used the data available on the <a href="https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j">ESRL website</a>. Again, using the <code>get_data()</code> function and setting <code>data = &quot;pblheight&quot;</code>. If you need more information about how these data have been preprocessed just check the special vignette that is available with the package.</p>
+<p>Another input that we need are the monthly mean boundary layer heights. We used the data available on the <a href="https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j">ESRL website</a>. Again, using the <code>get_data()</code> function and setting <code>data = &quot;pblheight&quot;</code>. If you need more information about how these data have been preprocessed just check the special vignette that is available with the package. You can see it <a href="https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Planetary_Layers_Data_Preparation.html">here</a>.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pblheight &lt;-<span class="st"> </span>disperseR::<span class="kw">get_data</span>(<span class="dt">data =</span> <span class="st">&quot;pblheight&quot;</span>)
 <span class="co">#&gt; File already exist, not downloading.</span>
 <span class="co">#&gt; Preprocessing complete</span></code></pre></div>
@@ -194,7 +195,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="the-units-data" class="section level3">
 <h3>The units data</h3>
-<p>This package contains annual emissions and stack height data from <a href="https://ampd.epa.gov/ampd/">EPA’s Air Markets Program Data</a> and the <a href="https://www.eia.gov/electricity/data/eia860/">Energy Information Agency</a> for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package.</p>
+<p>This package contains annual emissions and stack height data from <a href="https://ampd.epa.gov/ampd/">EPA’s Air Markets Program Data</a> and the <a href="https://www.eia.gov/electricity/data/eia860/">Energy Information Agency</a> for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. Click to see it. <a href="https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html">here</a></p>
 <p>Now, we need to select the power plants whose impact we will analyse. In this case, we’ll use the two units in 2005 with the greatest SOx emissions, and two with the greatest SOx emissions in 2006. You are free to choose your own units. You can see that unit “3136-1” is on top of the ranking in both years.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">unitsrun2005 &lt;-<span class="st"> </span>disperseR::units %&gt;%<span class="st"> </span>
 <span class="st">  </span>dplyr::<span class="kw">filter</span>(year ==<span class="dv">2005</span>)%&gt;%<span class="st"> </span>
