@@ -1,8 +1,8 @@
 ---
-title: "Vignette - Load Data One by One"
+title: "Vignette - Get Data One by One"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Vignette - Load Data One by One}
+  %\VignetteIndexEntry{Vignette - Get Data One by One}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

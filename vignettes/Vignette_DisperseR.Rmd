@@ -14,7 +14,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this vignette you will see how to use the `disperseR` package. We will walk you through an example step by step. In this vignette we are using functions that will automatically download the needed data for you to be able to run an analysis for the United States. We also provide other vignettes that show you how we processed the data (optional).  
+In this vignette you will see how to use the `disperseR` package. We will walk you through an example step by step. In this vignette we are using functions that will automatically download the needed data for you to be able to run a complete analysis for the United States. We also provide other vignettes that show you how we processed the data and how to load datasets one by one (optional).  
 
 ## The step up 
 
