@@ -77,8 +77,8 @@ If you, for example, you want to download files for Jan-March 2005, you just hav
 disperseR::get_data(data = "all", 
   start.year = "2005", 
   start.month = "07", 
-  end.year="2006", 
-  end.month="06")
+  end.year = "2006", 
+  end.month = "06")
 ```
 
 ### The units data 
@@ -119,7 +119,7 @@ unitsrun<-data.table::data.table(rbind(unitsrun2005, unitsrun2006))
 
 HYSPLIT, as applied here, tracks air parcels emitted at certain times and locations. `disperseR` refers to these as *emissions events*. Once HYSPLIT has been run for each emissions event, the simulated parcel locations are aggregated by source, time, and location. The functions below are written to enable runs of many emissions events.
 
-To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the `start_hours` variable, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
+To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the startday argument, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
 
 ```{r}
 input_refs <- disperseR::define_inputs(units = unitsrun,
@@ -158,7 +158,7 @@ Let's see the indexes. Here we will be running the model using all the rows of t
 run_sample 
 ```
 
-Now we will run the fac model in parallel. The argument `sample` should take the vector of indexes that we created above, so here it will be the `sample = run_sample` vector. 
+Now we will run the fac model in parallel. The argument `sample` should take the vector of indexes that we created above, so here it will be `sample = run_sample`. 
 
 
 `input.refs` should be the data table that is the result of the `define_input()` function. Remember that here we are running the model just on a subset. 
@@ -197,27 +197,34 @@ With the `link_all_units_zip()` function, users can link all air parcels to ZIP 
 
 Below we present how to use `link_all_units_zip()` for chosen units. First choose the months that you would like to run the function for. Here we only choose Jan and Jul of 2005.
 
+If you, for example, you want to run `link_all_units_zip()` for Jan-March 2005, you just have to use the `get_yearmon()` function and set `data = "all"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`.
+
 ```{r}
-yearmons<- c(paste0(2005, 7:12),  paste0(2006, 1:6))
+yearmons <- disperseR::get_yearmon(start.year = "2005", 
+  start.month = "07", 
+  end.year = "2006", 
+  end.month = "06")
 ```
+
 Let's look again at our `unitsrun` data set. 
 
 ```{r}
 unitsrun
 ```
 
-We only have three units in our `unitsrun` data set. "3136-1", "3136-2" and "3149-1". We will run `link_all_units_zip()`  for all of them.
+We only have three units in our `unitsrun` data set. "3136-1", "3136-2" and "3149-1". We will run `link_all_units_zip()`for all of them.
 
 The function will return only the values for units and months that could have been linked to one another. 
 
-If you wanted to run `link_all_units_zip()
-` just for "3149-1" for example, run the code that we commented out below. 
+If you wanted to run `link_all_units_zip()` just for "3149-1" for example, run the code that we commented out below. 
 
 ```{r}
 #unitsrun<-unitsrun[ID=="3149-1"]
 ```
 
-If you want to run the function for a specific start and end date you can specify the `start.date` and the `end.date` arguments. For example, `start.date="2005-01-02"` for 2 January 2005. These arguments are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided. `pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
+If you want to run the function for a specific start and end date you can specify the `start.date` and the `end.date` arguments. For example, `start.date="2005-01-02"` for 2 January 2005. These arguments are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided. 
+
+`pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip()` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
 
 ```{r}
 data_linked <- link_all_units_zip(units.run=unitsrun, 
@@ -241,17 +248,12 @@ unique(data_linked$comb)
 
 ### Visualization of the results. 
 
-At this point, it makes sense to take a look at the results to see which ZIP codes are impacted by emissions from the facility whose impacts we modeled above. We can see how the impact looks by looking at numbers and plots. We will first just look at the numbers. For this purpose, we created a function `create_impact_table_single` that generates a specific data.table.
+At this point, it makes sense to take a look at the results to see which ZIP codes are impacted by emissions from the facility whose impacts we modeled above. We can see how the impact looks by looking at numbers and plots. We will first just look at the numbers. For this purpose, we created a function `create_impact_table_single()` that generates a specific data.table.
 
-First we need to bring in the zcta data set as follows. 
-
-```{r}
-zcta_dataset <- disperseR::get_data("zcta_dataset")
-```
 
 And now we can use the `create_impact_table_single()` function to see the computed impact for a single month and a single unit. 
 
-Keep in mind, since we only modeled a subset of the potential model runs defined in `input_refs`, the impacts contained in `impact_table_single` and plotted below include only results from a single emissions event (is it actually a single event of single month?). Further, the plotted values are "HyADS raw exposure", and are comparable only to a relative exposure of 0. So, a value of 0.01 represents 10x more exposure than a value of 0.001, but only in relation to unit 3136-1.
+Keep in mind, since we only modeled a subset of the potential model runs defined in `input_refs()`, the impacts contained in `impact_table_single` and plotted below include only results from a single emissions event. Further, the plotted values are "HyADS raw exposure", and are comparable only to a relative exposure of 0. So, a value of 0.01 represents 10x more exposure than a value of 0.001, but only in relation to unit 3136-1.
 
 ```{r}
 impact_table_single <- create_impact_table_single(data.linked=data_linked, 
@@ -269,7 +271,7 @@ In a similar way we can just plot the results using the `plot_impact_single()` f
 ```{r, fig.height = 4, fig.width = 7}
 ziplink_plot <- plot_impact_single(data.linked=data_linked, 
   map.unitID = "3136-1",
-  map.month = "200510", 
+  map.month = "20063", 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   metric = 'N',
@@ -286,6 +288,7 @@ So far, we have run two worker functions important to the implementation of HyAD
 In practice, these two worker functions may need to be implemented in parallel R sessions on a cluster to improve efficiency. It helps for future analyses to gather the relevant monthly files and save them as a single RData file. This is made possible by `combine_monthly_ziplinks()`, which saves an RData file of annual monthly results to the `rda_dir`.
 
 
+
 ```{r}
 combined_ziplinks <- combine_monthly_ziplinks(month_YYYYMMs = yearmons)
 names(combined_ziplinks)
@@ -296,7 +299,7 @@ Up until now, this vignette has focused on producing unweighted HyADS results.On
 
 ### Weight the results by emissions
 
-The `create_impact_table_weighted()` function takes as input the .RData file created by `combine_monthly_ziplinks()` and monthly power plant emissions. The user can select the disperseR year (`year.D`), the emissions year (`year.E`), the weighting pollutant (although it does not necessarily have to be a pollutant), the source aggregation (you can choose `source.agg = "total"`, `source.agg "facility"`, or `source.agg = "unit"`), the time aggregation (`time.agg = "month"` or `time.agg = "year"`). 
+The `create_impact_table_weighted()` function takes as input the .RData file created by `combine_monthly_ziplinks()` and monthly power plant emissions. The user can select the disperseR year (`year.D`), the emissions year (`year.E`), the weighting pollutant (although it does not necessarily have to be a pollutant), the source aggregation (you can choose `source.agg = "total"`, `source.agg = "facility"`, or `source.agg = "unit"`), the time aggregation (`time.agg = "month"` or `time.agg = "year"`). 
 
 Here, we first calculate the annual HyADS emissions weighted exposure for all emissions modeled above and plot the results. The plots require a large amount of working memory, and may require you to clear your image history (if using RStudio).
 

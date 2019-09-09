@@ -159,7 +159,7 @@ plot_impact_weighted <- function(data.linked,
       plot.title = paste(
         unique(zip_dataset_sf$year.E),
         'HyADS Exposure from Units:',
-        paste(data.units$ID, collapse = ', ')
+        paste(unique(data.units$ID), collapse = ', ')
       )
     }
 
