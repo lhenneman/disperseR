@@ -76,8 +76,7 @@ plot_impact_unit <- function(data.linked = NULL,
   )
 
   coordsf <- ggplot2::coord_sf(xlim = x.lim,
-    ylim = y.lim,
-    datum = NA)
+    ylim = y.lim)
 
   plot2 <- ggplot() +
     ggplot2::theme_bw() +
@@ -103,7 +102,6 @@ plot_impact_unit <- function(data.linked = NULL,
     fillscale +
     ggplot2::theme(
       axis.title = element_blank(),
-      axis.text = element_blank(),
       axis.title.x = element_blank(),
       axis.title.y = element_blank(),
       legend.position = c(.20, .15),

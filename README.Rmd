@@ -86,7 +86,7 @@ Unfortunatelly, `disperseR` requires a lot of data to run the models. We could n
 
 ### Example output
 
-<img width="676" alt="Screen Shot 2019-09-01 at 16 35 53" src="https://user-images.githubusercontent.com/43005886/64078059-9f592d00-ccd6-11e9-942a-e708d6e4e8ad.png">
+<img width="748" alt="Screen Shot 2019-09-11 at 10 19 49" src="https://user-images.githubusercontent.com/43005886/64705316-c5709100-d47d-11e9-80b0-f7d347bafc1e.png">
 
 
 ## Instructions

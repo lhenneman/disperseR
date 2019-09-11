@@ -76,9 +76,9 @@ If you, for example, you want to download files for Jan-March 2005, you just hav
 ```{r}
 disperseR::get_data(data = "all", 
   start.year = "2005", 
-  start.month = "07", 
+  start.month = "11", 
   end.year = "2006", 
-  end.month = "06")
+  end.month = "02")
 ```
 
 ### The units data 
@@ -122,9 +122,9 @@ HYSPLIT, as applied here, tracks air parcels emitted at certain times and locati
 To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the startday argument, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
 
 ```{r}
-input_refs <- disperseR::define_inputs(units = unitsrun,
-  startday = '2005-07-01',
-  endday = '2006-06-30',
+input_refs <- define_inputs(units = unitsrun,
+  startday = '2005-11-01',
+  endday = '2006-02-28',
   start.hours =  c(0, 6, 12, 18),
   duration = 240)
 
@@ -146,29 +146,11 @@ input_refs_subset <- input_refs[format(as.Date(input_refs$start_day,
   format = "%d") == "01" & start_hour == 0]
 ```
 
-Now we need to get indexes of the correct rows. In this case will be all the indexes in this subset of data. If you selected your own `input_refs_subset` you can also use the line below to create your indexes. 
-
-```{r}
-run_sample <- seq(1, nrow(input_refs_subset))
-```
-
-Let's see the indexes. Here we will be running the model using all the rows of the `input_refs_subset` data subset. 
-
-```{r}
-run_sample 
-```
-
-Now we will run the fac model in parallel. The argument `sample` should take the vector of indexes that we created above, so here it will be `sample = run_sample`. 
-
-
-`input.refs` should be the data table that is the result of the `define_input()` function. Remember that here we are running the model just on a subset. 
-
+`input.refs` should be the data table that is the result of the `define_input()` function. Remember that here we are running the model just on a subset so we will set `input.refs = input_refs_subset`
 
 The `ztca.`, `crosswalk.`, and `pbl.height` arguments are `NULL` by default but you should provide them for the function to run properly. We use the `zcta`, `crosswalk`, and `pblheight` data respectively.
 
-
 The package has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`. 
-
 
 The `parallel::detectCores()` function automatically detects the number of cores on your machine. If you would like to change on how many cores the model should be run please specify the number of cores. Here, for example we specified the number of cores to be the number of the cores on the machine. If you would like to run this model sequentially please set `mc.cores = 1`.
 
@@ -176,8 +158,7 @@ The `parallel::detectCores()` function automatically detects the number of cores
 It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it. 
 
 ```{r}
-hysp_raw <- run_fac_parallel(sample = run_sample,
-  input.refs = input_refs_subset,
+hysp_raw <- run_fac_parallel(input.refs = input_refs_subset,
   pbl.height = pblheight,
   crosswalk.= crosswalk, 
   zcta. = zcta, 
@@ -186,7 +167,7 @@ hysp_raw <- run_fac_parallel(sample = run_sample,
   proc_dir = proc_dir,
   overwrite = FALSE, ## FALSE BY DEFAULT
   npart = 100, 
-  mc.cores = parallel::detectCores())
+  mc.cores = parallel::detectCores()) 
 ```
 
 
@@ -228,7 +209,7 @@ If you want to run the function for a specific start and end date you can specif
 
 ```{r}
 data_linked <- link_all_units_zip(units.run=unitsrun, 
-  mc.cores = 4, 
+  mc.cores = parallel::detectCores(), 
   year.mons = yearmons,
   pbl.height = pblheight,
   crosswalk. = crosswalk,
@@ -259,8 +240,8 @@ Keep in mind, since we only modeled a subset of the potential model runs defined
 impact_table_single <- create_impact_table_single(data.linked=data_linked, 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
-  map.unitID = "3136-1",
-  map.month = "20058", 
+  map.unitID = "3136-2",
+  map.month = "20057", 
   metric = 'N')
 
 head(impact_table_single)
@@ -271,7 +252,7 @@ In a similar way we can just plot the results using the `plot_impact_single()` f
 ```{r, fig.height = 4, fig.width = 7}
 ziplink_plot <- plot_impact_single(data.linked=data_linked, 
   map.unitID = "3136-1",
-  map.month = "20063", 
+  map.month = "20061", 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   metric = 'N',

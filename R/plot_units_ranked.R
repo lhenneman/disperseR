@@ -5,27 +5,26 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
 
   ## coordinates
   long <- unitRanks$Longitude
-  minlong <-min(long)-10
-  maxlong <-max(long)+10
+  minlong <-min(long) - 10
+  maxlong <-max(long) + 10
   lat <- unitRanks$Latitude
-  minlat <-min(lat)-10
-  maxlat <-max(lat)+10
+  minlat <-min(lat) - 10
+  maxlat <-max(lat) + 10
 
   uID <- unitRanks$uID
   hyads.py.sum<-unitRanks$hyads.py.sum
 
   rank<-unitRanks$hyads.rank
 
-  facility_loc <- data.table(x = long, y = lat, hyads.py.sum = hyads.py.sum, rank=rank, uID=uID) %>%
+  facility_loc <- data.table(x = long, y = lat, hyads.py.sum = hyads.py.sum, rank = rank, uID = uID) %>%
     mutate(label = paste("UNIT:", uID, "ranked", rank))
 
   title <- paste("Ranking for year:", year)
 
-  ggmap <- ggplot2::ggplot(data = unitRanks) +
+  ggmap <- ggplot2::ggplot(data = ggplot2::map_data("state")) +
     ggplot2::theme_bw() +
     labs(title = title) +
     ggplot2::geom_polygon(
-      data = ggplot2::map_data("state"),
       aes(x = long, y = lat, group = group),
       fill = NA,
       colour = "grey50",
@@ -40,7 +39,7 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
       size = 2,
       stroke = 2
     ) +
-    ggrepel::geom_label_repel(data = facility_loc,
+   ggrepel::geom_label_repel(data = facility_loc,
       aes(x=x, y=y,label = label),
       nudge_x = 10,
       nudge_y = 10,
@@ -48,10 +47,8 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
       na.rm = TRUE) +
     ggplot2::scale_shape_discrete(solid = T) +
     ggplot2::coord_sf(xlim = c(minlong, maxlong),
-      ylim = c(minlat, maxlat),
-      datum = NA) +
-    ggplot2::theme(
-      legend.position = "bottom")
+      ylim = c(minlat, maxlat)) #+
+    ggplot2::theme(legend.position = "bottom")
 
   if (!(is.null(graph.dir))) {
     path <- file.path(graph.dir, "plot_ranking_map.pdf")

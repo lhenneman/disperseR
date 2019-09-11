@@ -47,8 +47,7 @@ plot_impact_weighted <- function(data.linked,
   )
 
   coordsf <- coord_sf(xlim = x.lim,
-    ylim = y.lim,
-    datum = NA)
+    ylim = y.lim)
 
   if (time.agg == "month") {
     data.linked <- data.linked[yearmonth == map.month]
@@ -80,7 +79,7 @@ plot_impact_weighted <- function(data.linked,
           stringmonth,
           substr(map.month, start = 1, stop = 4),
           'HyADS Exposure from Units:',
-          paste(data.units$ID, collapse = ', ')
+          paste(unique(data.units$ID), collapse = ', ')
         )
     }
 
@@ -194,7 +193,6 @@ plot_impact_weighted <- function(data.linked,
         } else
           element_blank(),
         axis.title = element_blank(),
-        axis.text = element_blank(),
         axis.title.x = element_blank(),
         axis.title.y = element_blank(),
         legend.position = c(.20, .15),

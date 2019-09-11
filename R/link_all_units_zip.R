@@ -6,7 +6,7 @@ link_all_units_zip<- function(units.run,
   pbl.height = pblheight,
   crosswalk. = crosswalk,
   duration.run.hours = 240,
-  overwrite = FALSE){
+  overwrite = FALSE) {
 
   if((is.null(start.date) | is.null(end.date)) & is.null(year.mons)){
     stop( "Define either a start.date and an end.date OR a year.mons")
@@ -20,6 +20,8 @@ link_all_units_zip<- function(units.run,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
       mc.cores = mc.cores)
+
+    message(paste("processed unit", unit, ""))
 
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
     return(linked_zips)

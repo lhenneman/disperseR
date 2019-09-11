@@ -33,8 +33,7 @@
 
 ## define species parameters
 
-run_fac_parallel<-function(sample,
-  input.refs = NULL,
+run_fac_parallel <- function(input.refs = NULL,
   pbl.height = NULL,
   crosswalk.= NULL,
   zcta. = NULL,
@@ -46,20 +45,27 @@ run_fac_parallel<-function(sample,
   mc.cores = parallel::detectCores(),
   keep.hysplit.files = FALSE){
 
-  parallel::mclapply(X = sample,
-    FUN = run_fac,
-    input.refs = input.refs,
-    pbl.height = pbl.height,
-    crosswalk.= crosswalk.,
-    zcta. = zcta.,
-    species =   species,
-    link2zip = link2zip,
-    proc_dir = proc_dir,
-    overwrite = overwrite,
-    npart =  npart,
-    keep.hysplit.files,
-    mc.cores = mc.cores)
-}
+
+  ## looping over year must be implemented to avoid incorrect results
+  ## run_fac() below assums that there is one year data.
+    run_sample <- seq(1, nrow(input.refs))
+
+    ## run the run_fac in parallel
+    parallel::mclapply(X = run_sample,
+      FUN = run_fac,
+      input.refs = input.refs,
+      pbl.height = pbl.height,
+      crosswalk.= crosswalk.,
+      zcta. = zcta.,
+      species =   species,
+      link2zip = link2zip,
+      proc_dir = proc_dir,
+      overwrite = overwrite,
+      npart =  npart,
+      keep.hysplit.files,
+      mc.cores = mc.cores)
+  }
+
 
 run_fac <- function(x,
   input.refs = input.refs,

@@ -96,8 +96,7 @@ plot_impact_single  <- function(data.linked,
     ) +
     scale_shape_discrete(solid = T) +
     coord_sf(xlim = c(-123,-69),
-      ylim = c(24, 50),
-      datum = NA) +
+      ylim = c(24, 50)) +
     colorscale +
     fillscale +
     theme(
@@ -106,7 +105,6 @@ plot_impact_single  <- function(data.linked,
       } else
         element_blank(),
       axis.title = element_blank(),
-      axis.text = element_blank(),
       axis.title.x = element_blank(),
       axis.title.y = element_blank(),
       legend.position = c(.20, .15),
