@@ -195,11 +195,31 @@ If it runs correctly you should see the following in our R environment.
 
 #### The units data
 
-The units data should be loaded separately in case you want to select which units to process. 
+The units data should be loaded separately so that you are able to select which units to process. 
+
+This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/) for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. Access it  [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html)
+
+You can visualize the data like this in RStudio:
+
+```{r, eval=F}
+view(disperseR::units)
+```
+
+
+
+**Please note:** If you decide to use a specific unit but for many years you must have a row of data for each year. For example this is out data from the main vignette. Look at row 1 and row 3. They contain data for the same unit but a different year. 
+
+<img width="681" alt="Screen Shot 2019-09-11 at 13 05 52" src="https://user-images.githubusercontent.com/43005886/64718825-f3ad9b00-d494-11e9-951e-020db25d0c8a.png">
+
+
 
 ### Analysis
 
 We suggest you have a look at our main vignette [here](vignettes/Vignette_Disperse.html) for details about the analysis. 
+
+## Graphical output
+
+Graphical output is authomatically saved to the `graph_dir` by the plotting functions. 
 
 ## Packages used in functions and vignettes. 
 

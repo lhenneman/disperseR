@@ -438,5 +438,6 @@ plotUnitsRanked
 ```
 
 
+Please note graphical output is authomatically saved to the `graph_dir` by the plotting functions. 
 
 
