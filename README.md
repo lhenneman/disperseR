@@ -52,7 +52,7 @@ We know it is sometimes difficult to start working with a new package, especiall
 -   [The main vignette for disperseR](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Disperse.html)
 -   [Load data one by one](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html)
 -   [Crosswalk data preparation (optional)](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html)
--   [Planetary layers data preparation (optional)](https://www.dropbox.com/s/4f07vsyp9ql13ai/Vignette_Planetary_Layers_Data_Preparation.html?dl=0)
+-   [Planetary layers data preparation (optional)](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Planetary_Layers_Data_Preparation.html)
 -   [ZIP Code coordinate data preparation (optional)](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Zip_Code_Coordinate_Data_Preparation.html)
 -   [Vignette ZCTA shapefile preparation (optional)](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_ZCTA_Shapefile_Preparation.html)
 -   [Vignette units preparation (optional)](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html)
