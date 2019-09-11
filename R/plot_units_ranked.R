@@ -5,11 +5,11 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
 
   ## coordinates
   long <- unitRanks$Longitude
-  minlong <-min(long) - 10
-  maxlong <-max(long) + 10
+  minlong <-min(long) - 8
+  maxlong <-max(long) + 8
   lat <- unitRanks$Latitude
-  minlat <-min(lat) - 10
-  maxlat <-max(lat) + 10
+  minlat <-min(lat) - 8
+  maxlat <-max(lat) + 8
 
   uID <- unitRanks$uID
   hyads.py.sum<-unitRanks$hyads.py.sum
@@ -19,7 +19,7 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
   facility_loc <- data.table(x = long, y = lat, hyads.py.sum = hyads.py.sum, rank = rank, uID = uID) %>%
     mutate(label = paste("UNIT:", uID, "ranked", rank))
 
-  title <- paste("Ranking for year:", year)
+  title <- paste("Ranking (The biggest polluters) for year: ", year)
 
   ggmap <- ggplot2::ggplot(data = ggplot2::map_data("state")) +
     ggplot2::theme_bw() +
@@ -47,7 +47,7 @@ plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
       na.rm = TRUE) +
     ggplot2::scale_shape_discrete(solid = T) +
     ggplot2::coord_sf(xlim = c(minlong, maxlong),
-      ylim = c(minlat, maxlat)) #+
+      ylim = c(minlat, maxlat))+
     ggplot2::theme(legend.position = "bottom")
 
   if (!(is.null(graph.dir))) {

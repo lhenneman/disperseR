@@ -4,13 +4,12 @@ plot_impact_weighted <- function(data.linked,
   metric = 'hyads',
   legend.text.angle = 0,
   time.agg = 'year',
-  y.lim = c(24, 50),
-  x.lim = c(-123,-69),
   legend.lims = NULL,
   plot.title = NULL,
   legend.title = NULL,
   map.month = NULL,
-  graph.dir = NULL) {
+  graph.dir = NULL,
+  zoom = TRUE) {
 
 
   ### graph parameters
@@ -28,7 +27,7 @@ plot_impact_weighted <- function(data.linked,
       title.vjust = 0 ,
       label.vjust = 1
     )
-  )
+ )
 
   fillscale <- scale_fill_viridis(
     name = legend.title,
@@ -46,8 +45,6 @@ plot_impact_weighted <- function(data.linked,
     )
   )
 
-  coordsf <- coord_sf(xlim = x.lim,
-    ylim = y.lim)
 
   if (time.agg == "month") {
     data.linked <- data.linked[yearmonth == map.month]
@@ -58,7 +55,28 @@ plot_impact_weighted <- function(data.linked,
         by = c('ZIP'),
         all.y = T
       ))
+
     setnames(zip_dataset_sf, metric, 'metric')
+
+    zip_dataset_sfcoord <- zip_dataset_sf[, ZIP := as.numeric(ZIP)]
+    coord <- merge(disperseR::zipcodecoordinate, zip_dataset_sfcoord)
+
+    ## coordinates
+    if (zoom == T){
+      long <- coord$Longitude
+      minlong <-min(long) - 8
+      maxlong <-max(long) + 8
+      lat <- coord$Latitude
+      minlat <-min(lat) - 8
+      maxlat <-max(lat) + 8
+    }
+    if (zoom == F) {
+      ## show all the US map
+      minlong <- (-123)
+      maxlong <- (-69)
+      minlat <- 24
+      maxlat <- 50
+    }
 
     long <- data.units$Longitude
     lat <- data.units$Latitude
@@ -105,7 +123,8 @@ plot_impact_weighted <- function(data.linked,
         stroke = 2
       ) +
       scale_shape_discrete(solid = T) +
-      coordsf +
+      ggplot2::coord_sf(xlim = c(minlong, maxlong),
+        ylim = c(minlat, maxlat)) +
       colorscale +
       fillscale +
       theme(
@@ -128,9 +147,9 @@ plot_impact_weighted <- function(data.linked,
       path <- file.path(graph.dir, "plot_impact_weighted_month.pdf")
       ggsave(path,width = 20,height = 20,units = "cm")
     }
+
     return(gg)
   }
-
 
   if (time.agg == 'year') {
     ## prepare the data
@@ -141,7 +160,30 @@ plot_impact_weighted <- function(data.linked,
         by = c('ZIP'),
         all.y = T
       ))
+
     setnames(zip_dataset_sf, metric, 'metric')
+
+    zip_dataset_sfcoord <- zip_dataset_sf[, ZIP := as.numeric(ZIP)]
+    coord <- merge(disperseR::zipcodecoordinate, zip_dataset_sfcoord)
+
+    ## coordinates
+    if (zoom == T){
+      long <- coord$Longitude
+      minlong <-min(long) - 10
+      maxlong <-max(long) + 10
+      lat <- coord$Latitude
+      minlat <-min(lat) - 10
+      maxlat <-max(lat) + 10
+    }
+    if (zoom == F) {
+      ## show all the US map
+      minlong <- (-123)
+      maxlong <- (-69)
+      minlat <- 24
+      maxlat <- 50
+    }
+
+
 
     long <- data.units$Longitude
     lat <- data.units$Latitude
@@ -184,9 +226,10 @@ plot_impact_weighted <- function(data.linked,
         stroke = 2
       ) +
       scale_shape_discrete(solid = T) +
-      coordsf +
       colorscale +
       fillscale +
+      ggplot2::coord_sf(xlim = c(minlong, maxlong),
+        ylim = c(minlat, maxlat)) +
       theme(
         plot.title = if (!is.null(plot.title)) {
           element_text(size = 10, hjust = 0.5)
@@ -201,12 +244,14 @@ plot_impact_weighted <- function(data.linked,
         legend.key.size = unit(.05, 'npc'),
         legend.direction = 'horizontal'
       )
-    return(gg)
 
     if (!(is.null(graph.dir))) {
       path <- file.path(graph.dir, "plot_impact_weighted_year.pdf")
       ggsave(path,width = 20,height = 20,units = "cm")
     }
+
+    return(gg)
+
   }
   # save graph as pdf
 }

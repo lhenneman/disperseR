@@ -1,6 +1,6 @@
 DisperseR
 ================
-3 Sep 2019
+11 Sep 2019
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!-- badges: start -->
@@ -69,9 +69,11 @@ Unfortunatelly, `disperseR` requires a lot of data to run the models. We could n
 
 -   **zipcode coordinate data**: The `disperseR` package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. Please click [here](vignettes/Vignette_Zip_Code_Coordinate_Data_Preparation.html) for more information.
 
-### Example output
+### Example graphical output
 
-<img width="748" alt="Screen Shot 2019-09-11 at 10 19 49" src="https://user-images.githubusercontent.com/43005886/64705316-c5709100-d47d-11e9-80b0-f7d347bafc1e.png">
+`disperseR` has functions that let you plot your results. Here is just one of many examples.
+
+<img width="500" alt="Screen Shot 2019-09-11 at 10 51 52" src="https://user-images.githubusercontent.com/43005886/64708191-344fe900-d482-11e9-952e-d21007f8c846.png">
 
 Instructions
 ------------

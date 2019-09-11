@@ -2,12 +2,16 @@ plot_impact_unit <- function(data.linked = NULL,
   zip.codes = NULL,
   y.lim = c(24, 50),
   x.lim = c(-123,-69),
-  plot.title = "Zip Code Locations",
+  plot.title = NULL,
   legend.lims = NULL,
   legend.title = NULL,
   legend.text.angle = 0,
   graph.dir = NULL) {
   #################################################################################
+
+  if (is.null(plot.title)){
+    plot.title <- paste("Zip Code Locations" ,paste(zipcodes, collapse = ', '))
+  }
 
   if (is.null(data.linked)) {
     error("Please provide data set to the datalink argument")

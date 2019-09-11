@@ -8,9 +8,33 @@ plot_impact_single  <- function(data.linked,
   legend.lims = NULL,
   legend.title = NULL,
   graph.dir = NULL,
+  zoom = T ,
   legend.text.angle = 0) {
 
+
   datareduced <- data.linked[month == map.month & unitID == map.unitID]
+  datareducedforcoord <- datareduced[, ZIP := as.numeric(ZIP)]
+  coord <- merge(disperseR::zipcodecoordinate, datareducedforcoord)
+
+  ## coordinates
+  if (zoom == T){
+    long <- coord$Longitude
+    minlong <-min(long) - 8
+    maxlong <-max(long) + 8
+    lat <- coord$Latitude
+    minlat <-min(lat) - 8
+    maxlat <-max(lat) + 8
+  }
+  if (zoom == F) {
+    ## show all the US map
+    minlong <- (-123)
+    maxlong <- (-69)
+    minlat <- 24
+    maxlat <- 50
+  }
+
+
+
   dataunits <- data.units[ID == map.unitID]
   zip_dataset_sf <-
     data.table(dataunits,  merge(
@@ -19,7 +43,9 @@ plot_impact_single  <- function(data.linked,
       by = c('ZIP'),
       all.y = T
     ))
+
   setnames(zip_dataset_sf, metric, 'metric')
+
 
   long <- dataunits$Longitude
   lat <- dataunits$Latitude
@@ -95,8 +121,8 @@ plot_impact_single  <- function(data.linked,
       stroke = 2
     ) +
     scale_shape_discrete(solid = T) +
-    coord_sf(xlim = c(-123,-69),
-      ylim = c(24, 50)) +
+    ggplot2::coord_sf(xlim = c(minlong, maxlong),
+      ylim = c(minlat, maxlat)) +
     colorscale +
     fillscale +
     theme(

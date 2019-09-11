@@ -240,23 +240,26 @@ Keep in mind, since we only modeled a subset of the potential model runs defined
 impact_table_single <- create_impact_table_single(data.linked=data_linked, 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
-  map.unitID = "3136-2",
-  map.month = "20057", 
+  map.unitID = "3136-1",
+  map.month = "200511", 
   metric = 'N')
 
 head(impact_table_single)
 ```
 
+`zoom = T` by default and is authomatically adjusted depending on the plot values. You can set `zoom = F` to display the map of the whole country. 
+
 In a similar way we can just plot the results using the `plot_impact_single()` function. A customized title can be set using the `plot.title` argument.
 
-```{r, fig.height = 4, fig.width = 7}
-ziplink_plot <- plot_impact_single(data.linked=data_linked, 
+```{r, fig.height = 7, fig.width = 7}
+ziplink_plot <- plot_impact_single(data.linked = data_linked, 
   map.unitID = "3136-1",
   map.month = "20061", 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   metric = 'N',
   graph.dir = graph_dir, 
+  zoom = T, # TRUE by default
   legend.title = 'HyADS raw exposure')
   
 ziplink_plot
@@ -285,7 +288,7 @@ The `create_impact_table_weighted()` function takes as input the .RData file cre
 Here, we first calculate the annual HyADS emissions weighted exposure for all emissions modeled above and plot the results. The plots require a large amount of working memory, and may require you to clear your image history (if using RStudio).
 
 ```{r}
-zip_exp_ann <-disperseR::calculate_zip_exposure(
+zip_exp_ann <- disperseR::calculate_zip_exposure(
   rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
   units.mo = PP.units.monthly1995_2017,
   year.E = 2006,
@@ -296,17 +299,20 @@ zip_exp_ann <-disperseR::calculate_zip_exposure(
   exp_dir = exp_dir)
 ```
 
-We can plot the results as following using the `plot_impact_weighted()` function. Again, a customized title can be set using the `plot.title` argument. You can also zoom in to a specific part of the map by setting the `x.lim` and `y.lim` arguments. By default they are set to `c(-123, -69)` and `c(24, 50)` respectively. 
+We can plot the results as following using the `plot_impact_weighted()` function. Again, a customized title can be set using the `plot.title` argument. 
 
-Please note that the produced graphwwill be automatically saved in the folder specified in the `graph.dir` argument. Here we set `graph.dir  = graph_dir`. `graph_dir` should have been automatically created by the `create_dirs()` function. 
+Same as before, `zoom = T` by default and is authomatically adjusted depending on the plot values. You can set `zoom = F` to display the map of the whole country. 
 
-```{r, fig.height = 4, fig.width = 7}
-zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked=zip_exp_ann,
+Please note that the produced graph will be automatically saved in the folder specified in the `graph.dir` argument. Here we set `graph.dir  = graph_dir`. `graph_dir` should have been automatically created by the `create_dirs()` function. 
+
+```{r, fig.height = 7, fig.width = 7}
+zip_exp_ann_plot <- plot_impact_weighted(data.linked = zip_exp_ann,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   time.agg = 'year',
   metric = 'hyads',
   legend.title = 'Aggregate HyADS exposure',  
+  zoom = T, # TRUE by default
   graph.dir = graph_dir)
 
 zip_exp_ann_plot
@@ -328,18 +334,18 @@ zip_exp_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir,
   return.monthly.data = T)
 ```
 
-Here we also illustrate how to use the limit arguments to zoom in on the map. By setting `x.lim = c(-66, -84)`, for example, we restrict the map only to the map to display only points within the 65$^{\circ}$W and 84$^{\circ}$W longitude points. Latitude limits are set by `y.lim = c(36, 44)`. 
 
-```{r, fig.height = 4, fig.width = 7}
+**It is very important to provide a month for which we have available data**
+
+```{r, fig.height = 7, fig.width = 7}
 zip_exp_mon_plot <- disperseR::plot_impact_weighted(data.linked = zip_exp_mon,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   time.agg = 'month',
-  map.month = "20059", 
+  map.month = "200511", 
   metric = 'hyads',
   legend.title = 'Montly HyADS exposure', 
-  x.lim = c(-66, -84), # specify coordinates here 
-  y.lim = c(36, 44),
+  zoom = T, # TRUE by default
   graph.dir = graph_dir)
 
 zip_exp_mon_plot
@@ -375,9 +381,9 @@ zip_exp_unit_mon <- rbind(zip_exp_unit_mon2005, zip_exp_unit_mon2006)
 ```
 
 ```{r, fig.height = 4, fig.width = 7}
-zipcodes <- c(17815, 08210, 13849, 17229)
+zipcodes <- c("13039","21798", "03804")
 
-zip_exp_unit <- disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, 
+zip_exp_unit <- plot_impact_unit(data.linked = zip_exp_unit_mon, 
   zip.codes = zipcodes,
   graph.dir = graph_dir)
 ```
@@ -392,7 +398,7 @@ The following code snippet applies the `calc_zip_exposure()` function to calcula
 zip_exp_ann_unit <- disperseR::calculate_zip_exposure(year.E = 2005,
                                       year.D = 2005,
                                       pollutant = 'SO2.tons',
-                                      rda_file = file.path( rdata_dir, 
+                                      rda_file = file.path(rdata_dir, 
                                                             "hyads_unwgted.RData"),
                                       exp_dir = exp_dir,
                                       units.mo = PP.units.monthly1995_2017,
@@ -418,7 +424,9 @@ unitRanks2005
 
 ### Plot ranked facilities.
 
-`plotUnitsRanked()` works very similary to other plotting function in `disperseR`. Choose the dataset of ranked facilities as well as year. 
+`plotUnitsRanked()` works very similar to other plotting function in `disperseR`. Choose the dataset of ranked facilities as well as year. 
+
+The function below results in two graphs. One is a map showing where the units are and showing their rank and the other one contains bar plots. 
 
 ```{r, fig.height = 4, fig.width = 7}
 plotUnitsRanked <- plot_units_ranked(data.units = unitsrun, 
@@ -429,6 +437,6 @@ plotUnitsRanked <- plot_units_ranked(data.units = unitsrun,
 plotUnitsRanked
 ```
 
-The result of this function 
+
 
 
