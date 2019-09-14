@@ -181,6 +181,12 @@ There are duplicates from the NEI database, where for the same stack  (= same fa
 ampd <- unique(ampd, by = "ID")
 ```
 
+Delete variables we do not need.
+
+```{r}
+ampd <- ampd %>% dplyr::select(-c(Diam, Velocity, Temp))
+```
+
 
 The `ampd` data are present in your environment should be now ready to use. You can rename it to `units2005` or whatever you wish. 
 
@@ -261,6 +267,7 @@ get_units_data <- function(year, d_ampd) {
   
   # add year variable 
   ampd <- ampd[, year := year]
+  ampd <- ampd %>% dplyr::select(-c(Diam, Velocity, Temp))
 }
 ```
 
@@ -278,10 +285,10 @@ units <- data.table::setDF(data.table::rbindlist(lapply(vector_years,
 
 units <- units %>%
   mutate(uID=gsub("-", ".", ID))
+
+save(units, file = "units.Rda")
 ```
 
 Now the units data should be in your environment. You can go ahead and use it. We have attached it to the disperseR package. 
-
-
 
 

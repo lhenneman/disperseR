@@ -4,9 +4,8 @@
 #'
 #' It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it.
 #'
-#' @param sample starting day for HyADS runs, must be in standard YYY-MM-DD format
 #'
-#' @param input.refs should be the data table that is the result of the `define_input()` function
+#' @param input.refs should be the data table that is the result of the `define_input()` function or a subset of that dataset
 #'
 #' @param pbl.height Monthly mean planetary boundary layer heights. See vignettes for more information
 #'
@@ -24,7 +23,7 @@
 #'
 #' @param npart
 #'
-#' @param mc.cores on how many cores should R split the computations
+#' @param mc.cores on how many cores should R split the computations. set to  parallel::detectCores() or set to 1 if you want to serial computation.
 #'
 #' @param keep.hysplit.files
 #'
@@ -41,17 +40,15 @@ run_disperser_parallel <- function(input.refs = NULL,
   link2zip = F,
   proc_dir = proc_dir,
   overwrite = F,
-  npart =  npart,
+  npart = NULL,
   mc.cores = parallel::detectCores(),
   keep.hysplit.files = FALSE){
 
-
-  ## looping over year must be implemented to avoid incorrect results
   ## run_fac() below assums that there is one year data.
     run_sample <- seq(1, nrow(input.refs))
 
     ## run the run_fac in parallel
-    parallel::mclapply(X = run_sample,
+      parallel::mclapply(X = run_sample,
       FUN = run_fac,
       input.refs = input.refs,
       pbl.height = pbl.height,

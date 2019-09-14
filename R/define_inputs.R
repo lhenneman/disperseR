@@ -1,11 +1,18 @@
 #' Define species parameters
 #'
 #' \code{define_inputtimes}  takes as input a species name and
-#' provides a table of HYSPLIT species parameters accepted by SplitR.
+#' provides a table of HYSPLIT species parameters accepted by `run_disperser_parallel()`
+#'
+#' @description Once HYSPLIT has been run for each emissions event, the simulated parcel locations are aggregated by source, time, and location. The functions in `disperseR` are written to enable runs of many emissions events. o define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005
 #'
 #' @param startday starting day for HyADS runs, must be in standard YYY-MM-DD format
 #' @param endday starting day for HyADS runs, must be in standard YYY-MM-DD format
-#' @return This function returns a data table of run parameters accepted by `run_fac_parallel()`.
+#' @param start.hours
+#' @param duration `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
+#' @return This function returns a data table of run parameters accepted by `run_disperser_parallel()`
+#'
+#'Once HYSPLIT has been run for each emissions event, the simulated parcel locations are aggregated by source, time, and location. The functions below are written to enable runs of many emissions events.
+
 
 ## define species parameters
 define_inputs <-

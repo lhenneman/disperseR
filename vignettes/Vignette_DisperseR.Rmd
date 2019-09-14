@@ -141,7 +141,7 @@ The `run_disperser_parallel()` function runs HYSPLIT for each emissions event. I
 Below we subset the data to run the process on a local computer. We only choose the first day and first hour of each month for each of the units that we chose. You can choose the events you are interested in. 
 
 ```{r}
-input_refs_subset <- disperseR::input_refs[format(as.Date(input_refs$start_day,
+input_refs_subset <- input_refs[format(as.Date(input_refs$start_day,
   format = "%Y-%m-%d"),
   format = "%d") == "01" & start_hour == 0]
 ```
@@ -181,7 +181,7 @@ With the `link_all_units_zip()` function, users can link all air parcels to ZIP 
 
 Below we present how to use `link_all_units_zip()` for chosen units. First choose the months that you would like to run the function for. Here we only choose Jan and Jul of 2005.
 
-If you, for example, you want to run `link_all_units_zip()` for Jan-March 2005, you just have to use the `get_yearmon()` function and set `data = "all"`, `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`.
+If you, for example, you want to run `link_all_units_zip()` for Jan-March 2005, you just have to use the `get_yearmon()` function and set  `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`.
 
 ```{r}
 yearmons <- disperseR::get_yearmon(start.year = "2005", 

@@ -1,3 +1,17 @@
+#' create a set of directories to run disperseR
+#'
+#' \code{create_dirs}
+#'
+#' @description `create_dirs()` takes 0 or the following argument `location`
+#'
+#'
+#' @param location this is the path to where you want your set of directories to be created. By default this is set to desktop.
+#'
+#'
+#' @return Creates directories (does not overwrite if existing). Outputs string variables with paths to the environment.
+
+
+
 create_dirs <- function(location=file.path('~', 'Desktop')) {
 
   message("Creating project setup")

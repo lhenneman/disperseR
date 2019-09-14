@@ -28,8 +28,7 @@ link_all_units_zip<- function(units.run,
 
     message(paste("processed unit", unit, ""))
 
-    linked_zips <-
-      data.table::rbindlist(Filter(is.data.table, linked_zips))
+    linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
     return(linked_zips)
   }
 

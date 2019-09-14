@@ -603,7 +603,7 @@ link_zip <- function(d,
     o <- over(spdf, zc)
     D <- data.table(na.omit(cbind(d, o)))
   } else {
-    # extract data layer from raster, disaggregate to .1°x.1°
+    # extract data layer from raster, disaggregate to .1x.1
     if (is.null(rasterin) == T)
       stop("Need PBL raster!")
     pbl_layer <- subset_nc_date(hpbl_brick = rasterin,
