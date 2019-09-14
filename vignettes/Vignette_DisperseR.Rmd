@@ -122,7 +122,7 @@ HYSPLIT, as applied here, tracks air parcels emitted at certain times and locati
 To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the startday argument, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
 
 ```{r}
-input_refs <- define_inputs(units = unitsrun,
+input_refs <- disperseR::define_inputs(units = unitsrun,
   startday = '2005-11-01',
   endday = '2006-02-28',
   start.hours =  c(0, 6, 12, 18),
@@ -141,7 +141,7 @@ The `run_disperser_parallel()` function runs HYSPLIT for each emissions event. I
 Below we subset the data to run the process on a local computer. We only choose the first day and first hour of each month for each of the units that we chose. You can choose the events you are interested in. 
 
 ```{r}
-input_refs_subset <- input_refs[format(as.Date(input_refs$start_day,
+input_refs_subset <- disperseR::input_refs[format(as.Date(input_refs$start_day,
   format = "%Y-%m-%d"),
   format = "%d") == "01" & start_hour == 0]
 ```
@@ -158,7 +158,7 @@ The `parallel::detectCores()` function automatically detects the number of cores
 It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it. 
 
 ```{r}
-hysp_raw <- run_disperser_parallel(input.refs = input_refs_subset,
+hysp_raw <- disperseR::run_disperser_parallel(input.refs = input_refs_subset,
   pbl.height = pblheight,
   crosswalk.= crosswalk, 
   zcta. = zcta, 
@@ -166,8 +166,11 @@ hysp_raw <- run_disperser_parallel(input.refs = input_refs_subset,
   link2zip = FALSE, ## FALSE BY DEFAULT
   proc_dir = proc_dir,
   overwrite = FALSE, ## FALSE BY DEFAULT
-  npart = 100, 
+  npart = 100,
+  keep.hysplit.files = FALSE, ## FALSE BY DEFAULT
   mc.cores = parallel::detectCores()) 
+
+
 ```
 
 
@@ -208,13 +211,14 @@ If you want to run the function for a specific start and end date you can specif
 `pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip()` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
 
 ```{r}
-data_linked <- link_all_units_zip(units.run=unitsrun, 
+data_linked <- disperseR::link_all_units_zip(units.run=unitsrun, 
   mc.cores = parallel::detectCores(), 
   year.mons = yearmons,
   pbl.height = pblheight,
   crosswalk. = crosswalk,
   duration.run.hours = 240,
   overwrite = FALSE)
+
 
 head(data_linked)
 ```
@@ -237,7 +241,7 @@ And now we can use the `create_impact_table_single()` function to see the comput
 Keep in mind, since we only modeled a subset of the potential model runs defined in `input_refs()`, the impacts contained in `impact_table_single` and plotted below include only results from a single emissions event. Further, the plotted values are "HyADS raw exposure", and are comparable only to a relative exposure of 0. So, a value of 0.01 represents 10x more exposure than a value of 0.001, but only in relation to unit 3136-1.
 
 ```{r}
-impact_table_single <- create_impact_table_single(data.linked=data_linked, 
+impact_table_single <- disperseR::create_impact_table_single(data.linked=data_linked, 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   map.unitID = "3136-1",
@@ -252,13 +256,14 @@ head(impact_table_single)
 In a similar way we can just plot the results using the `plot_impact_single()` function. A customized title can be set using the `plot.title` argument.
 
 ```{r, fig.height = 7, fig.width = 7}
-ziplink_plot <- plot_impact_single(data.linked = data_linked, 
+ziplink_plot <- disperseR::plot_impact_single(data.linked = data_linked, 
   map.unitID = "3136-1",
   map.month = "20061", 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   metric = 'N',
   graph.dir = graph_dir, 
+  legend.text.angle = 0, # 0 by default
   zoom = T, # TRUE by default
   legend.title = 'HyADS raw exposure')
   
@@ -274,7 +279,7 @@ In practice, these two worker functions may need to be implemented in parallel R
 
 
 ```{r}
-combined_ziplinks <- combine_monthly_ziplinks(month_YYYYMMs = yearmons)
+combined_ziplinks <- disperseR::combine_monthly_ziplinks(month_YYYYMMs = yearmons)
 names(combined_ziplinks)
 ```
 
@@ -306,14 +311,16 @@ Same as before, `zoom = T` by default and is authomatically adjusted depending o
 Please note that the produced graph will be automatically saved in the folder specified in the `graph.dir` argument. Here we set `graph.dir  = graph_dir`. `graph_dir` should have been automatically created by the `create_dirs()` function. 
 
 ```{r, fig.height = 7, fig.width = 7}
-zip_exp_ann_plot <- plot_impact_weighted(data.linked = zip_exp_ann,
+zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked = zip_exp_ann,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   time.agg = 'year',
   metric = 'hyads',
   legend.title = 'Aggregate HyADS exposure',  
   zoom = T, # TRUE by default
-  graph.dir = graph_dir)
+  graph.dir = graph_dir, 
+  map.month = NULL, # NULL by default change if time.agg = 'month'
+  legend.text.angle = 0) # 0 by default
 
 zip_exp_ann_plot
 ```
@@ -383,7 +390,7 @@ zip_exp_unit_mon <- rbind(zip_exp_unit_mon2005, zip_exp_unit_mon2006)
 ```{r, fig.height = 4, fig.width = 7}
 zipcodes <- c("13039","21798", "03804")
 
-zip_exp_unit <- plot_impact_unit(data.linked = zip_exp_unit_mon, 
+zip_exp_unit <- disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, 
   zip.codes = zipcodes,
   graph.dir = graph_dir)
 ```
@@ -412,7 +419,7 @@ In this function, the input ZIP-code linkage dataset is defined by  `zip_exp_ann
 
 
 ```{r}
-unitRanks2005 <- rankfacs_by_popwgt_location(data.linked = zip_exp_ann_unit,
+unitRanks2005 <- disperseR::rankfacs_by_popwgt_location(data.linked = zip_exp_ann_unit,
   crosswalk. = crosswalk,
   rank.by = c('hyads'),
   state.value = 'PA', 
@@ -429,9 +436,9 @@ unitRanks2005
 The function below results in two graphs. One is a map showing where the units are and showing their rank and the other one contains bar plots. 
 
 ```{r, fig.height = 4, fig.width = 7}
-plotUnitsRanked <- plot_units_ranked(data.units = unitsrun, 
-  data.ranked=unitRanks2005,
-  year=2005, 
+plotUnitsRanked <- disperseR::plot_units_ranked(data.units = unitsrun, 
+  data.ranked = unitRanks2005,
+  year = 2005, 
   graph.dir = graph_dir)
 
 plotUnitsRanked

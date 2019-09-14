@@ -37,6 +37,5 @@ define_inputs <-
     out <- unique(merge(out, units, by = c('ID', 'year')))
     # get only the input year for which we get units data
 
-
     return(out)
   }
