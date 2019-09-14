@@ -1,6 +1,6 @@
 #' run the fac model in parallel
 #'
-#' \code{run_fac_parallel} takes the following arguments
+#' \code{run_disperser_parallel} takes the following arguments
 #'
 #' It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it.
 #'
@@ -33,7 +33,7 @@
 
 ## define species parameters
 
-run_fac_parallel <- function(input.refs = NULL,
+run_disperser_parallel <- function(input.refs = NULL,
   pbl.height = NULL,
   crosswalk.= NULL,
   zcta. = NULL,

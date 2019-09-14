@@ -134,7 +134,7 @@ head(input_refs)
 ### Run HYSPLIT
 The following examples show how to run a small subset (chosen to provide workable examples on a laptop) of emissions events, link to ZIP codes, and plot the results.
 
-The `run_fac_parallel()` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shape file (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. With `link2zip = T` you can link dispersion patterns from individual emissions events to ZIP codes; this, however, somewhat violates the spirit of HyADS, since the large number of emissions events is used as a check on some other uncertainties introduced by the simplifying assumptions. 
+The `run_disperser_parallel()` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shape file (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. With `link2zip = T` you can link dispersion patterns from individual emissions events to ZIP codes; this, however, somewhat violates the spirit of HyADS, since the large number of emissions events is used as a check on some other uncertainties introduced by the simplifying assumptions. 
 
 **If you get an error running HYSPLIT, it is likely because the meteorology files did not download correctly. Check your `meteo_dir` to ensure all files are present and at least 100MB in size.**
 
@@ -158,7 +158,7 @@ The `parallel::detectCores()` function automatically detects the number of cores
 It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it. 
 
 ```{r}
-hysp_raw <- run_fac_parallel(input.refs = input_refs_subset,
+hysp_raw <- run_disperser_parallel(input.refs = input_refs_subset,
   pbl.height = pblheight,
   crosswalk.= crosswalk, 
   zcta. = zcta, 
@@ -174,7 +174,7 @@ hysp_raw <- run_fac_parallel(input.refs = input_refs_subset,
 ### Link results to ZIP codes
 
 Most current implementations of HyADS, instead of linking dispersion patterns from individual emissions events, link the patterns by month. 
-With the `link_all_units_zip()` function, users can link all air parcels to ZIP codes by month for specified units. Here, we define the variables `yearmons` with combinations of years and months. `link_all_units_zip()` uses another function called `disperser_link_zip()` that runs in the background and reads in all the relevant files (i.e., those that correspond to the provided units) produced by the `run_fac_parallel()` function and saves them. Then it links them to ZIP codes. `link_all_units_zip()` can be set to paralelize the runs by splitting different months on different cores, but you can make it serial just by setting the `mc.cores = 1`. The result of `dipserser_link_zip()` is a data.table of ZIP codes and relative contributions `N`, and an identical `.csv` file is saved to the folder with a path specified by the `ziplink_dir` variable. `N` is not weighted by the `unit`'s emissions. 
+With the `link_all_units_zip()` function, users can link all air parcels to ZIP codes by month for specified units. Here, we define the variables `yearmons` with combinations of years and months. `link_all_units_zip()` uses another function called `disperser_link_zip()` that runs in the background and reads in all the relevant files (i.e., those that correspond to the provided units) produced by the `run_disperser_parallel()` function and saves them. Then it links them to ZIP codes. `link_all_units_zip()` can be set to paralelize the runs by splitting different months on different cores, but you can make it serial just by setting the `mc.cores = 1`. The result of `dipserser_link_zip()` is a data.table of ZIP codes and relative contributions `N`, and an identical `.csv` file is saved to the folder with a path specified by the `ziplink_dir` variable. `N` is not weighted by the `unit`'s emissions. 
 
 Below we present how to use `link_all_units_zip()` for chosen units. First choose the months that you would like to run the function for. Here we only choose Jan and Jul of 2005.
 
@@ -268,7 +268,7 @@ ziplink_plot
 ### Combine all results into RData file.
 So far, we have run two worker functions important to the implementation of HyADS:
 
-`run_fac_parallel()` ran HYSPLIT for unit-date-time emission event combinations and saved an output file for each gathered output files from `run_fac_parallel()`. Then the `link_all_units_zip()` function grouped them by month and unit, and linked the HYSPLIT parcel locations contained in the files to ZIP codes.
+`run_disperser_parallel()` ran HYSPLIT for unit-date-time emission event combinations and saved an output file for each gathered output files from `run_disperser_parallel()`. Then the `link_all_units_zip()` function grouped them by month and unit, and linked the HYSPLIT parcel locations contained in the files to ZIP codes.
 In practice, these two worker functions may need to be implemented in parallel R sessions on a cluster to improve efficiency. It helps for future analyses to gather the relevant monthly files and save them as a single RData file. This is made possible by `combine_monthly_ziplinks()`, which saves an RData file of annual monthly results to the `rda_dir`.
 
 
