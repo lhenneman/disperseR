@@ -23,5 +23,5 @@ vector of months that you can loop over
 `get_yearmon()` outputs a vector of months that you can loop over. For Jan-March 2005, you just have to use the `get_yearmon()` `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`.
 }
 \details{
-\code{get_yearmon }
+\code{get_yearmon}
 }
