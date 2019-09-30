@@ -10,7 +10,7 @@ create_dirs(location = file.path("~", "Desktop"))
 \item{location}{this is the path to where you want your set of directories to be created. By default this is set to desktop.}
 }
 \value{
-Creates directories (does not overwrite if existing). Outputs string variables with paths to the environment.
+Creates directories (does not overwrite if existing). Outputs string variables with paths to the environment.  Should create the following folders:`main`: the main folder where the project will be located., `input`: the input that we need for calculations, `zcta_500k`: ZCTA (A Zip Code Tabulation Area) shape files, `hpbl`: monthly global planetary boundary layer files., `meteo`: (reanalysis) meteorology files, `output`, `hysplit`: disperseR output (one file for each emissions event), `ziplink`: files containing ZIP code linkages, `rdata`: RData files containing HyADS source-receptor matrices, `exp`: exposure per zipcode data,  `graph`: graphs saved here as pdf when running functions, `process`: temporary files that are created when the model is running and then deleted
 }
 \description{
 `create_dirs()` takes 0 or the following argument `location`
