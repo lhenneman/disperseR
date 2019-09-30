@@ -21,20 +21,18 @@ Depends:
     rgeos,
     sp,
     ncdf4, 
-    maps
-Suggests:
-    ggplot2,
+    maps, 
+    ggplot2, 
     ggsn,
-    knitr,
     tidyverse,
     rmarkdown,
-    measurements,
     scales,
     gridExtra,
-    ggmap,
+    ggmap, 
     ggrepel,
-    sf,
+    sf, 
     viridis
+Suggests:
 VignetteBuilder: knitr
+Encoding: UTF-8
 RoxygenNote: 6.1.1
-Ecoding: UTF-8

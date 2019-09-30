@@ -20,6 +20,7 @@ Load packages
 library(data.table)
 library(measurements)
 library(disperseR)
+library(tidyverse)
 ```
 
 In this vignette we show how we prepare the units data attached to this function. 
@@ -183,7 +184,7 @@ ampd <- unique(ampd, by = "ID")
 
 Delete variables we do not need.
 
-```{r}
+```{r, eval = FALSE}
 ampd <- ampd %>% dplyr::select(-c(Diam, Velocity, Temp))
 ```
 

@@ -1,3 +1,4 @@
+#' @export calculate_zip_exposure
 calculate_zip_exposure <- function(year.E,
   year.D,
   pollutant = 'SO2..tons.',

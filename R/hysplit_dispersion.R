@@ -1,7 +1,5 @@
-#' @description This is a modified SplitR function.
-
-
-
+# This is a modified SplitR function.
+#' @export hysplit_dispersion
 
 hysplit_dispersion <- function(lat = 49.263,
   lon = -123.250,
@@ -103,7 +101,7 @@ hysplit_dispersion <- function(lat = 49.263,
   # the current run crosses over a calendar month
   number_of_calendar_months <- ifelse(month(start_time_GMT) == month(end_time_GMT), 1, 2)
 
-  #--- Divide different requirements for met files
+  #Divide different requirements for met files
   #    into different cases
 
   # Set the different cases to FALSE by default
@@ -121,7 +119,7 @@ hysplit_dispersion <- function(lat = 49.263,
     case_over_month <- TRUE
   } else { NULL }
 
-  #--- Get vector lists of met files applicable to
+  #Get vector lists of met files applicable to
   #    run from GDAS 1-degree dataset
 
   # Trap leap-year condition of missing .w5 met
@@ -480,7 +478,7 @@ hysplit_dispersion <- function(lat = 49.263,
       by = 10)
 
   # Combine short grid name string with longer
-  # 'output_filename' string
+  # output_filename string
   for (i in 1:((length(grids_text) - 1)/10)) {
     grids_text[gridnames_indices[i]] <-
       paste0(grids_text[gridnames_indices[i]],

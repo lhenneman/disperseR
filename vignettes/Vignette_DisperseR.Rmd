@@ -21,19 +21,19 @@ In this vignette you will see how to use the `disperseR` package. We will walk y
 We start by importing the packages that we will use in the analysis. Make sure you have them installed. The functions in `disperseR` are based on the `data.table` package for faster computation, but this vignette contains many functions from the `tidyverse` family to illustrate another syntax. 
 
 ```{r, message = FALSE, warning = FALSE}
-library(disperseR) # our package
-library(ncdf4)
-library(data.table)
-library(tidyverse)
-library(parallel)
-library(sf)
-library(viridis)
-library(ggplot2)
-library(scales)
-library(ggsn)
-library(gridExtra)
-library(ggmap)
-library(ggrepel)
+#library(disperseR) # our package
+#library(ncdf4)
+#library(data.table)
+#library(tidyverse)
+#library(parallel)
+#library(sf)
+#library(viridis)
+#library(ggplot2)
+#library(scales)
+#library(ggsn)
+#library(gridExtra)
+#library(ggmap)
+#library(ggrepel)
 ```
 
 Next, we will use the `create_dirs()` function that creates a project folder with all the necessary sub folders. We recommend that you begin by setting up your project with this function. Provide the path to where you would like your project to live in the `location` argument. By default, if you do not specify the path, this function will create a main directory on your desktop. It will also assign paths to string variables in your environment. 
