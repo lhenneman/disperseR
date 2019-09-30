@@ -1,6 +1,7 @@
 #' Read a `listing` file
 #' @param file_path The path to the \code{listing} file.
 #' @noRd
+#'  @export read_listing_file
 read_listing_file <- function(file_path) {
   as.vector(
     read.table(
@@ -13,6 +14,7 @@ read_listing_file <- function(file_path) {
 #' Create default `SETUP.CFG` and `ASCDATA.CFG` files
 #' @param dir The directory to which the files should be written.
 #' @noRd
+#' @export hysplit_config_init
 hysplit_config_init <- function(dir) {
   # Default `SETUP.CFG` configuration file
   cat(
@@ -43,6 +45,7 @@ hysplit_config_init <- function(dir) {
   )
 }
 
+#' @export get_os
 get_os <- function() {
   if (.Platform$OS.type == "windows") {
     return("win")
@@ -55,7 +58,7 @@ get_os <- function() {
   }
 }
 
-
+#' @export dispersion_read
 dispersion_read <- function(archive_folder) {
   dispersion_file_list <-
     list.files(

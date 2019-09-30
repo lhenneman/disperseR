@@ -1,3 +1,5 @@
+#' @export plot_impact_single
+
 plot_impact_single  <- function(data.linked,
   data.units,
   zcta.dataset,
