@@ -1,4 +1,4 @@
-#' @export link_all_units_zip
+#' @export plot_impact_weighted
 
 plot_impact_weighted <- function(data.linked,
   data.units,

@@ -18,8 +18,8 @@ Package Authors:
 -   **Contributor**: Christine Choirat
 -   **Contributor**: Maja Garbulinska
 
-What is disperseR?
-------------------
+What is disperseR ?
+-------------------
 
 `disperseR` is an R package designed based on the [hyspdisp package](https://github.com/lhenneman/hyspdisp) and the [SplitR package](https://rdrr.io/github/rich-iannone/SplitR/). It is very important to note that many functions in `disperseR` are just sightly redesigned functions from the two mentioned packages.
 
@@ -91,8 +91,7 @@ install.packages("Rcpp")
 Continue by typing the following in your R console. This will download the package from GitHub, install it and build the vignettes. This might take some minutes.
 
 ``` r
-devtools::install_github("garbulinskamaja/disperseR", force = TRUE, build_vignettes = TRUE)
-library(disperseR)
+devtools::install_github("lhenneman/disperseR", force = TRUE, build_vignettes = TRUE)
 ```
 
 Load `disperseR` into your R session.
