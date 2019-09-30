@@ -1,3 +1,5 @@
+#' @export get_output_df
+
 #########################################################
 ################# get_output_df
 
@@ -26,6 +28,7 @@ get_output_df <- function(model) {
 #########################################################
 ################# dispersion_read
 
+#' @export dispersion_read
 dispersion_read <- function(archive_folder) {
   dispersion_file_list <-
     list.files(path = archive_folder,
@@ -56,6 +59,7 @@ dispersion_read <- function(archive_folder) {
 #########################################################
 ################# trim_zero
 
+#' @export trim_zero
 trim_zero <- function(Min) {
   M <- copy(Min)
 
@@ -73,6 +77,7 @@ trim_zero <- function(Min) {
 #########################################################
 ################# add_params
 
+#' @export add_params
 add_params <- function(model,
   lat = NULL,
   lon = NULL,
@@ -159,7 +164,7 @@ add_params <- function(model,
 
 #########################################################
 ################# create_disp_model
-
+#' @export create_disp_model
 # Create the 'disp_model' list object
 create_disp_model <- function(name = NULL) {
   # Create the 'disp_model' list object
@@ -193,7 +198,7 @@ create_disp_model <- function(name = NULL) {
 
 #########################################################
 ################# add_species
-
+#' @export add_species
 add_species <- function(model,
   name = NULL,
   pdiam = NULL,
@@ -305,7 +310,7 @@ add_species <- function(model,
 
 #########################################################
 ################# add_emissions
-
+#' @export add_emissions
 add_emissions <- function(model,
   rate = NULL,
   duration = NULL,
@@ -364,7 +369,7 @@ add_emissions <- function(model,
 
 #########################################################
 ################# add_grid
-
+#' @export add_grid
 add_grid <- function(model,
   lat = NULL,
   lon = NULL,
@@ -490,7 +495,7 @@ add_grid <- function(model,
 
 #########################################################
 ################# trim_pbl
-
+#' @export trim_pbl
 trim_pbl <- function(Min,
   rasterin) {
   Sys.setenv(TZ = 'UTC')
@@ -543,7 +548,7 @@ trim_pbl <- function(Min,
 
 #########################################################
 ################# subset_nc_date
-
+#' @export subset_nc_date
 subset_nc_date <- function(hpbl_file = NULL,
   hpbl_brick = NULL,
   varname = NULL,
@@ -584,7 +589,7 @@ subset_nc_date <- function(hpbl_file = NULL,
 
 #########################################################
 ################# link_zip
-
+#' @export link_zip
 link_zip <- function(d,
   zc = zcta2,
   cw = crosswalk,

@@ -1,3 +1,5 @@
+#' @export run_model
+
 run_model <- function(model, npart = 2500, run.dir) {
 
   if (inherits(model, "traj_model")) {

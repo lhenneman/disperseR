@@ -1,3 +1,5 @@
+#' @export plot_impact_unit
+
 plot_impact_unit <- function(data.linked = NULL,
   zip.codes = NULL,
   y.lim = c(24, 50),

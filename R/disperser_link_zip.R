@@ -1,3 +1,4 @@
+#' @export disperser_zip_link
 disperser_zip_link <- function(month_YYYYMM = NULL,
   start.date = NULL,
   end.date = NULL,

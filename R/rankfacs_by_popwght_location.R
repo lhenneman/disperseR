@@ -1,3 +1,5 @@
+#' @export rankfacs_by_popwgt_location
+
 rankfacs_by_popwgt_location <- function(link.files = NULL,
   data.linked = NULL,
   crosswalk.,
