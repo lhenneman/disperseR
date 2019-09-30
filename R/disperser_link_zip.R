@@ -63,7 +63,7 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
     ## if hyo_dir2 povided, check for files there too
 
     ## read in the files
-    l <- lapply(files.read, fread)
+    l <- lapply(files.read, fread, keepLeadingZeros = TRUE)
 
 
     ## Combine all parcels into single data table
@@ -124,12 +124,8 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
       zip_output_file,
       "already exists! Use overwrite = TRUE to over write"
     ))
-    out <- fread(zip_output_file)
-    out$ZIP <- formatC(out$ZIP,
-      width = 5,
-      format = "d",
-      flag = "0")
-    out$month <- month_YYYYMM
+    out <- fread(zip_output_file, keepLeadingZeros = TRUE)
+     out$month <- month_YYYYMM
     out$unitID <- unitID
   }
 
