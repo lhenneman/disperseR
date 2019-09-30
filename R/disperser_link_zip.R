@@ -1,12 +1,12 @@
 #' @export disperser_zip_link
 disperser_zip_link <- function(month_YYYYMM = NULL,
-  start.date = NULL,
-  end.date = NULL,
-  unit,
-  duration.run.hours = duration.run.hours,
-  pbl.height=NULL,
-  crosswalk.,
-  overwrite = F) {
+                               start.date = NULL,
+                               end.date = NULL,
+                               unit,
+                               duration.run.hours = duration.run.hours,
+                               pbl.height=NULL,
+                               crosswalk.,
+                               overwrite = F) {
   unitID <- unit$ID
 
   if ((is.null(start.date) | is.null(end.date)) & is.null(month_YYYYMM))
@@ -31,7 +31,7 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
   ## name the eventual output file
   zip_output_file <-
     file.path(ziplink_dir,
-      paste0("ziplinks_", unit$ID, "_", start.date, "_", end.date, ".csv"))
+              paste0("ziplinks_", unit$ID, "_", start.date, "_", end.date, ".csv"))
 
 
   ## Run the zip linkages
@@ -59,8 +59,8 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
       )
     files.read <-
       list.files(path = hysp_dir,
-        pattern = pattern.file,
-        full.names = T)
+                 pattern = pattern.file,
+                 full.names = T)
     ## if hyo_dir2 povided, check for files there too
 
     ## read in the files
@@ -73,22 +73,17 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
     if (length(d) == 0) {
       return(paste("No files available to link in", month_YYYYMM))
     }
-
     print(paste(Sys.time(), "Files read and combined"))
 
     ## Trim dates & first hour
-    d <- d[d$Pdate %in% as(c(vec_dates), "character") &
-        hour > 1, ]
+    d <- d[d$Pdate %in% as(c(vec_dates), "character") & hour > 1, ]
 
     #Check if extent matches the hpbl raster
     d_xmin <- min(d$lon)
-
     e_xmin <- extent(pbl.height)[1]
-
     if (d_xmin < e_xmin - 5) {
       pbl.height <- rotate(pbl.height)
     }
-
 
     ## Trim PBL's
     d_trim <- trim_pbl(d, rasterin = pbl.height)
@@ -100,22 +95,19 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
         d = d_trim,
         zc = zcta,
         cw = crosswalk.,
-        gridfirst = T,
+        p4string = p4s,
         rasterin = pbl.height
       )
 
     print(paste(Sys.time(), "ZIPs linked"))
 
     out <- disp_df_link[, .(ZIP, N)]
-    out$ZIP <- formatC(out$ZIP,
-      width = 5,
-      format = "d",
-      flag = "0")
+    out$ZIP <- formatC(out$ZIP, width = 5, format = "d", flag = "0")
     out$month <- month_YYYYMM
     out$unitID <- unitID
 
+    ## write to file
     if (nrow(out) != 0) {
-      ## write to file
       write.csv(out, zip_output_file)
       print(paste(Sys.time(), "Linked ZIPs and saved to", zip_output_file))
     }
@@ -126,7 +118,7 @@ disperser_zip_link <- function(month_YYYYMM = NULL,
       "already exists! Use overwrite = TRUE to over write"
     ))
     out <- fread(zip_output_file, keepLeadingZeros = TRUE)
-     out$month <- month_YYYYMM
+    out$month <- month_YYYYMM
     out$unitID <- unitID
   }
 
