@@ -66,8 +66,7 @@ disperser_county_link <- function( month_YYYYMM = NULL,
     print(  paste( Sys.time(), "Files read and combined"))
 
     ## Trim dates & first hour
-    d <- d[d$Pdate %in% as( c( vec_dates), "character") &
-             hour > 1,]
+    d <- d[d$Pdate %in% as( c( vec_dates), "character") & hour > 1,]
 
     #Check if extent matches the hpbl raster
     d_xmin <- min( d$lon)
