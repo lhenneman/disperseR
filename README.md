@@ -49,26 +49,25 @@ Thanks to the [hyspdisp package](https://github.com/lhenneman/hyspdisp), for exa
 
 We know it is sometimes difficult to start working with a new package, especially if you are not very familiar with R. We also believe in reproducible research. This is why we have included several vignettes to help you with the process.
 
--   [The main vignette for disperseR](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Disperse.html)
--   [Load data one by one](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html)
--   [Crosswalk data preparation (optional)](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html)
--   [Planetary layers data preparation (optional)](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Planetary_Layers_Data_Preparation.html)
--   [ZIP Code coordinate data preparation (optional)](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Zip_Code_Coordinate_Data_Preparation.html)
--   [Vignette ZCTA shapefile preparation (optional)](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_ZCTA_Shapefile_Preparation.html)
--   [Vignette units preparation (optional)](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html)
+-   [The main vignette for disperseR](%22http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Disperse.html%22)
+-   [Load data one by one](%22https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html%22)
+-   [Crosswalk data preparation (optional)](%22http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html%22)
+-   [Planetary layers data preparation (optional)](%22https://www.dropbox.com/s/4f07vsyp9ql13ai/Vignette_Planetary_Layers_Data_Preparation.html?dl=0%22)
+-   [ZIP Code coordinate data preparation (optional)](%22https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Zip_Code_Coordinate_Data_Preparation.html%22)
+-   [Vignette ZCTA shapefile preparation (optional)](%22https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_ZCTA_Shapefile_Preparation.html%22)
+-   [Vignette units preparation (optional)](%22https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html%22)
 
 ### Data attached with the package
 
 Unfortunatelly, `disperseR` requires a lot of data to run the models. We could not include all the data sets with the package. For example the ZCTA shapefile is more than 140 MB. You can access it very simply with the help of the `disperseR::get_data()` function. Here however are the data that are attached:
 
--   **crosswalk**: ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by [UDS 
-](https://www.udsmapper.org/zcta-crosswalk.cfm) and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. You can see it by clicking [here](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html).
+-   **crosswalk**: ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by [UDS Mapper](%22https://www.udsmapper.org/zcta-crosswalk.cfm%22) and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it. You can see it by clicking [here](vignettes/Vignette_Crosswalk_Preparation/html).
 
 -   **PP.units.monthly1995\_2017** : The `disperseR` package also includes monthly power plant emissions, load, and heat input data. (we currently do not have a vignette for these data due to server problems of the data owner). This will be updated as soon as possible.
 
--   **units**(data for 1995-2015): This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/). Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. You can see it by clicking [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html).
+-   **units**(data for 1995-2015): This package contains annual emissions and stack height data from [EPA's Air Markets Program Data](https://ampd.epa.gov/ampd/) and the [Energy Information Agency](https://www.eia.gov/electricity/data/eia860/). Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. You can see it by clicking [here](vignettes/Vignette_Units_Preparation.html).
 
--   **zipcode coordinate data**: The `disperseR` package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. Please click [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Zip_Code_Coordinate_Data_Preparation.html) for more information.
+-   **zipcode coordinate data**: The `disperseR` package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. Please click [here](vignettes/Vignette_Zip_Code_Coordinate_Data_Preparation.html) for more information.
 
 ### Example graphical output
 
@@ -81,10 +80,10 @@ Instructions
 
 ### Download and installation.
 
-First, not having the `Rccp` package installed on your computer can lead to problems with `disperseR` installation (problems with version installation). We recommend you first type the following into your R console.
+First, not having the `Rcpp` package installed on your computer can lead to problems with `disperseR` installation (problems with version installation). We recommend you first type the following into your R console.
 
 ``` r
-install.packages("Rccp")
+install.packages("Rcpp")
 ```
 
 \*\*Please note*If you are using a Windows machine and you want R to render the vignettes for you, you will need to download Rtools from [here](https://cran.rstudio.com/bin/windows/Rtools/). If you prefer to avoid this step you can go ahead and proceed with the instalation as we have added links to access already rendered vignettes on GitHub.*
@@ -158,7 +157,7 @@ And these are the variables with paths that will appear in your environment.
 
 ### Get the data
 
-You can get most of the data required for the analysis by using the following function. This function will download the data necessary and for the data that is already attached with the package it will automatically assign it to variables in your R environment. If you want to load the data step by step check our vignette [here](https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html). It also contains more information about the data and their sources.
+You can get most of the data required for the analysis by using the following function. This function will download the data necessary and for the data that is already attached with the package it will automatically assign it to variables in your R environment. If you want to load the data step by step check our vignette [here](%22https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html%22). It also contains more information about the data and their sources.
 
 The arguments `start.year`, `start.month`,`end.year`, and `end.month` are necessary to download the meteorology reanalysis files. They will be downloaded if they are not already in the `meteo_dir` folder. The reanalysis met files are about 120 MB each.
 

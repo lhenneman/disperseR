@@ -1,3 +1,5 @@
+#' @export link_all_units_zip
+
 plot_impact_weighted <- function(data.linked,
   data.units,
   zcta.dataset,

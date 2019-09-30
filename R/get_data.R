@@ -1,19 +1,3 @@
-#' create a set of directories to run disperseR
-#'
-#' \code{get_data}
-#'
-#' @description `get_data()` helps the user get data for necessary for function execution.
-#'
-#'
-#' @param data `data = "all"` will download all the data that can be downloaded with the function. It has to be used with `start.year`, `start.month`, `end.year` and `end.month`. Other possible options are: `data = "zctashapefile"`, `data = "pblheight"`, `data = "metfiles"` and `data = "zcta_dataset"`.
-#'
-#' @param start.year specify what year of metfiles data you would like to start with. Please supply it like as a string for example "2005".
-#' @param end.year specify what year of metfiles data you would like to end with. Please supply it like as a string for example "2005".
-#' @param start.month what month of `start.year` you would like to start the download with? Please supply a string for example "07" for July.
- #' @param end.month what month of `end.year` you would like to end the download with? Please supply a string for example "07" for July.
-#' @return Creates directories (does not overwrite if existing). Outputs string variables with paths to the environment.
-
-
 ##########################################################################################
 ##########################################################################################
 
@@ -52,6 +36,8 @@ download_file <- function(url, file, dir) {
 
 ##########################################################################################
 ##########################################################################################
+
+
 
 get_data <-
   function(data,
@@ -158,12 +144,11 @@ get_data <-
         message("   File already exist, not downloading.")
       }
 
-      #Before reading in, it is necessary to set the system time zone to UTC so that the dates are formatted correctly in the raster files.
+      # Before reading in, it is necessary to set the system time zone to UTC so that the dates are formatted correctly in the raster files.
       Sys.setenv(TZ = 'UTC')
       hpbl_rasterin <-
         suppressWarnings(raster::brick(x = file, varname = 'hpbl'))
       # The following is done to fix error in the dataset. For more information please see
-      # https://stackoverflow.com/questions/56806894/raster-warning-message-in-cbindmi-vals-number-of-rows-of-result-is-not/56807318#56807318
       raster::crs(hpbl_rasterin) <-
         "+proj=lcc +x_0=5632642.22547 +y_0=4612545.65137 +lat_0=50 +lon_0=-107 +lat_1=50"
       message("   Preprocessing complete")
@@ -318,5 +303,5 @@ get_data <-
       message("Preprocessing complete")
       return(hpbl_rasterin)
     }
-    }
+  }
 

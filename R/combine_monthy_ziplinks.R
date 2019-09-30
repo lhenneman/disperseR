@@ -1,3 +1,5 @@
+#' @export combine_monthly_ziplinks
+
 combine_monthly_ziplinks <- function(month_YYYYMMs) {
 
   #if (length(unique(substr(month_YYYYMMs, 1, 4))) > 1) {

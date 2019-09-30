@@ -1,3 +1,4 @@
+#' @export create_impact_table_single
 create_impact_table_single <- function(data.linked,
   data.units,
   zcta.dataset,

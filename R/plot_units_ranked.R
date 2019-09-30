@@ -1,3 +1,5 @@
+#' @export plot_units_ranked
+
 plot_units_ranked <- function(data.ranked, data.units, year, graph.dir) {
 
   data.units <- data.units[year==2005]
