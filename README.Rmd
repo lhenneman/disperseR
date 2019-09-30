@@ -31,7 +31,7 @@ knitr::opts_chunk$set(
 - **Contributor**: Maja Garbulinska 
 
 
-## What is disperseR?
+## What is disperseR ?
 
 `disperseR` is an R package designed based on the [hyspdisp package](https://github.com/lhenneman/hyspdisp) and the [SplitR package](https://rdrr.io/github/rich-iannone/SplitR/). It is very important to note that many functions in `disperseR` are just sightly redesigned functions from the two mentioned packages. 
 
