@@ -10,7 +10,7 @@
 #' @param start.year specify what year of metfiles data you would like to start with. Please supply it like as a string for example "2005".
 #' @param end.year specify what year of metfiles data you would like to end with. Please supply it like as a string for example "2005".
 #' @param start.month what month of `start.year` you would like to start the download with? Please supply a string for example "07" for July.
- #' @param end.month what month of `end.year` you would like to end the download with? Please supply a string for example "07" for July.
+#' @param end.month what month of `end.year` you would like to end the download with? Please supply a string for example "07" for July.
 #' @return Creates directories (does not overwrite if existing). Outputs string variables with paths to the environment.
 
 
