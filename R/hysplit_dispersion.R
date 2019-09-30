@@ -1,8 +1,6 @@
 #' @description This is a modified SplitR function.
 
 
-
-
 hysplit_dispersion <- function(lat = 49.263,
   lon = -123.250,
   height = 50,

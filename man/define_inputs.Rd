@@ -12,6 +12,8 @@ define_inputs(units, startday, endday, start.hours = c(0, 6, 12, 18),
 
 \item{endday}{starting day for HyADS runs, must be in standard YYY-MM-DD format}
 
+\item{start.hours}{vector of starting hours (integers between 0 and 23) for each HYSPLIT run. Defaults to c(0, 6, 12, 18), i.e., HYSPLIT runs initiated at 12:00am, 6:00am, 12:00pm, and 6:00pm.}
+
 \item{duration}{`duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.}
 }
 \value{
