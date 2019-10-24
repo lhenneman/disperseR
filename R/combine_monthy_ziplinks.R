@@ -1,10 +1,7 @@
 #' @export combine_monthly_ziplinks
 
-combine_monthly_ziplinks <- function(month_YYYYMMs) {
-
-  #if (length(unique(substr(month_YYYYMMs, 1, 4))) > 1) {
-    #stop('please provide only month_YYYYMMs from only one year')
-  #}
+combine_monthly_ziplinks <- function( month_YYYYMMs,
+                                      link.to = 'zips') {
 
   names.map <- c()
 
