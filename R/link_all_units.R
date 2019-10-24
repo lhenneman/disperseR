@@ -49,7 +49,7 @@ link_all_units<- function(units.run,
   zip_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
       yearmons,
-      disperseR::disperser_zip_link,
+      disperseR::disperser_link_zip,
       unit = unit,
       pbl.height = pbl.height,
       crosswalk. = crosswalk.,
@@ -67,7 +67,7 @@ link_all_units<- function(units.run,
   county_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
       yearmons,
-      disperseR::disperser_county_link,
+      disperseR::disperser_link_county,
       unit = unit,
       pbl.height = pbl.height,
       counties. = counties.,
@@ -85,7 +85,7 @@ link_all_units<- function(units.run,
   grid_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
       yearmons,
-      disperseR::disperser_grid_link,
+      disperseR::disperser_link_grid,
       unit = unit,
       pbl.height = pbl.height,
       duration.run.hours = duration.run.hours,
@@ -105,8 +105,6 @@ link_all_units<- function(units.run,
     out <- unitsrun[, county_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
   if( link.to == 'grids')
     out <- unitsrun[, grid_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
-
-
 
     out <- out[, comb := paste("month: ", out[, month], " unitID :", out[, unitID], sep = "")]
   return(out)
