@@ -1,3 +1,11 @@
+
+##########################################################################################
+##########################################################################################
+
+##########################################################################################
+##########################################################################################
+
+
 #' create a set of directories to run disperseR
 #'
 #' \code{get_data}
@@ -13,6 +21,9 @@
 #' @param end.month what month of `end.year` you would like to end the download with? Please supply a string for example "07" for July.
 #' @return Creates directories (does not overwrite if existing). Outputs string variables with paths to the environment.
 
+
+#' @export get_data
+#' @export download_file
 
 
 ## This function is used below in get_data().
@@ -48,8 +59,6 @@ download_file <- function(url, file, dir) {
   return(out)
 }
 
-##########################################################################################
-##########################################################################################
 
 
 
@@ -60,6 +69,9 @@ get_data <-
     end.year = NULL,
     end.month = NULL) {
 
+
+
+    ####################
     # to avoid error of unused arguments we used them independently of data requested
     startyear <- start.year
     startmonth <- start.month
