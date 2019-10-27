@@ -15,8 +15,6 @@
 #'
 #' @param species The package has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`.
 #'
-#' @param link2zip
-#'
 #' @param proc_dir directory where the function saves temporary files while running. This is automatically defined by `create_dirs()`
 #'
 #' @param overwrite if output files already exist should they be overwritten? This is `false` by default.
@@ -38,7 +36,6 @@ run_disperser_parallel <- function(input.refs = NULL,
   crosswalk.= NULL,
   zcta. = NULL,
   species = 'so2',
-  link2zip = F,
   proc_dir = proc_dir,
   overwrite = F,
   npart = NULL,
