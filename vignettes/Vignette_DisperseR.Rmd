@@ -211,7 +211,7 @@ If you want to run the function for a specific start and end date you can specif
 `pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip()` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
 
 ```{r}
-data_linked <- disperseR::link_all_units_zip(units.run=unitsrun, 
+data_linked_zips <- disperseR::link_all_units_zip(units.run=unitsrun, 
   mc.cores = parallel::detectCores(), 
   year.mons = yearmons,
   pbl.height = pblheight,
@@ -220,7 +220,7 @@ data_linked <- disperseR::link_all_units_zip(units.run=unitsrun,
   overwrite = FALSE)
 
 
-head(data_linked)
+head(data_linked_zips)
 ```
 
 It could be the case that data could not have been linked for a specific month and unit. Below we show how to take a look at the combinations of units and months that were successfully linked. 
@@ -228,7 +228,7 @@ It could be the case that data could not have been linked for a specific month a
 We can easily do it in the following way:
 
 ```{r}
-unique(data_linked$comb)
+unique(data_linked_zips$comb)
 ```
 
 ### Visualization of the results. 
@@ -241,7 +241,7 @@ And now we can use the `create_impact_table_single()` function to see the comput
 Keep in mind, since we only modeled a subset of the potential model runs defined in `input_refs()`, the impacts contained in `impact_table_single` and plotted below include only results from a single emissions event. Further, the plotted values are "HyADS raw exposure", and are comparable only to a relative exposure of 0. So, a value of 0.01 represents 10x more exposure than a value of 0.001, but only in relation to unit 3136-1.
 
 ```{r}
-impact_table_single <- disperseR::create_impact_table_single(data.linked=data_linked, 
+impact_table_single <- disperseR::create_impact_table_single(data.linked=data_linked_zips, 
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   map.unitID = "3136-1",
@@ -256,7 +256,7 @@ head(impact_table_single)
 In a similar way we can just plot the results using the `plot_impact_single()` function. A customized title can be set using the `plot.title` argument.
 
 ```{r, fig.height = 7, fig.width = 7}
-ziplink_plot <- disperseR::plot_impact_single(data.linked = data_linked, 
+ziplink_plot <- disperseR::plot_impact_single(data.linked = data_linked_zips, 
   map.unitID = "3136-1",
   map.month = "20061", 
   data.units = unitsrun,
