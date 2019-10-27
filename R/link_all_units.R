@@ -1,8 +1,8 @@
 #' create a set of directories to run disperseR
 #'
-#' \code{link_all_units_zip}
+#' \code{link_all_units}
 #'
-#' @description with `link_all_units_zip()` users can link all air parcels to ZIP codes by month for specified units. with combinations of years and months. `link_all_units_zip()` uses another function called `disperser_link_zip()` that runs in the background and reads in all the relevant files (i.e., those that correspond to the provided units) produced by the `run_disperser_parallel()` function and saves them. Then it links them to ZIP codes.
+#' @description with `link_all_units()` users can link all air parcels to ZIP codes by month for specified units. with combinations of years and months. `link_all_units_zip()` uses another function called `disperser_link_zip()` that runs in the background and reads in all the relevant files (i.e., those that correspond to the provided units) produced by the `run_disperser_parallel()` function and saves them. Then it links them to ZIP codes.
 #'
 #'
 #'
@@ -14,7 +14,7 @@
 #' @param year.mons these are the months for which we would like to do the linking. You can use the get_yearmon() function to create a vector that can be an input here.
 #' @param pbl.height `pbl.height = pblheight` by default but you can change it. See the vignette
 #' @param crosswalk. `crosswalk. = crosswalk` by default but you can change it. See the vignette
-#' @param mc.cores `link_all_units_zip()` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`.As mentioned before  `link_all_units_zip()` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`.
+#' @param mc.cores `link_all_units()` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`.As mentioned before  `link_all_units()` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`.
 #' @duration.run.hours `duration.run.hours = 240` by default which equals 10 days. 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
 #' overwrite `overwrite = FALSE` by default. Would you like to overwrite files that already exist?
 #' @return vector of months that you can loop over
@@ -47,10 +47,10 @@ link_all_units<- function(units.run,
   if (link.to == 'counties' & is.null(crosswalk.))
     stop( "counties. must be provided if link.to == 'counties'")
 
-  zip_link_parallel <- function(unit) {
+  zips_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
       yearmons,
-      disperseR::disperser_link_zip,
+      disperseR::disperser_link_zips,
       unit = unit,
       pbl.height = pbl.height,
       crosswalk. = crosswalk.,
@@ -65,10 +65,10 @@ link_all_units<- function(units.run,
     return(linked_zips)
   }
 
-  county_link_parallel <- function(unit) {
+  counties_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
       yearmons,
-      disperseR::disperser_link_county,
+      disperseR::disperser_link_counties,
       unit = unit,
       pbl.height = pbl.height,
       counties. = counties.,
@@ -83,10 +83,10 @@ link_all_units<- function(units.run,
     return(linked_zips)
   }
 
-  grid_link_parallel <- function(unit) {
+  grids_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
       yearmons,
-      disperseR::disperser_link_grid,
+      disperseR::disperser_link_grids,
       unit = unit,
       pbl.height = pbl.height,
       duration.run.hours = duration.run.hours,
@@ -101,11 +101,11 @@ link_all_units<- function(units.run,
   }
 
   if( link.to == 'zips')
-    out <- unitsrun[, zip_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
+    out <- unitsrun[, zips_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
   if( link.to == 'counties')
-    out <- unitsrun[, county_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
+    out <- unitsrun[, counties_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
   if( link.to == 'grids')
-    out <- unitsrun[, grid_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
+    out <- unitsrun[, grids_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
 
     out <- out[, comb := paste("month: ", out[, month], " unitID :", out[, unitID], sep = "")]
   return(out)
