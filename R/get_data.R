@@ -191,7 +191,6 @@ get_data <-
             paste(startyear, startmonth, "01", sep = "/"),
             paste(endyear, endmonth, "01", sep = "/")
           )
-        print( inputdates)
         start <- as.Date(inputdates[1])
         end <- as.Date(inputdates[2])
 
@@ -207,7 +206,6 @@ get_data <-
         }
         metfiles <-
           vectorfiles[!(vectorfiles %in% list.files(meteo_dir))]
-        print(metfiles)
 
         if (length(metfiles) > 0) {
           message("   Downloading the following files:")
