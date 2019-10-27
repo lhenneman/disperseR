@@ -174,9 +174,6 @@ run_fac <- function(x,
       "Partial trimmed parcel locations (below height 0 and the highest PBL height) already exist at",
       output_file
     )
-  out2 <-
-    paste("ZIP code parcel counts not called for or already exist at",
-      zip_output_file)
 
   ## Check if output parcel locations file already exists
   tmp.exists <- system(paste("ls -f", file.path(output_file)), intern = TRUE)
@@ -243,7 +240,7 @@ run_fac <- function(x,
     partial_trimmed_parcel_locs <-
       disp_df_trim[, save.vars, with = FALSE]
     write.csv(partial_trimmed_parcel_locs, output_file)
-    out1 <-
+    out <-
       paste(
         "Partial trimmed parcel locations (below height 0 and the highest PBL height) written to",
         output_file
@@ -254,44 +251,7 @@ run_fac <- function(x,
       unlink(run_dir, recursive = TRUE)
   }
 
-  if (link2zip == TRUE) {
-    print("Linking parcel locations to ZIP codes. This could take a few minutes...")
 
-    # Check if pbl.height is defined
-    if (!hasArg(pbl.height))
-      stop("Please define a pbl.height file")
-
-    # Check if crosswalk is defined
-    if (!hasArg(crosswalk.))
-      stop("Please define a crosswalk file to link zips")
-
-    #Read output file from hysplit
-    disp_df <- fread(output_file)
-
-    #Check if extent matches the hpbl raster (pbl.height)
-    d_xmin <- min(disp_df$lon)
-    e_xmin <- extent(pbl.height)[1]
-    if (d_xmin < e_xmin) {
-      pbl.height <- rotate(pbl.height)
-    }
-
-    ## trim values above PBL
-    disp_df_trim <- trim_pbl(disp_df, rasterin = pbl.height)
-
-    ## link to zips
-    disp_df_link <- link_zip(
-      disp_df_trim,
-      zc = zcta.,
-      cw = crosswalk,
-      gridfirst = TRUE,
-      rasterin = pbl.height
-    )
-
-    # Write to output csv file
-    write.csv(disp_df_link[, .(ZIP, N)], zip_output_file)
-    out2 <- paste("ZIP code parcel counts written to", zip_output_file)
-  }
-  out <- data.table(out = c(out1, out2))
   return(out)
 }
 
