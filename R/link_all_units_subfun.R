@@ -1,4 +1,5 @@
-disperser_link_grid <- function(  month_YYYYMM = NULL,
+#' @export disperser_link_grids
+disperser_link_grids <- function(  month_YYYYMM = NULL,
                                   start_date = NULL,
                                   end_date = NULL,
                                   unit,
@@ -99,7 +100,8 @@ disperser_link_grid <- function(  month_YYYYMM = NULL,
 }
 
 
-disperser_link_county <- function( month_YYYYMM = NULL,
+#' @export disperser_link_counties
+disperser_link_counties <- function( month_YYYYMM = NULL,
                                    start_date = NULL,
                                    end_date = NULL,
                                    counties,
@@ -208,8 +210,8 @@ disperser_link_county <- function( month_YYYYMM = NULL,
   return( out)
 }
 
-#' @export disperser_link_zip
-disperser_link_zip <- function(month_YYYYMM = NULL,
+#' @export disperser_link_zips
+disperser_link_zips <- function(month_YYYYMM = NULL,
                                start.date = NULL,
                                end.date = NULL,
                                unit,
