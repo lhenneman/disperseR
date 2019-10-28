@@ -614,73 +614,73 @@ hysplit_dispersion <- function(lat = 49.263,
     }
   }
 
-  # Move the .csv files from the working directory
-  # to the output folder
-  if (any(c("mac", "unix") %in% get_os())) {
-    if (is.null(disp_name)) {
-      folder_name <-
-        paste0("disp--",
-          format(Sys.time(),
-            "%Y-%m-%d--%H-%M-%S"))
-    } else if (!is.null(disp_name)) {
-      folder_name <-
-        paste0(disp_name, "--",
-          format(Sys.time(),
-            "%Y-%m-%d--%H-%M-%S"))
-    }
-
-    # Perform the movement of all dispersion files
-    # into a folder residing in the output dir
-
-    dir.create(path = paste0(hysp_dir, "/", folder_name))
-
-    system(paste0("(cd ", run_dir,
-      " && mv GIS_part*.csv ",
-      hysp_dir, "/",
-      folder_name,
-      ")"))
-  }
-
-  if (disperseR::get_os() == "win") {
-
-    if (is.null(disp_name)) {
-      folder_name <-
-        paste0("disp--",
-          format(Sys.time(),
-            "%Y-%m-%d--%H-%M-%S"))
-    } else if (!is.null(disp_name)) {
-      folder_name <-
-        paste0(disp_name, "--",
-          format(Sys.time(),
-            "%Y-%m-%d--%H-%M-%S"))
-    }
-
-    # Perform the movement of all dispersion files
-    # into a folder residing in the output dir
-    dir.create(path = paste0(hysp_dir, "/",
-      folder_name))
-
-    shell(paste0("(cd \"", run_dir,
-      "\" && move GIS_part*.csv \"",
-      hysp_dir, "/",
-      folder_name,
-      "\")"))
-  }
+  # # Move the .csv files from the working directory
+  # # to the output folder
+  # if (any(c("mac", "unix") %in% get_os())) {
+  #   if (is.null(disp_name)) {
+  #     folder_name <-
+  #       paste0("disp--",
+  #         format(Sys.time(),
+  #           "%Y-%m-%d--%H-%M-%S"))
+  #   } else if (!is.null(disp_name)) {
+  #     folder_name <-
+  #       paste0(disp_name, "--",
+  #         format(Sys.time(),
+  #           "%Y-%m-%d--%H-%M-%S"))
+  #   }
+  #
+  #   # Perform the movement of all dispersion files
+  #   # into a folder residing in the output dir
+  #
+  #   dir.create(path = paste0(hysp_dir, "/", folder_name))
+  #
+  #   system(paste0("(cd ", run_dir,
+  #     " && mv GIS_part*.csv ",
+  #     hysp_dir, "/",
+  #     folder_name,
+  #     ")"))
+  # }
+  #
+  # if (disperseR::get_os() == "win") {
+  #
+  #   if (is.null(disp_name)) {
+  #     folder_name <-
+  #       paste0("disp--",
+  #         format(Sys.time(),
+  #           "%Y-%m-%d--%H-%M-%S"))
+  #   } else if (!is.null(disp_name)) {
+  #     folder_name <-
+  #       paste0(disp_name, "--",
+  #         format(Sys.time(),
+  #           "%Y-%m-%d--%H-%M-%S"))
+  #   }
+  #
+  #   # Perform the movement of all dispersion files
+  #   # into a folder residing in the output dir
+  #   dir.create(path = paste0(hysp_dir, "/",
+  #     folder_name))
+  #
+  #   shell(paste0("(cd \"", run_dir,
+  #     "\" && move GIS_part*.csv \"",
+  #     hysp_dir, "/",
+  #     folder_name,
+  #     "\")"))
+  # }
 
   # Write the dispersion data frame to a CSV if
   # it is requested
   if (write_disp_CSV) {
     disp_df <-
-      disperseR::dispersion_read(archive_folder =
-          paste0(hysp_dir, "/",
-            folder_name))
+      disperseR::dispersion_read(archive_folder = run_dir)
+          # paste0(hysp_dir, "/",
+          #   folder_name))
 
     if (any(c("mac", "unix") %in% disperseR::get_os())) {
       write.table(
         disp_df,
-        file = paste0(hysp_dir, "/",
-          folder_name,
-          "/dispersion.csv"),
+        file = file.path(run_dir, #"/", #hysp_dir, "/",
+          # folder_name,
+          "dispersion.csv"),
         sep = ",",
         row.names = FALSE)
     }
@@ -688,9 +688,9 @@ hysplit_dispersion <- function(lat = 49.263,
     if (disperseR::get_os() == "win") {
       write.table(
         disp_df,
-        file = paste0("\"", hysp_dir, "/",
-          folder_name,
-          "/dispersion.csv\""),
+        file = file.path( run_dir, #hysp_dir, "/",
+          # folder_name,
+          "dispersion.csv"),
         sep = ",",
         row.names = FALSE)
     }
@@ -699,7 +699,7 @@ hysplit_dispersion <- function(lat = 49.263,
   # Return a dispersion data frame if it is requested
   if (return_disp_df) {
 
-    disp_df <- dispersion_read(archive_folder = file.path(hysp_dir, folder_name))
+    disp_df <- dispersion_read(archive_folder = file.path( run_dir)) #file.path(hysp_dir, folder_name))
 
     invisible(disp_df)
   }
