@@ -33,6 +33,7 @@ link_all_units<- function(units.run,
                           crosswalk. = NULL,
                           counties. = NULL,
                           duration.run.hours = 240,
+                          res.link = 12000,
                           overwrite = FALSE) {
 
   if ((is.null(start.date) |
@@ -55,11 +56,12 @@ link_all_units<- function(units.run,
       crosswalk. = crosswalk.,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
+      res.link. = res.link,
       mc.cores = mc.cores
     )
 
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
-    message(paste("processed unit", unit$uID, ""))
+    message(paste("processed unit", unit$ID, ""))
 
     linked_zips[, month := as( month, 'character')]
     return(linked_zips)
@@ -74,11 +76,12 @@ link_all_units<- function(units.run,
       counties = counties.,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
+      res.link. = res.link,
       mc.cores = mc.cores
     )
 
     linked_counties <- data.table::rbindlist(Filter(is.data.table, linked_counties))
-    message(paste("processed unit", unit$uID, ""))
+    message(paste("processed unit", unit$ID, ""))
 
     linked_counties[, month := as( month, 'character')]
     return(linked_counties)
@@ -92,11 +95,12 @@ link_all_units<- function(units.run,
       pbl.height = pbl.height,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
+      res.link. = res.link,
       mc.cores = mc.cores
     )
 
     linked_grids <- data.table::rbindlist(Filter(is.data.table, linked_grids))
-    message(paste("processed unit", unit$uID, ""))
+    message(paste("processed unit", unit$ID, ""))
 
     linked_grids[, month := as( month, 'character')]
     return(linked_grids)
@@ -111,7 +115,7 @@ link_all_units<- function(units.run,
   if( link.to == 'grids')
     out <- units.run[, grids_link_parallel(.SD), by = seq_len(nrow(units.run))]
 
-  out[, comb := paste("month: ", out[, month], " unitID :", out[, unitID], sep = "")]
+  out[, comb := paste("month: ", out[, month], " unitID :", out[, ID], sep = "")]
   out[, seq_len := NULL]
   return(out)
 }
