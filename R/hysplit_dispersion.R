@@ -9,6 +9,7 @@ hysplit_dispersion <- function(lat = 49.263,
   start_hour = 0,
   direction = "forward",
   met_type = "reanalysis",
+  met_dir = NULL,
   vert_motion = 0,
   model_height = 20000,
   particle_num = 2500,
@@ -21,6 +22,7 @@ hysplit_dispersion <- function(lat = 49.263,
   disp_name = NULL,
   run_dir) {
 
+  if (is.null(met_dir)) met_dir <- getwd()
 
   if (length(start_day) == 1 &
       class(start_day) == "character" &
@@ -256,13 +258,13 @@ hysplit_dispersion <- function(lat = 49.263,
   if (any(c("mac", "unix") %in%  disperseR::get_os())) {
     for (k in 1:length(met)) {
       met_file_df[k, 1] <- met[k]
-      met_file_df[k, 2] <- as.character( file.exists(paste0(meteo_dir, "/", met[k])))
+      met_file_df[k, 2] <- as.character( file.exists(paste0(met_dir, "/", met[k])))
     }
 
     # Write the met file availability to file
     write.table(
       met_file_df,
-      file = paste0(meteo_dir, "/", "met_file_list"),
+      file = paste0(met_dir, "/", "met_file_list"),
       sep = ",",
       row.names = FALSE,
       col.names = FALSE,
@@ -277,11 +279,11 @@ hysplit_dispersion <- function(lat = 49.263,
           available == FALSE)[,1]
 
       if (met_type == "reanalysis") {
-        get_met_reanalysis(files = files_to_get, path_met_files = paste0(meteo_dir, "/"))
+        get_met_reanalysis(files = files_to_get, path_met_files = paste0(met_dir, "/"))
       }
 
       if (met_type == "gdas1") {
-        get_met_gdas1( files = files_to_get, path_met_files = paste0(meteo_dir, "/"))
+        get_met_gdas1( files = files_to_get, path_met_files = paste0(met_dir, "/"))
       }
     }
   }
@@ -290,11 +292,11 @@ hysplit_dispersion <- function(lat = 49.263,
 
     for (k in 1:length(met)) {
       met_file_df[k, 1] <- met[k]
-      met_file_df[k, 2] <- as.character( file.exists(paste0(meteo_dir, "\\", met[k])))}
+      met_file_df[k, 2] <- as.character( file.exists(paste0(met_dir, "\\", met[k])))}
 
     # Write the met file availability to file
     write.table(met_file_df,
-      file = paste0(meteo_dir, "\\",
+      file = paste0(met_dir, "\\",
         "met_file_list"),
       sep = ",",
       row.names = FALSE,
@@ -308,11 +310,11 @@ hysplit_dispersion <- function(lat = 49.263,
       files_to_get <- subset(met_file_df, available == FALSE)[,1]
 
       if (met_type == "reanalysis") {
-        get_met_reanalysis(files = files_to_get, path_met_files = meteo_dir)
+        get_met_reanalysis(files = files_to_get, path_met_files = met_dir)
       }
 
       if (met_type == "gdas1") {
-        get_met_gdas1(files = files_to_get, path_met_files = meteo_dir)
+        get_met_gdas1(files = files_to_get, path_met_files = met_dir)
       }
     }
   }
@@ -377,7 +379,7 @@ hysplit_dispersion <- function(lat = 49.263,
 
   # Write met file paths to 'CONTROL'
   for (i in 1:length(met)) {
-    cat(meteo_dir, "/\n", met[i], "\n",
+    cat(met_dir, "/\n", met[i], "\n",
       file = paste0(run_dir, "/", "CONTROL"),
       sep = '', append = TRUE)
   }
@@ -520,7 +522,7 @@ hysplit_dispersion <- function(lat = 49.263,
   if (disperseR::get_os() == "mac") {
     system(paste0("(cd ", run_dir, " && ",
       system.file("osx/hycs_std",
-        package = "hyspdisp2"),
+        package = "SplitR"),
       " >> /dev/null 2>&1)"))
   }
 
@@ -529,7 +531,7 @@ hysplit_dispersion <- function(lat = 49.263,
   if (disperseR::get_os() == "unix") {
     system(paste0("(cd ",  run_dir, " && ",
       system.file("linux-amd64/hycs_std",
-        package = "hyspdisp2"),
+        package = "SplitR"),
       " >> /dev/null 2>&1)"))
     #    system(paste0("(cd ", getwd(), " && /nfs/home/H/henneman/shared_space/ci3_nsaph_scratch/henneman_software/software/hysplit/trunk/exec/hycs_std >> /dev/null 2>&1)"))
   }
@@ -538,7 +540,7 @@ hysplit_dispersion <- function(lat = 49.263,
   if (disperseR::get_os() == "win") {
     shell(paste0("(cd \"", run_dir, "\" && \"",
       system.file("win/hycs_std.exe",
-        package = "hyspdisp2"),
+        package = "SplitR"),
       "\")"))
   }
 
@@ -547,21 +549,21 @@ hysplit_dispersion <- function(lat = 49.263,
   if (disperseR::get_os() == "mac") {
     system(paste0("(cd ", run_dir, "/", " && ",
       system.file("osx/parhplot",
-        package = "hyspdisp2"),
+        package = "SplitR"),
       " -iPARDUMP -a1)"))
   }
 
   if (disperseR::get_os() == "unix") {
     system(paste0("(cd ", run_dir, "/", " && ",
       system.file("linux-amd64/parhplot",
-        package = "hyspdisp2"),
+        package = "SplitR"),
       " -iPARDUMP -a1)"))
   }
 
   if (disperseR::get_os() == "win") {
     shell(paste0("(cd \"", run_dir, "\" && \"",
       system.file("win/parhplot.exe",
-        package = "hyspdisp2"),
+        package = "SplitR"),
       "\" -iPARDUMP -a1)"))
   }
 
