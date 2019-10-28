@@ -1,3 +1,207 @@
+#########################################################
+################# link_zip
+#' @export link_to
+link_to <- function(d,
+                    link.to = 'zips',
+                    p4string,
+                    zc = NULL,
+                    cw = NULL,
+                    county.sp = NULL,
+                    rasterin = NULL,
+                    res.link. = 12000) {
+
+  xy <- d[, .(lon, lat)]
+  spdf.in <- SpatialPointsDataFrame( coords = xy,
+                                     data = d,
+                                     proj4string = CRS( "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
+  spdf <- spTransform( spdf.in, p4string)
+
+  # extract data layer from raster, disaggregate to .1°x.1°
+  pbl_layer <- subset_nc_date(hpbl_brick = rasterin,
+                              vardate = d$Pdate[1])
+  pbl_layer.t <- projectRaster( pbl_layer,
+                                crs = CRS( proj4string( spdf)))
+
+  # aim for a resolution of res.link.
+  pbl_resolution <- res( pbl_layer.t)
+  x_fact <- floor( pbl_resolution[1] / res.link.)
+  y_fact <- floor( pbl_resolution[2] / res.link.)
+  pbl_layer.d <- disaggregate( pbl_layer.t,
+                               fact = c( x_fact, y_fact))
+
+  # count number of particles in each cell,
+  # find original raster cells, divide number by pbl
+  r <- pbl_layer.d
+  values( r) <- NA
+  cells <- cellFromXY( r, spdf)
+  tab <- table( cells)
+  pbls <- pbl_layer.d[as.numeric( names( tab))]
+  r[as.numeric( names( tab))] <- tab / pbls
+
+  # crop around point locations for faster extracting
+  e <- extent(spdf)
+  r2 <- crop( trim(r,
+                   padding = 1),
+              e)
+
+  # if return.grid, return xyz object
+  if( link.to == 'grids'){
+    xyz <- data.table( rasterToPoints(r2))
+    names(xyz)[3] <- 'N'
+
+    return( xyz)
+  }
+
+  #  convert to polygons for faster extracting
+  r3 <- rasterToPolygons(r2)
+
+  # if county.so, return xyz object
+  if( link.to == 'counties'){
+    print( 'Linking counties!')
+    county.o <- over( county.sp,
+                      r3,
+                      fn = mean)
+    county.dt <- data.table( county.o)
+    county.dt <- cbind( as.data.table( county.sp[, c( 'statefp', 'countyfp', 'state_name',
+                                                      'name', 'geoid')]),
+                        county.dt)
+    setnames( county.dt, names( r3), 'N')
+
+    # if "over" returned no matches, need a vector of NA's
+    if( nrow( county.dt) == 1 & is.na( county.dt[1, 1])){
+      county.dt <- cbind( as.data.table( county.sp[, c( 'statefp', 'countyfp', 'state_name',
+                                                        'name', 'geoid')]),
+                          data.table( X = as.numeric( rep( NA, length( county.sp)))))
+      setnames( county.dt, "X", 'N')
+    }
+
+    return( county.dt)
+  }
+
+  #crop zip codes to only use ones over the extent
+  zc_trim <- crop( zc,
+                   snap = 'out',
+                   e)
+
+  zc_groups <- ceiling(seq_along(zc_trim) / 1000)
+
+  #extract average concentrations over zip codes
+  #name column as 'N', combine with zip codes
+  #define function to not run out of memory
+  over_fn <- function( group,
+                       zc_dt,
+                       groups,
+                       raster_obj) {
+
+    dt <- data.table( over( zc_dt[ groups %in% group,],
+                            raster_obj,
+                            fn = mean))
+
+    # if "over" returned no matches, need a vector of NA's
+    if( nrow( dt) == 1 & is.na( dt[1])){
+      dt <- data.table( X = as.numeric( rep( NA, length( zc_dt[ groups %in% group,]))))
+      setnames( dt, "X", names( raster_obj))
+    }
+
+    return( dt)
+  }
+
+  or <- rbindlist( lapply( unique( zc_groups),
+                           over_fn,
+                           zc_dt = zc_trim,
+                           groups = zc_groups,
+                           raster_obj = r3))
+
+  setnames(or, names(pbl_layer), 'N')
+  D <- data.table( cbind( zc_trim@data,
+                          or))
+
+  setnames( D, 'ZCTA5CE10', 'ZCTA')
+  cw$ZCTA <- formatC( cw$ZCTA,
+                      width = 5,
+                      format = "d",
+                      flag = "0") # to merge on zcta ID
+  M <- merge( D, cw, by = "ZCTA", all = F, allow.cartesian = TRUE) # all.x = TRUE, all.y = FALSE, allow.cartesian = TRUE)
+  M[, ZIP:= formatC( ZIP,
+                     width = 5,
+                     format = "d",
+                     flag = "0")]
+  M$ZIP <- as(M$ZIP, 'character')
+  M <- na.omit( M)
+  return(M)
+}
+
+#########################################################
+################# trim_zero
+
+#' @export trim_zero
+trim_zero <- function(Min) {
+  M <- copy(Min)
+
+  p_zero_df <- M[height == 0,]
+  particles <- unique(p_zero_df$particle_no)
+
+  for (p in particles) {
+    h_zero <- p_zero_df[particle_no == p, hour]
+    M[particle_no == p & hour >= h_zero,] <- NA
+  }
+  M <- na.omit(M)
+  return(M)
+}
+
+#########################################################
+################# trim_pbl
+#' @export trim_pbl
+trim_pbl <- function(Min,
+                     rasterin) {
+  Sys.setenv(TZ = 'UTC')
+  M <- copy(Min)
+  M[, ref := 1:nrow(M)]
+
+  #Find unique month-year combinations
+  M[, Pmonth := formatC(month(Pdate),
+                        width = 2,
+                        format = "d",
+                        flag = "0")]
+  M[, Pyear  := formatC(year(Pdate),
+                        width = 2,
+                        format = "d",
+                        flag = "0")]
+  my <-
+    data.table(expand.grid(data.table(mo = unique(M[, Pmonth]),
+                                      yr = unique(M[, Pyear]))))
+
+  #Convert M to spatial points data frame
+  xy <- M[, .(lon, lat)]
+  spdf <- SpatialPointsDataFrame(
+    coords = xy,
+    data = M,
+    proj4string = CRS("+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0")
+  )
+
+  # identify cells for each parcel location
+  spdf$rastercell <- cellFromXY(rasterin, spdf)
+  spdf.dt <- na.omit(data.table(spdf@data))
+
+  for (m in 1:nrow(my)) {
+    mon <- my[m, mo]
+    yer <- my[m, yr]
+    day <- paste(yer, mon, '01', sep = '-')
+
+    pbl_layer <- subset_nc_date(hpbl_brick = rasterin,
+                                varname = 'hpbl',
+                                vardate = day)
+
+    spdf.dt[Pmonth %in% mon & Pyear %in% yer,
+            pbl := pbl_layer[spdf.dt[Pmonth %in% mon &
+                                       Pyear %in% yer, rastercell]]]
+  }
+  spdf.dt <- spdf.dt[height < pbl]
+  return(M[spdf.dt$ref,
+           .(lon, lat, height, Pdate, hour)])
+}
+
+
 #' @export disperser_link_grids
 disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    start.date = NULL,
@@ -5,6 +209,7 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    unit,
                                    duration.run.hours = duration.run.hours,
                                    pbl.height,
+                                   res.link.,
                                    overwrite = F){
 
   unitID <- unit$ID
@@ -81,14 +286,15 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
 
     ## Link to grid
     p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
-    disp_df_link <- link_zip( d = d_trim,
+    disp_df_link <- link_to( d = d_trim,
+                              link.to = 'grids',
                               p4string = p4s,
                               rasterin = pbl.height,
-                              return.grid = T)
+                              res.link. = res.link.)
     print(  paste( Sys.time(), "Grids linked"))
     out <- disp_df_link
     out$month <- as( month_YYYYMM, 'character')
-    out$unitID <- unitID
+    out$ID <- unitID
 
     if( nrow( out) != 0){
       ## write to file
@@ -101,7 +307,7 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
   }
 
   out$month <- as( month_YYYYMM, 'character')
-  out$unitID <- unitID
+  out$ID <- unitID
   suppressWarnings( out[, V1 := NULL])
   return( out)
 }
@@ -115,6 +321,7 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
                                      unit,
                                      duration.run.hours = duration.run.hours,
                                      pbl.height,
+                                     res.link.,
                                      overwrite = F){
 
   unitID <- unit$ID
@@ -195,16 +402,18 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
     p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
     counties.sp <- spTransform(counties.sp, p4s)
 
-    disp_df_link <- link_zip( d = d_trim,
+    disp_df_link <- link_to( d = d_trim,
+                              link.to = 'counties',
                               county.sp = counties.sp,
                               p4string = proj4string( counties.sp),
-                              rasterin = pbl.height)
+                              rasterin = pbl.height,
+                              res.link. = res.link.)
 
     print(  paste( Sys.time(), "Counties linked"))
 
     out <- as.data.table( disp_df_link)
     out$month <- as( month_YYYYMM, 'character')
-    out$unitID <- unitID
+    out$ID <- unitID
 
     if( nrow( out) != 0){
       ## write to file
@@ -219,7 +428,7 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
   }
 
   out$month <- as( month_YYYYMM, 'character')
-  out$unitID <- unitID
+  out$ID <- unitID
   suppressWarnings( out[, V1 := NULL])
   return( out)
 }
@@ -232,6 +441,7 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
                                 duration.run.hours = duration.run.hours,
                                 pbl.height=NULL,
                                 crosswalk.,
+                                res.link.,
                                 overwrite = F) {
   unitID <- unit$ID
 
@@ -321,20 +531,21 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
     ## Link zips
     p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
     disp_df_link <-
-      link_zip(
+      link_to(
         d = d_trim,
+        link.to = 'zips',
         zc = zcta,
         cw = crosswalk.,
         p4string = p4s,
-        rasterin = pbl.height
+        rasterin = pbl.height,
+        res.link. = res.link.
       )
-
     print(paste(Sys.time(), "ZIPs linked"))
 
     out <- disp_df_link[, .(ZIP, N)]
     out$ZIP <- formatC(out$ZIP, width = 5, format = "d", flag = "0")
     out$month <- as( month_YYYYMM, 'character')
-    out$unitID <- unitID
+    out$ID <- unitID
 
     ## write to file
     if (nrow(out) != 0) {
@@ -351,7 +562,7 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
   }
 
   out$month <- as( month_YYYYMM, 'character')
-  out$unitID <- unitID
-  out <- out[, .(ZIP, N, month, unitID)]
+  out$ID <- unitID
+  out <- out[, .(ZIP, N, month, ID)]
   return(out)
 }
