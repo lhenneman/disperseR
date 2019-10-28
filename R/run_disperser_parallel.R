@@ -147,7 +147,7 @@ run_fac <- function(x,
 
 
   ## Initial output data.table
-  out1 <-
+  out <-
     paste(
       "Partial trimmed parcel locations (below height 0 and the highest PBL height) already exist at",
       output_file
