@@ -35,7 +35,6 @@ link_all_units<- function(units.run,
                           duration.run.hours = 240,
                           overwrite = FALSE) {
 
-
   if ((is.null(start.date) |
        is.null(end.date)) & is.null(year.mons)) {
     stop("Define either a start.date and an end.date OR a year.mons")
@@ -44,7 +43,7 @@ link_all_units<- function(units.run,
     stop( "link.to should be one of 'zips', 'counties', 'or 'grids'")
   if (link.to == 'zips' & is.null(crosswalk.))
     stop( "crosswalk. must be provided if link.to == 'zips'")
-  if (link.to == 'counties' & is.null(crosswalk.))
+  if (link.to == 'counties' & is.null(counties.))
     stop( "counties. must be provided if link.to == 'counties'")
 
   zips_link_parallel <- function(unit) {
@@ -59,32 +58,34 @@ link_all_units<- function(units.run,
       mc.cores = mc.cores
     )
 
-    message(paste("processed unit", unit, ""))
-
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
+    message(paste("processed unit", unit$uID, ""))
+
+    linked_zips[, month := as( month, 'character')]
     return(linked_zips)
   }
 
   counties_link_parallel <- function(unit) {
-    linked_zips <- parallel::mclapply(
+    linked_counties <- parallel::mclapply(
       yearmons,
       disperseR::disperser_link_counties,
       unit = unit,
       pbl.height = pbl.height,
-      counties. = counties.,
+      counties = counties.,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
       mc.cores = mc.cores
     )
 
-    message(paste("processed unit", unit, ""))
+    linked_counties <- data.table::rbindlist(Filter(is.data.table, linked_counties))
+    message(paste("processed unit", unit$uID, ""))
 
-    linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
-    return(linked_zips)
+    linked_counties[, month := as( month, 'character')]
+    return(linked_counties)
   }
 
   grids_link_parallel <- function(unit) {
-    linked_zips <- parallel::mclapply(
+    linked_grids <- parallel::mclapply(
       yearmons,
       disperseR::disperser_link_grids,
       unit = unit,
@@ -94,19 +95,23 @@ link_all_units<- function(units.run,
       mc.cores = mc.cores
     )
 
-    message(paste("processed unit", unit, ""))
+    linked_grids <- data.table::rbindlist(Filter(is.data.table, linked_grids))
+    message(paste("processed unit", unit$uID, ""))
 
-    linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
-    return(linked_zips)
+    linked_grids[, month := as( month, 'character')]
+    return(linked_grids)
   }
 
-  if( link.to == 'zips')
-    out <- unitsrun[, zips_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
-  if( link.to == 'counties')
-    out <- unitsrun[, counties_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
-  if( link.to == 'grids')
-    out <- unitsrun[, grids_link_parallel(.SD), by = seq_len(nrow(unitsrun))]
+  units.run <- unique( units.run[, .( uID, ID)])
 
-    out <- out[, comb := paste("month: ", out[, month], " unitID :", out[, unitID], sep = "")]
+  if( link.to == 'zips')
+    out <- units.run[, zips_link_parallel(.SD), by = seq_len(nrow(units.run))]
+  if( link.to == 'counties')
+    out <- units.run[, counties_link_parallel(.SD), by = seq_len(nrow(units.run))]
+  if( link.to == 'grids')
+    out <- units.run[, grids_link_parallel(.SD), by = seq_len(nrow(units.run))]
+
+  out[, comb := paste("month: ", out[, month], " unitID :", out[, unitID], sep = "")]
+  out[, seq_len := NULL]
   return(out)
 }
