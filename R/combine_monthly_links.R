@@ -1,12 +1,13 @@
 #' @export combine_monthly_ziplinks
 
 combine_monthly_links <- function( month_YYYYMMs,
-                                   link.to = 'zips') {
+                                   link.to = 'zips',
+                                   filename = NULL) {
 
   names.map <- c()
 
   for (ym in month_YYYYMMs) {
-    print(ym)
+
     year.h <- substr(ym, 1, 4)
     month.m <- as.integer(substr(ym, 5, 6))
     month.h <- formatC(month.m, width = 2, format = "d", flag = "0")
@@ -15,7 +16,7 @@ combine_monthly_links <- function( month_YYYYMMs,
       pattern <- paste0('ziplinks.*', year.h, '-', month.h)
     } else if( link.to == 'grids'){
       pattern <- paste0('gridlinks.*', year.h, '-', month.h)
-    } else if( link.to == 'grids'){
+    } else if( link.to == 'counties'){
       pattern <- paste0('countylinks.*', year.h, '-', month.h)
     }
 
@@ -25,7 +26,7 @@ combine_monthly_links <- function( month_YYYYMMs,
                  full.names = T)
 
     if (length(files.month) == 0) {
-      print(paste("No data files for input", ym))
+      print(paste("No data files for month_YYYYMMs", ym))
     } else {
       print(paste('Reading and merging month', month.h, 'in year', year.h))
 
@@ -35,37 +36,37 @@ combine_monthly_links <- function( month_YYYYMMs,
              files.month)
       names(files.month) <- unitnames
 
-      if( link.to == 'zips'){
-      data.h <- lapply(seq_along(files.month),
-                       read_ziplinks_subfun,
-                       files.month)
 
-      MergedDT  <- rbindlist(data.h)
-      Merged_cast <-
-        dcast(MergedDT,
-              ZIP ~ uID,
-              fun.aggregate = sum,
-              value.var = "hyads")
+      if( link.to == 'zips'){
+        data.h <- lapply(seq_along(files.month),
+                         disperseR::read_ziplinks_subfun,
+                         files.month)
+
+        MergedDT  <- rbindlist(data.h)
+        Merged_cast <-
+          dcast(MergedDT,
+                ZIP ~ ID,
+                fun.aggregate = sum,
+                value.var = "N")
       } else if( link.to == 'grids'){
         data.h <- lapply(seq_along(files.month),
-                         read_gridlinks_subfun,
+                         disperseR::read_gridlinks_subfun,
                          files.month)
 
-        #calculate consistent extent
-        data.h.e <- extent( Reduce( extend, data.h))
+        MergedDT  <- rbindlist(data.h)
+        Merged_cast <- dcast(MergedDT,
+                             x + y ~ ID,
+                             fun.aggregate = sum,
+                             value.var = "N")
 
-        #apply extent to all rasters, brick it!
-        data.h <- lapply( data.h, extend, data.h.e)
-        MergedDT <- brick( data.h)
-        crs( MergedDT) <- CRS( p4s)
-
-      } else if( link.to == 'counties'){
+        } else if( link.to == 'counties'){
         data.h <- lapply(seq_along(files.month),
-                         read_ziplinks_subfun,
+                         disperseR::read_countylinks_subfun,
                          files.month)
+
         MergedDT  <- rbindlist( data.h)
         Merged_cast <- dcast(MergedDT,
-                             statefp + countyfp + state_name + name + geoid ~ uID,
+                             statefp + countyfp + state_name + name + geoid ~ ID,
                              fun.aggregate = sum,
                              value.var = "N")
       }
@@ -81,7 +82,9 @@ combine_monthly_links <- function( month_YYYYMMs,
   # put all grid links on consistent extent
   if( link.to == 'grid'){
     # gather output
-    out.r <- mget(names.map)
+    out.d <- mget(names.map)
+    out.r <- lapply( out.d, rasterFromXYZ)
+    out.ids <- lapply( out.d, function( dt) names( dt))
 
     #calculate consistent extent
     out.e <- extent( Reduce( extend, out.r)) #lapply( out.r, extent)
@@ -100,13 +103,15 @@ combine_monthly_links <- function( month_YYYYMMs,
 
     #extract from list
     lapply( names( out.dt),
-            function( x, l){
-              names( l[[x]]) <- gsub( '^X', '', names( l[[x]]))
+            function( x, l, n){
+              names( l[[x]]) <- out.ids[[x]]
               assign( x, l[[x]], envir = parent.env( environment()))},
-            out.dt)
+            out.dt, out.ids)
   }
 
-  rda.filename <- file.path(rdata_dir, paste0( 'hyads_unwgted_', link.to, '.RData'))
+  if( is.null( filename))
+    filename <- paste0( 'hyads_unwgted_', link.to, '.RData')
+  rda.filename <- file.path(rdata_dir, filename)
   save(list = names.map, file = rda.filename)
 
   print(paste("Monthly RData file written to", rda.filename))
