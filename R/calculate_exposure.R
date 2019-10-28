@@ -1,13 +1,14 @@
 #' @export calculate_exposure
 calculate_exposure <- function(year.E,
-                                   year.D,
-                                   pollutant = 'SO2..tons.',
-                                   units.mo,
-                                   rda_file = 'loaded',
-                                   exp_dir = NULL,
-                                   source.agg = c('total', 'facility', 'unit'),
-                                   time.agg = c('year', 'month'),
-                                   return.monthly.data = F) {
+                               year.D,
+                               link.to = 'zips',
+                               pollutant = 'SO2..tons.',
+                               units.mo,
+                               rda_file = 'loaded',
+                               exp_dir = NULL,
+                               source.agg = c('total', 'facility', 'unit'),
+                               time.agg = c('year', 'month'),
+                               return.monthly.data = F) {
   `%ni%` <- Negate(`%in%`)
 
   #define defaults if none provided
@@ -30,15 +31,13 @@ calculate_exposure <- function(year.E,
   if (rda_file != 'loaded')
     load(rda_file, envir = environment())
 
-  map.name1 <- paste0("MAP", 1, ".", year.D)
-  if (rda_file == 'loaded'
-      & map.name1 %ni% ls(envir = globalenv())
-      & map.name1 %ni% ls())
-    stop(paste0(
-      "Data is loaded, but does not include ",
-      map.name1,
-      ', which is required for now.'
-    ))
+  # start with the first map available in the given year
+  # map.names <- paste0("MAP", 1:12, ".", year.D)
+  # for( m in 1:12){
+  #   test <- map.names[m] %in% ls(envir = globalenv()) | map.names[m] %in% ls()
+  #   if( test)
+  #     break
+  # }
 
   # Create directory to store output files if it does not exist
   if (is.null(exp_dir)) {
@@ -48,20 +47,19 @@ calculate_exposure <- function(year.E,
   dir.create(exp_dir, recursive = TRUE, showWarnings = F)
 
   #initiate exposure data.table
-  ZIPexposures <-  data.table()
+  exposures <-  data.table()
 
   #initiate list of monthly files
   monthly.filelist <- c()
 
   #Iterate over months of the year
   print(
-    paste(
-      "Calculating ZIP code exposures for HYSPLIT year ",
+    paste0(
+      "Calculating ", link.to, " exposures for HYSPLIT year ",
       year.D,
       " and emissions year ",
       year.E,
-      "!",
-      sep = ''
+      "!"
     )
   )
   for (i in 1:12) {
@@ -86,40 +84,41 @@ calculate_exposure <- function(year.E,
     }
     if (map.name %in% ls()) {
       month_mapping <-
-        data.table(eval(parse(text = map.name)))[ZIP != 'ZIP']
+        data.table(eval(parse(text = map.name)))
     } else{
       month_mapping <- data.table(eval(parse(text = map.name),
-                                       envir = globalenv()))[ZIP != 'ZIP']
+                                       envir = globalenv()))
     }
 
-    month_mapping[is.na(month_mapping)] <- 0
-    names(month_mapping) <-
-      gsub('_|-|\\*', '.', names(month_mapping))
-
-    #melt them to long format
+     #melt them to long format
     if( link.to == 'zips'){
       id.v <- 'ZIP'
+      month_mapping <- month_mapping[ZIP != 'ZIP']
     } else if( link.to == 'counties'){
       id.v <- c("statefp", "countyfp", "state.name", "name", "geoid")
     } else if( link.to == 'grids')
       id.v <- c('x', 'y')
+
+    month_mapping[is.na(month_mapping)] <- 0
+    names(month_mapping) <-
+      gsub('_|-|\\*', '.', names(month_mapping))
 
     month_mapping_long <- melt(
       month_mapping,
       id.vars = id.v,
       variable.factor = FALSE,
       variable.name = "uID",
-      value.name = "TrajPercent"
+      value.name = "N"
     )
-    if (sapply(month_mapping_long, class)['TrajPercent'] == 'character')
-      month_mapping_long[, `:=`(TrajPercent = as.double(TrajPercent))]
+    if (sapply(month_mapping_long, class)['N'] == 'character')
+      month_mapping_long[, `:=`(N = as.double(N))]
 
     #This is what I want - pollutant-weighted emissions trajectories
     PP.linkage <-
       merge(month_mapping_long,
             PP_monthly,
             by = 'uID',
-            all.x = T)
+            all.y = T)
 
     #  clean house
     rm(list = c('month_mapping_long', 'PP_monthly', 'month_mapping'))
@@ -128,46 +127,42 @@ calculate_exposure <- function(year.E,
     if (time.agg == 'year') {
       # define aggregation strings
       if (source.agg == 'total')
-        sum.by <- c('ZIP')
+        sum.by <- id.v
       if (source.agg == 'facility')
-        sum.by <- c('ZIP', 'FacID')
+        sum.by <- c(id.v, 'FacID')
       if (source.agg == 'unit')
-        sum.by <- c('ZIP', 'uID')
+        sum.by <- c(id.v, 'uID')
 
       # calculate exposure, label year/month
-      PP.linkage[, `:=` (Exposure  = pollutant * TrajPercent)]
+      PP.linkage[, `:=` (Exposure  = pollutant * N)]
 
       # Append running data frame
-      ZIPexposures <- data.table(rbind(ZIPexposures,
-                                       PP.linkage[, list(Exposure = sum(Exposure)),
-                                                  by = sum.by]))
+      exposures <- data.table(rbind(exposures,
+                                    PP.linkage[, list(Exposure = sum(Exposure)),
+                                               by = sum.by]))
 
       # sum over the year so far
-      ZIPexposures <- ZIPexposures[, list(Exposure = sum(Exposure)),
-                                   by = sum.by]
+      exposures <- exposures[, list(Exposure = sum(Exposure)),
+                             by = sum.by]
     } else {
       # define aggregation strings
       if (source.agg == 'total')
-        sum.by <- c('ZIP', 'yearmonth')
+        sum.by <- c(id.v, 'yearmonth')
       if (source.agg == 'facility')
-        sum.by <- c('ZIP', 'FacID', 'yearmonth')
+        sum.by <- c(id.v, 'FacID', 'yearmonth')
       if (source.agg == 'unit')
-        sum.by <- c('ZIP', 'uID', 'yearmonth')
+        sum.by <- c(id.v, 'uID', 'yearmonth')
 
       # add month
       PP.linkage[, `:=` (
-        Exposure  = pollutant * TrajPercent,
+        Exposure  = pollutant * N,
         yearmonth = paste0(year.E, i)
       )]
 
       # Append running data frame
-      ZIPexposures <- data.table(rbind(ZIPexposures,
-                                       PP.linkage[, list(Exposure = sum(Exposure)),
-                                                  by = sum.by]))[Exposure > 0]
-
-      setnames(ZIPexposures,
-               c('Exposure'),
-               c('hyads'))
+      exposures <- data.table(rbind(exposures,
+                                    PP.linkage[, list(hyads = sum(Exposure)),
+                                               by = sum.by]))[hyads > 0]
 
       # write to file, add monthly file to list if not empty data.table
       file.mo <- file.path(exp_dir,
@@ -179,33 +174,41 @@ calculate_exposure <- function(year.E,
                              )),
                              '.csv'
                            ))
-      if (nrow(ZIPexposures[ZIP != '   NA']) != 0) {
-        write.csv(ZIPexposures[ZIP != '   NA'],
+
+      if( link.to == 'zips')
+        exposures <- exposures[ZIP != '   NA']
+
+      if (nrow(exposures) != 0) {
+        write.csv(exposures,
                   file = file.mo)
         monthly.filelist[i] <- file.mo
       }
       #re-initiate ZIP exposure data.table
-      ZIPexposures <-  data.frame()
+      exposures <-  data.frame()
     }
 
   }
 
   if (time.agg == 'year') {
-    setnames(ZIPexposures,
+    setnames(exposures,
              c('Exposure'),
              c('hyads'))
-
+    exposures[,  `:=` (
+      year.E = year.E,
+      year.D = year.D
+    )]
     #convert 3-digit zip code to 5, add emissions and hysplit years
-    ZIPexposures$ZIP <-
-      formatC(
-        as.integer(ZIPexposures$ZIP),
-        width = 5,
-        flag = "0",
-        format = "d"
-      )
-    ZIPexposures$year.E <- year.E
-    ZIPexposures$year.D <- year.D
-    return(ZIPexposures[ZIP != '   NA'])
+    if( link.to == 'zips'){
+      exposures[,  `:=` (
+        ZIP = formatC(
+          as.integer(ZIP),
+          width = 5,
+          flag = "0",
+          format = "d"
+        ))]
+      exposures <- exposures[ZIP != '   NA']
+    }
+    return(exposures)
   } else {
     if (return.monthly.data) {
       out <- rbindlist(lapply(na.omit(monthly.filelist),
@@ -213,15 +216,13 @@ calculate_exposure <- function(year.E,
                               keepLeadingZeros = T,
                               drop = 'V1'))
       out[,  `:=` (
-        ZIP = formatC(
-          as.integer(out$ZIP),
-          width = 5,
-          flag = "0",
-          format = "d"
-        ),
         hyads = as(hyads, 'numeric')
       )]
-      return(out[ZIP != '   NA'])
+
+      if( link.to == 'zips')
+        out <- out[ZIP != '   NA']
+
+      return(out)
     } else
       return(monthly.filelist)
   }
