@@ -649,7 +649,21 @@ link_zip <- function(d,
       county.o <- over( county.sp,
                         r3,
                         fn = mean)
-      return( county.o)
+      county.dt <- data.table( county.o)
+      county.dt <- cbind( as.data.table( county.sp[, c( 'statefp', 'countyfp', 'state_name',
+                                                        'name', 'geoid')]),
+                          county.dt)
+      setnames( county.dt, names( r3), 'N')
+
+      # if "over" returned no matches, need a vector of NA's
+      if( nrow( county.dt) == 1 & is.na( county.dt[1, 1])){
+        county.dt <- cbind( as.data.table( county.sp[, c( 'statefp', 'countyfp', 'state_name',
+                                                          'name', 'geoid')]),
+                            data.table( X = as.numeric( rep( NA, length( county.sp)))))
+        setnames( county.dt, "X", 'N')
+      }
+
+      return( county.dt)
     }
 
     #crop zip codes to only use ones over the extent
