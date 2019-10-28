@@ -46,6 +46,7 @@ run_model <- function(model, npart = 2500, run.dir) {
         start_hour = model$start_hour,
         direction = ifelse(is.null(model$direction), "forward", model$direction),
         met_type = ifelse(is.null(model$met_type), "reanalysis", model$met_type),
+        met_dir = model$met_dir,
         vert_motion = ifelse(is.null(model$vert_motion), 0, model$vert_motion),
         model_height = ifelse(is.null(model$model_height), 20000, model$model_height),
         particle_num = npart,
