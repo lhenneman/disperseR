@@ -9,10 +9,6 @@
 #'
 #' @param pbl.height Monthly mean planetary boundary layer heights. See vignettes for more information
 #'
-#' @param crosswalk. Crosswalk ZCTA-to-ZIP. See vignettes for more information
-#'
-#' @param zcta. ZCTA shape file. See vignette for more information
-#'
 #' @param species The package has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`.
 #'
 #' @param proc_dir directory where the function saves temporary files while running. This is automatically defined by `create_dirs()`
@@ -33,8 +29,6 @@
 
 run_disperser_parallel <- function(input.refs = NULL,
   pbl.height = NULL,
-  crosswalk.= NULL,
-  zcta. = NULL,
   species = 'so2',
   proc_dir = proc_dir,
   overwrite = F,
@@ -50,8 +44,6 @@ run_disperser_parallel <- function(input.refs = NULL,
       FUN = run_fac,
       input.refs = input.refs,
       pbl.height = pbl.height,
-      crosswalk.= crosswalk.,
-      zcta. = zcta.,
       species =   species,
       proc_dir = proc_dir,
       overwrite = overwrite,
@@ -63,9 +55,7 @@ run_disperser_parallel <- function(input.refs = NULL,
 
 run_fac <- function(x,
   input.refs = input.refs,
-  crosswalk. = crosswalk,
   pbl.height = pbl.height,
-  zcta. = zcta.,
   species = species,
   npart = npart,
   overwrite = overwrite,
@@ -74,9 +64,6 @@ run_fac <- function(x,
 
   subset <- input.refs[x]
   print(subset)
-
-  zcta <- zcta.
-  crosswalk <- crosswalk.
 
   ## function to negate
   '%ni%' <- function(x, y) {
