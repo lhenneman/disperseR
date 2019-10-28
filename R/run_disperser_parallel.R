@@ -53,11 +53,10 @@ run_disperser_parallel <- function(input.refs = NULL,
       crosswalk.= crosswalk.,
       zcta. = zcta.,
       species =   species,
-      link2zip = link2zip,
       proc_dir = proc_dir,
       overwrite = overwrite,
       npart =  npart,
-      keep.hysplit.files,
+      keep.hysplit.files = keep.hysplit.files,
       mc.cores = mc.cores)
   }
 
@@ -70,7 +69,6 @@ run_fac <- function(x,
   species = species,
   npart = npart,
   overwrite = overwrite,
-  link2zip = link2zip,
   keep.hysplit.files,
   proc_dir = proc_dir) {
 
@@ -147,23 +145,6 @@ run_fac <- function(x,
   ))
   message(paste("output file", output_file))
 
-  zip_output_file <- file.path(
-    ziplink_dir,
-    paste0(
-      "single_ziplink_",
-      subset$ID,
-      "_",
-      subset$start_day,
-      "_",
-      formatC(
-        subset$start_hour,
-        width = 2,
-        format = "d",
-        flag = "0"
-      ),
-      ".csv"
-    )
-  )
 
   ## Initial output data.table
   out1 <-
@@ -173,9 +154,9 @@ run_fac <- function(x,
     )
 
   ## Check if output parcel locations file already exists
-  tmp.exists <- system(paste("ls -f", file.path(output_file)), intern = TRUE)
+  tmp.exists <- file.exists( file.path(output_file))
 
-  if (output_file %ni% tmp.exists | overwrite == TRUE) {
+  if (!tmp.exists | overwrite == TRUE) {
     message("Defining HYSPLIT model parameters and running the model.")
 
     ## Create run directory
@@ -197,14 +178,10 @@ run_fac <- function(x,
       disperseR::add_species(
         name = species_param$name,
         pdiam = species_param$pdiam,
-        # okay
         density = 0,
-        # okay
         shape_factor = 0,
-        # okay
-        #resuspension = species_param$resuspension
         ddep_vel = species_param$ddep_vel
-      ) %>% # okay
+      ) %>%
       disperseR::add_grid(range = c(0.5, 0.5),
         division = c(0.1, 0.1)) %>%
       disperseR::add_params(
@@ -215,7 +192,8 @@ run_fac <- function(x,
         start_day = as(subset$start_day, 'character'),
         start_hour = subset$start_hour,
         direction = "forward",
-        met_type = "reanalysis"
+        met_type = "reanalysis",
+        met_dir = meteo_dir
       ) %>%
       disperseR::run_model(npart = npart, run.dir = run_dir)
 
