@@ -1,69 +1,62 @@
 #' @export plot_impact_weighted
 
 plot_impact_weighted <- function(data.linked,
-  data.units,
-  zcta.dataset,
-  metric = 'hyads',
-  legend.text.angle = 0,
-  time.agg = 'year',
-  legend.lims = NULL,
-  plot.title = NULL,
-  legend.title = NULL,
-  map.month = NULL,
-  graph.dir = NULL,
-  zoom = TRUE) {
-
-
-  ### graph parameters
-  colorscale <- scale_color_viridis(
-    name = legend.title,
-    discrete = F,
-    option = 'magma',
-    limits = legend.lims,
-    oob = squish,
-    direction = 1,
-    na.value = NA,
-    guide = guide_colorbar(
-      title.position = 'top',
-      title.hjust = 0.5,
-      title.vjust = 0 ,
-      label.vjust = 1
-    )
- )
-
-  fillscale <- scale_fill_viridis(
-    name = legend.title,
-    discrete = F,
-    option = 'magma',
-    limits = legend.lims,
-    oob = squish,
-    direction = 1,
-    na.value = NA,
-    guide = guide_colorbar(
-      title.position = 'top',
-      title.hjust = 0.5,
-      title.vjust = 0,
-      label.vjust = 1
-    )
-  )
-
+                                 data.units,
+                                 link.to = 'zips',
+                                 zcta.dataset = NULL,
+                                 counties. = NULL,
+                                 metric = 'hyads',
+                                 legend.text.angle = 0,
+                                 time.agg = 'year',
+                                 legend.lims = NULL,
+                                 plot.title = NULL,
+                                 legend.title = NULL,
+                                 map.month = NULL,
+                                 graph.dir = NULL,
+                                 zoom = TRUE) {
 
   if (time.agg == "month") {
     data.linked <- data.linked[yearmonth == map.month]
-    zip_dataset_sf <-
-      data.table(merge(
-        zcta.dataset,
-        data.linked,
-        by = c('ZIP'),
-        all.y = T
-      ))
+    if( link.to == 'zips'){
+      dataset_sf <-
+        data.table(merge(
+          zcta.dataset,
+          data.linked,
+          by = c('ZIP'),
+          all.y = T
+        ))
+    } else if( link.to == 'counties'){
+      dataset_sf <- data.table(dataunits,
+                               merge(
+                                 counties.[, c( "statefp",
+                                                "countyfp",
+                                                "state_name",
+                                                "name",
+                                                "geoid",
+                                                "geometry")],
+                                 datareduced,
+                                 by = c( "statefp",
+                                         "countyfp",
+                                         "state_name",
+                                         "name",
+                                         "geoid"),
+                                 all.y = T
+                               ))
+    } else if( link.to == 'grids'){
+      dataset_r <- suppressWarnings( rasterFromXYZ( datareduced))
+      dataset_sp <- as( dataset_r, 'SpatialPolygonsDataFrame')
+      dataset_sf <- st_as_sf( dataset_sp)
+      suppressWarnings(
+        st_crs( dataset_sf$geometry) <-  "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
+      )
+    }
 
-    setnames(zip_dataset_sf, metric, 'metric')
-
-    zip_dataset_sfcoord <- zip_dataset_sf[, ZIP := as.numeric(ZIP)]
-    coord <- merge(disperseR::zipcodecoordinate, zip_dataset_sfcoord)
+    setnames(dataset_sf, metric, 'metric')
+    dataset_sf$geometry <- st_transform( dataset_sf$geometry, "+proj=longlat +datum=WGS84 +no_defs")
 
     ## coordinates
+    coord <- data.table( st_coordinates( na.omit( dataset_sf)$geometry))
+    setnames( coord, c( 'X', 'Y'), c( 'Longitude', 'Latitude'))
     if (zoom == T){
       long <- coord$Longitude
       minlong <-min(long) - 8
@@ -86,11 +79,43 @@ plot_impact_weighted <- function(data.linked,
     facility_loc = data.table(x = long, y = lat)
 
     if (is.null(legend.lims)) {
-      legend.lims <- c(0, quantile(zip_dataset_sf$metric, .95))
+      legend.lims <- c(0, quantile(dataset_sf$metric, .95))
     }
 
-    ## graph
+    ### graph parameters
+    colorscale <- scale_color_viridis(
+      name = legend.title,
+      discrete = F,
+      option = 'magma',
+      limits = legend.lims,
+      oob = squish,
+      direction = 1,
+      na.value = NA,
+      guide = guide_colorbar(
+        title.position = 'top',
+        title.hjust = 0.5,
+        title.vjust = 0 ,
+        label.vjust = 1
+      )
+    )
 
+    fillscale <- scale_fill_viridis(
+      name = legend.title,
+      discrete = F,
+      option = 'magma',
+      limits = legend.lims,
+      oob = squish,
+      direction = 1,
+      na.value = NA,
+      guide = guide_colorbar(
+        title.position = 'top',
+        title.hjust = 0.5,
+        title.vjust = 0,
+        label.vjust = 1
+      )
+    )
+
+    ## graph
     if (is.null(plot.title)) {
       stringmonth <-
         month.abb[as.numeric(substring(map.month, 5, nchar(map.month)))]
@@ -104,7 +129,7 @@ plot_impact_weighted <- function(data.linked,
     }
 
     gg <-
-      ggplot(data = zip_dataset_sf, aes(fill  = metric, color = metric)) +
+      ggplot(data = dataset_sf, aes(fill  = metric, color = metric)) +
       theme_bw() +
       labs(title = plot.title) +
       geom_sf(aes(geometry = geometry), size = 0.01) +
@@ -126,7 +151,7 @@ plot_impact_weighted <- function(data.linked,
       ) +
       scale_shape_discrete(solid = T) +
       ggplot2::coord_sf(xlim = c(minlong, maxlong),
-        ylim = c(minlat, maxlat)) +
+                        ylim = c(minlat, maxlat)) +
       colorscale +
       fillscale +
       theme(
@@ -155,20 +180,46 @@ plot_impact_weighted <- function(data.linked,
 
   if (time.agg == 'year') {
     ## prepare the data
-    zip_dataset_sf <-
-      data.table(merge(
-        zcta.dataset,
-        data.linked,
-        by = c('ZIP'),
-        all.y = T
-      ))
+    if( link.to == 'zips'){
+      dataset_sf <-
+        data.table(merge(
+          zcta.dataset,
+          data.linked,
+          by = c('ZIP'),
+          all.y = T
+        ))
+    } else if( link.to == 'counties'){
+      dataset_sf <- data.table(dataunits,
+                               merge(
+                                 counties.[, c( "statefp",
+                                                "countyfp",
+                                                "state_name",
+                                                "name",
+                                                "geoid",
+                                                "geometry")],
+                                 datareduced,
+                                 by = c( "statefp",
+                                         "countyfp",
+                                         "state_name",
+                                         "name",
+                                         "geoid"),
+                                 all.y = T
+                               ))
+    } else if( link.to == 'grids'){
+      dataset_r <- suppressWarnings( rasterFromXYZ( datareduced))
+      dataset_sp <- as( dataset_r, 'SpatialPolygonsDataFrame')
+      dataset_sf <- st_as_sf( dataset_sp)
+      suppressWarnings(
+        st_crs( dataset_sf$geometry) <-  "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
+      )
+    }
 
-    setnames(zip_dataset_sf, metric, 'metric')
-
-    zip_dataset_sfcoord <- zip_dataset_sf[, ZIP := as.numeric(ZIP)]
-    coord <- merge(disperseR::zipcodecoordinate, zip_dataset_sfcoord)
+    setnames(dataset_sf, metric, 'metric')
+    dataset_sf$geometry <- st_transform( dataset_sf$geometry, "+proj=longlat +datum=WGS84 +no_defs")
 
     ## coordinates
+    coord <- data.table( st_coordinates( na.omit( dataset_sf)$geometry))
+    setnames( coord, c( 'X', 'Y'), c( 'Longitude', 'Latitude'))
     if (zoom == T){
       long <- coord$Longitude
       minlong <-min(long) - 10
@@ -185,39 +236,68 @@ plot_impact_weighted <- function(data.linked,
       maxlat <- 50
     }
 
-
-
     long <- data.units$Longitude
     lat <- data.units$Latitude
-
     facility_loc = data.table(x = long, y = lat)
 
     if (is.null(legend.lims)) {
-      legend.lims <- c(0, quantile(zip_dataset_sf$metric, .95))
+      legend.lims <- c(0, quantile(dataset_sf$metric, .95))
     }
 
-    ## graph
+    ### graph parameters
+    colorscale <- scale_color_viridis(
+      name = legend.title,
+      discrete = F,
+      option = 'magma',
+      limits = legend.lims,
+      oob = squish,
+      direction = 1,
+      na.value = NA,
+      guide = guide_colorbar(
+        title.position = 'top',
+        title.hjust = 0.5,
+        title.vjust = 0 ,
+        label.vjust = 1
+      )
+    )
 
+    fillscale <- scale_fill_viridis(
+      name = legend.title,
+      discrete = F,
+      option = 'magma',
+      limits = legend.lims,
+      oob = squish,
+      direction = 1,
+      na.value = NA,
+      guide = guide_colorbar(
+        title.position = 'top',
+        title.hjust = 0.5,
+        title.vjust = 0,
+        label.vjust = 1
+      )
+    )
+
+    ## graph
     if (is.null(plot.title)) {
       plot.title = paste(
-        unique(zip_dataset_sf$year.E),
+        unique(dataset_sf$year.E),
         'HyADS Exposure from Units:',
         paste(unique(data.units$ID), collapse = ', ')
       )
     }
 
     gg <-
-      ggplot(data = zip_dataset_sf, aes(fill  = metric, color = metric)) +
+      ggplot(data = dataset_sf, aes(fill  = metric, color = metric)) +
       theme_bw() +
       labs(title = plot.title) +
-      geom_sf(aes(geometry = geometry), size = 0.01) +
       geom_polygon(
         data = map_data("state"),
         aes(x = long, y = lat, group = group),
-        fill = NA,
+        fill = 'white',
         colour = "grey50",
         size = .25
       ) +
+      geom_sf(aes(geometry = geometry), size = 0.01) +
       geom_point(
         data = facility_loc,
         aes(x = x, y = y),
@@ -231,7 +311,7 @@ plot_impact_weighted <- function(data.linked,
       colorscale +
       fillscale +
       ggplot2::coord_sf(xlim = c(minlong, maxlong),
-        ylim = c(minlat, maxlat)) +
+                        ylim = c(minlat, maxlat)) +
       theme(
         plot.title = if (!is.null(plot.title)) {
           element_text(size = 10, hjust = 0.5)
