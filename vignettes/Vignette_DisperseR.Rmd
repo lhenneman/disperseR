@@ -90,7 +90,7 @@ This package contains annual emissions and stack height data from [EPA's Air Mar
 You can visualize the data like this in RStudio:
 
 ```{r}
-#View(disperseR::units)
+View(disperseR::units)
 ```
 
 
@@ -119,7 +119,7 @@ unitsrun<-data.table::data.table(rbind(unitsrun2005, unitsrun2006))
 
 HYSPLIT, as applied here, tracks air parcels emitted at certain times and locations. `disperseR` refers to these as *emissions events*. Once HYSPLIT has been run for each emissions event, the simulated parcel locations are aggregated by source, time, and location. The functions below are written to enable runs of many emissions events.
 
-To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the startday argument, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground. The result of running this function is a `data.table` that you can see below. 
+To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the startday argument, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is reasonable first-order upper bound of sulfur's atmospheric lifetime. The result of running this function is a `data.table` that you can see below. 
 
 ```{r}
 input_refs <- disperseR::define_inputs(units = unitsrun,
@@ -132,9 +132,9 @@ head(input_refs)
 ```
 
 ### Run HYSPLIT
-The following examples show how to run a small subset (chosen to provide workable examples on a laptop) of emissions events, link to ZIP codes, and plot the results.
+The following examples show how to run a small subset (chosen to provide workable examples on a laptop) of emissions events, link to spatial domains---U.S. ZIP codes, U.S. counties, or a regular grid---and plot the results.
 
-The `run_disperser_parallel()` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shape file (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. With `link2zip = T` you can link dispersion patterns from individual emissions events to ZIP codes; this, however, somewhat violates the spirit of HyADS, since the large number of emissions events is used as a check on some other uncertainties introduced by the simplifying assumptions. 
+The `run_disperser_parallel()` function runs HYSPLIT for each emissions event. Inputs defined above, including the projected ZCTA shape file (`zcta`), the ZIP-ZCTA crosswalk (`crosswalk`), the planetary boundary layer raster (`pblheight`), are necessary in the function call. 
 
 **If you get an error running HYSPLIT, it is likely because the meteorology files did not download correctly. Check your `meteo_dir` to ensure all files are present and at least 100MB in size.**
 
@@ -148,7 +148,7 @@ input_refs_subset <- input_refs[format(as.Date(input_refs$start_day,
 
 `input.refs` should be the data table that is the result of the `define_input()` function. Remember that here we are running the model just on a subset so we will set `input.refs = input_refs_subset`
 
-The `ztca.`, `crosswalk.`, and `pbl.height` arguments are `NULL` by default but you should provide them for the function to run properly. We use the `zcta`, `crosswalk`, and `pblheight` data respectively.
+The `pbl.height` argument is `NULL` by default but you should provide it for the function to run properly. We use the `pblheight` data.
 
 The package has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`. 
 
@@ -159,29 +159,26 @@ It is possible that running the below code with output a warning "WARNING: map b
 
 ```{r}
 hysp_raw <- disperseR::run_disperser_parallel(input.refs = input_refs_subset,
-  pbl.height = pblheight,
-  crosswalk.= crosswalk, 
-  zcta. = zcta, 
-  species = 'so2',
-  link2zip = FALSE, ## FALSE BY DEFAULT
-  proc_dir = proc_dir,
-  overwrite = FALSE, ## FALSE BY DEFAULT
-  npart = 100,
-  keep.hysplit.files = FALSE, ## FALSE BY DEFAULT
-  mc.cores = parallel::detectCores()) 
+   pbl.height = pblheight,
+   species = 'so2',
+   proc_dir = proc_dir,
+   overwrite = FALSE, ## FALSE BY DEFAULT
+   npart = 100,
+   keep.hysplit.files = FALSE, ## FALSE BY DEFAULT
+   mc.cores = parallel::detectCores())
 
 
 ```
 
 
-### Link results to ZIP codes
+### Link results to spatial domains
 
 Most current implementations of HyADS, instead of linking dispersion patterns from individual emissions events, link the patterns by month. 
-With the `link_all_units_zip()` function, users can link all air parcels to ZIP codes by month for specified units. Here, we define the variables `yearmons` with combinations of years and months. `link_all_units_zip()` uses another function called `disperser_link_zip()` that runs in the background and reads in all the relevant files (i.e., those that correspond to the provided units) produced by the `run_disperser_parallel()` function and saves them. Then it links them to ZIP codes. `link_all_units_zip()` can be set to paralelize the runs by splitting different months on different cores, but you can make it serial just by setting the `mc.cores = 1`. The result of `dipserser_link_zip()` is a data.table of ZIP codes and relative contributions `N`, and an identical `.csv` file is saved to the folder with a path specified by the `ziplink_dir` variable. `N` is not weighted by the `unit`'s emissions. 
+With the `link_all_units()` function, users can link all air parcels to three spatial domains---U.S. ZIP codes, U.S. counties, or a regular grid---by month for specified units. Here, we define the variables `yearmons` with combinations of years and months. `link_all_units()` uses the support functions `disperser_link_zips()`, `disperser_link_counties()`, `disperser_link_grids()` to read in raw HYSPLIT output files produced by the `run_disperser_parallel()` and links the corresponding parcel locations to the appropriate spatial domain. The user selects the spatial domain through the `link.to` argument---it can be set to one of "zips", "counties", or "grids".
 
-Below we present how to use `link_all_units_zip()` for chosen units. First choose the months that you would like to run the function for. Here we only choose Jan and Jul of 2005.
+`link_all_units()` can be set to paralelize the runs by splitting different months on different cores, but you can make it serial just by setting the `mc.cores = 1`. The result of `link_all_units()` is a data.table of ZIP codes, counties, or grids and relative contributions `N`, and an identical `.csv` file is saved to the folder with a path specified by the `ziplink_dir` variable. `N` is not weighted by the `unit`'s emissions. 
 
-If you, for example, you want to run `link_all_units_zip()` for Jan-March 2005, you just have to use the `get_yearmon()` function and set  `start.year = "2005"`, `start.month = "01"`, `end.year = "2005"`, and `end.month = "03"`.
+Below we present how to use `link_all_units()` for chosen units. First, we create an argument (called `yearmons` here) denoting the year and month combinations for which we would like to calculate unweighted exposure. Here we only choose July 2005 through June 2006 to cover all of the example runs specified above, and we create the variable using the `get_yearmon()` function.
 
 ```{r}
 yearmons <- disperseR::get_yearmon(start.year = "2005", 
@@ -196,112 +193,204 @@ Let's look again at our `unitsrun` data set.
 unitsrun
 ```
 
-We only have three units in our `unitsrun` data set. "3136-1", "3136-2" and "3149-1". We will run `link_all_units_zip()`for all of them.
-
-The function will return only the values for units and months that could have been linked to one another. 
-
-If you wanted to run `link_all_units_zip()` just for "3149-1" for example, run the code that we commented out below. 
-
-```{r}
-#unitsrun<-unitsrun[ID=="3149-1"]
-```
+We only have three units in our `unitsrun` data set. "3136-1", "3136-2" and "3149-1". We will run `link_all_units()` for all of them (it is possible to pass `link_all_units()` a single unit if desired). The function will return only the values for units and months that could have been linked to one another. 
 
 If you want to run the function for a specific start and end date you can specify the `start.date` and the `end.date` arguments. For example, `start.date="2005-01-02"` for 2 January 2005. These arguments are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided. 
 
-`pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk`. As mentioned before  `link_all_units_zip()` enables the parallel run by default splitting different months on different cores, but you can make it serial just by setting the `mc.cores` argument to `1`. `duration.run.hours = 240` by default which equals 10 days. As mentioned above 10 days is the maximum (approximately) that sulfur stays in the atmosphere before it deposits to the ground.
+`pbl.height = pblheight` by default but you can change it. The same applies to `crosswalk. = crosswalk` (`crosswalk.` is only required for linking to ZIP codes). `counties.` is required for linking to counties, and is set as `counties. = USAboundaries::us_counties( )` by default. If you'd only like to save time and only link to ZIP codes or counties in a subset of the country, provide `crosswalk.` or `counties.` that correspond to the domain of interest.
+
+Changing `duration.run.hours` to values less than that applied in `run_disperser_parallel()` allows the exploration of air parcel locations in closer time proximity to each emissions event.
+
+`res.link` sets the grid resolution in meters (default is 12000 or 12km). Since parcel locations are first assigned to a grid before further spatial allocation, this setting has the potential to impact all results. A higher `res.link` with `link.to = "grids"` will result in faster run time and smaller output files.
 
 ```{r}
-data_linked_zips <- disperseR::link_all_units_zip(units.run=unitsrun, 
-  mc.cores = parallel::detectCores(), 
+linked_zips <- disperseR::link_all_units(units.run = unitsrun,
+  link.to = 'zips',
+  mc.cores = parallel::detectCores(),
   year.mons = yearmons,
   pbl.height = pblheight,
   crosswalk. = crosswalk,
-  duration.run.hours = 240,
+  duration.run.hours = 20,
+  res.link = 12000,
+  overwrite = FALSE)
+
+# link all units to counties
+linked_counties <- disperseR::link_all_units(units.run=unitsrun,
+  link.to = 'counties',
+  mc.cores = parallel::detectCores(),
+  year.mons = yearmons,
+  pbl.height = pblheight,
+  counties. = USAboundaries::us_counties( ),
+  crosswalk. = NULL,
+  duration.run.hours = 20,
+  overwrite = FALSE)
+
+# link all units to grids
+linked_grids <- disperseR::link_all_units(units.run=unitsrun,
+  link.to = 'grids',
+  mc.cores = parallel::detectCores(),
+  year.mons = yearmons,
+  pbl.height = pblheight,
+  crosswalk. = NULL,
+  duration.run.hours = 20,
   overwrite = FALSE)
 
 
-head(data_linked_zips)
+head(linked_zips)
+head(linked_counties)
+head(linked_grids)
 ```
 
-It could be the case that data could not have been linked for a specific month and unit. Below we show how to take a look at the combinations of units and months that were successfully linked. 
-
-We can easily do it in the following way:
+It could be the case that data could not have been linked for a specific month and unit. Below we show how to take a look at the combinations of units and months that were successfully linked. We can easily do it in the following way:
 
 ```{r}
-unique(data_linked_zips$comb)
+unique(linked_zips$comb)
 ```
 
 ### Visualization of the results. 
 
 At this point, it makes sense to take a look at the results to see which ZIP codes are impacted by emissions from the facility whose impacts we modeled above. We can see how the impact looks by looking at numbers and plots. We will first just look at the numbers. For this purpose, we created a function `create_impact_table_single()` that generates a specific data.table.
 
-
 And now we can use the `create_impact_table_single()` function to see the computed impact for a single month and a single unit. 
 
-Keep in mind, since we only modeled a subset of the potential model runs defined in `input_refs()`, the impacts contained in `impact_table_single` and plotted below include only results from a single emissions event. Further, the plotted values are "HyADS raw exposure", and are comparable only to a relative exposure of 0. So, a value of 0.01 represents 10x more exposure than a value of 0.001, but only in relation to unit 3136-1.
+Keep in mind, since we only modeled a subset of the potential model runs defined in `input_refs()`, the impacts contained in `impact_table_single` and plotted below include only results from a single emissions event. Further, the plotted values are "HyADS raw exposure", i.e., not weighted by emissions. So, a value of 0.01 represents 10x more exposure than a value of 0.001, but only in relation to unit 3136-1.
+
+We select the spatial link based on the `link.to` argument. The function returns data.tables that include an `sf` geometry column for easy plotting.
 
 ```{r}
-impact_table_single <- disperseR::create_impact_table_single(data.linked=data_linked_zips, 
-  data.units = unitsrun,
-  zcta.dataset = zcta_dataset,  
-  map.unitID = "3136-1",
-  map.month = "200511", 
-  metric = 'N')
+impact_table_zip_single <- disperseR::create_impact_table_single(data.linked=linked_zips,
+                                                             link.to = 'zips',
+                                                             data.units = unitsrun,
+                                                             zcta.dataset = zcta_dataset,
+                                                             map.unitID = "3136-1",
+                                                             map.month = "200511",
+                                                             metric = 'N')
+impact_table_county_single <- disperseR::create_impact_table_single(data.linked=linked_counties,
+                                                                    link.to = 'counties',
+                                                                    data.units = unitsrun,
+                                                                    counties. = USAboundaries::us_counties( ),
+                                                                    map.unitID = "3136-1",
+                                                                    map.month = "200511",
+                                                                    metric = 'N')
+impact_table_grid_single <- disperseR::create_impact_table_single(data.linked=linked_grids,
+                                                                    link.to = 'grids',
+                                                                    data.units = unitsrun,
+                                                                    map.unitID = "3136-1",
+                                                                    map.month = "200511",
+                                                                    metric = 'N')
 
 head(impact_table_single)
 ```
 
-`zoom = T` by default and is authomatically adjusted depending on the plot values. You can set `zoom = F` to display the map of the whole country. 
-
 In a similar way we can just plot the results using the `plot_impact_single()` function. A customized title can be set using the `plot.title` argument.
 
 ```{r, fig.height = 7, fig.width = 7}
-ziplink_plot <- disperseR::plot_impact_single(data.linked = data_linked_zips, 
-  map.unitID = "3136-1",
-  map.month = "20061", 
-  data.units = unitsrun,
-  zcta.dataset = zcta_dataset,  
-  metric = 'N',
-  graph.dir = graph_dir, 
-  legend.text.angle = 0, # 0 by default
-  zoom = T, # TRUE by default
-  legend.title = 'HyADS raw exposure')
+link_plot_zips <- disperseR::plot_impact_single(data.linked = linked_zips,
+                                                link.to = 'zips',
+                                                map.unitID = "3136-1",
+                                                map.month = "20061",
+                                                data.units = unitsrun,
+                                                zcta.dataset = zcta_dataset,
+                                                metric = 'N',
+                                                graph.dir = graph_dir,
+                                                legend.text.angle = 0, # 0 by default
+                                                zoom = T, # TRUE by default
+                                                legend.title = 'HyADS raw exposure')
+link_plot_grids <- disperseR::plot_impact_single(data.linked = linked_grids,
+                                                 link.to = 'grids',
+                                                 map.unitID = "3136-1",
+                                                 map.month = "20061",
+                                                 data.units = unitsrun,
+                                                 metric = 'N',
+                                                 graph.dir = graph_dir,
+                                                 legend.text.angle = 0, # 0 by default
+                                                 zoom = F, # TRUE by default
+                                                 legend.title = 'HyADS raw exposure')
+link_plot_counties <- disperseR::plot_impact_single(data.linked = linked_counties,
+                                                 link.to = 'counties',
+                                                 map.unitID = "3136-1",
+                                                 map.month = "20061",
+                                                 counties. = USAboundaries::us_counties( ),
+                                                 data.units = unitsrun,
+                                                 metric = 'N',
+                                                 graph.dir = graph_dir,
+                                                 legend.text.angle = 0, # 0 by default
+                                                 zoom = T, # TRUE by default
+                                                 legend.title = 'HyADS raw exposure')
   
-ziplink_plot
+link_plot_zips
+link_plot_grids
+link_plot_counties
 ```
+
+`zoom = T` by default and is authomatically adjusted depending on the plot values. You can set `zoom = F` to display the map of the whole country. 
 
 ### Combine all results into RData file.
 So far, we have run two worker functions important to the implementation of HyADS:
 
-`run_disperser_parallel()` ran HYSPLIT for unit-date-time emission event combinations and saved an output file for each gathered output files from `run_disperser_parallel()`. Then the `link_all_units_zip()` function grouped them by month and unit, and linked the HYSPLIT parcel locations contained in the files to ZIP codes.
-In practice, these two worker functions may need to be implemented in parallel R sessions on a cluster to improve efficiency. It helps for future analyses to gather the relevant monthly files and save them as a single RData file. This is made possible by `combine_monthly_ziplinks()`, which saves an RData file of annual monthly results to the `rda_dir`.
+`run_disperser_parallel()` ran HYSPLIT for unit-date-time emission event combinations and saved an output file for each gathered output files from `run_disperser_parallel()`. Then the `link_all_units()` function grouped them by month and unit, and linked the HYSPLIT parcel locations contained in the files to various three different scales.
+In practice, these two worker functions may need to be implemented in parallel R sessions on a cluster to improve efficiency. It helps for future analyses to gather the relevant monthly files and save them as a single RData file. This is made possible by `combine_monthly_links()`, which saves an RData file of annual monthly results to the `rda_dir`.
 
 
 
 ```{r}
-combined_ziplinks <- disperseR::combine_monthly_ziplinks(month_YYYYMMs = yearmons)
+combined_ziplinks <- disperseR::combine_monthly_links(month_YYYYMMs = yearmons,
+                                                      link.to = 'zips',
+                                                      filename = 'hyads_vig_unwgted_zips.RData')
+combined_countylinks <- disperseR::combine_monthly_links(month_YYYYMMs = yearmons,
+                                                         link.to = 'counties',
+                                                         filename = 'hyads_vig_unwgted_counties.RData')
+combined_gridlinks <- disperseR::combine_monthly_links(month_YYYYMMs = yearmons,
+                                                       link.to = 'grids',
+                                                       filename = 'hyads_vig_unwgted_grids.RData')
 names(combined_ziplinks)
 ```
 
 ## Calculate and extract useful information from the results
-Up until now, this vignette has focused on producing unweighted HyADS results.Once the procedure above has been followed, it is fairly straightforward to weight the unweighted HyADS results by emissions (or other quantity) and aggregate the results by source, receptor, and/or time period. 
+Up until now, this vignette has focused on producing unweighted HyADS results. Once the procedure above has been followed, it is fairly straightforward to weight the unweighted HyADS results by emissions (or other quantity) and aggregate the results by source, receptor, and/or time period. 
 
 ### Weight the results by emissions
 
-The `create_impact_table_weighted()` function takes as input the .RData file created by `combine_monthly_ziplinks()` and monthly power plant emissions. The user can select the disperseR year (`year.D`), the emissions year (`year.E`), the weighting pollutant (although it does not necessarily have to be a pollutant), the source aggregation (you can choose `source.agg = "total"`, `source.agg = "facility"`, or `source.agg = "unit"`), the time aggregation (`time.agg = "month"` or `time.agg = "year"`). 
+The `create_impact_table_weighted()` function takes as input the .RData file created by `combine_monthly_links()` and monthly power plant emissions. The user can select the disperseR year (`year.D`), the emissions year (`year.E`), the weighting pollutant (although it does not necessarily have to be a pollutant), the source aggregation (you can choose `source.agg = "total"`, `source.agg = "facility"`, or `source.agg = "unit"`), the time aggregation (`time.agg = "month"` or `time.agg = "year"`). 
 
 Here, we first calculate the annual HyADS emissions weighted exposure for all emissions modeled above and plot the results. The plots require a large amount of working memory, and may require you to clear your image history (if using RStudio).
 
 ```{r}
-zip_exp_ann <- disperseR::calculate_zip_exposure(
-  rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
-  units.mo = PP.units.monthly1995_2017,
-  year.E = 2006,
-  year.D = 2006,
-  pollutant = 'SO2.tons',
-  source.agg = 'total',
-  time.agg = 'year',
-  exp_dir = exp_dir)
+exp_ann_unit_zip <- disperseR::calculate_exposure(year.E = 2005,
+                                                  year.D = 2005,
+                                                  link.to = 'zips',
+                                                  pollutant = 'SO2.tons',
+                                                  rda_file = file.path(rdata_dir,
+                                                                       "hyads_vig_unwgted_zips.RData"),
+                                                  exp_dir = exp_dir,
+                                                  units.mo = PP.units.monthly1995_2017,
+                                                  source.agg = 'unit',
+                                                  time.agg = 'month',
+                                                  return.monthly.data = T)
+
+exp_ann_unit_grids <- disperseR::calculate_exposure(year.E = 2005,
+                                                    year.D = 2005,
+                                                    link.to = 'grids',
+                                                    pollutant = 'SO2.tons',
+                                                    rda_file = file.path(rdata_dir,
+                                                                         "hyads_vig_unwgted_grids.RData"),
+                                                    exp_dir = exp_dir,
+                                                    units.mo = PP.units.monthly1995_2017,
+                                                    source.agg = 'unit',
+                                                    time.agg = 'month',
+                                                    return.monthly.data = T)
+
+exp_ann_unit_counties <- disperseR::calculate_exposure(year.E = 2005,
+                                                       year.D = 2005,
+                                                       link.to = 'counties',
+                                                       pollutant = 'SO2.tons',
+                                                       rda_file = file.path(rdata_dir,
+                                                                            "hyads_vig_unwgted_counties.RData"),
+                                                       exp_dir = exp_dir,
+                                                       units.mo = PP.units.monthly1995_2017,
+                                                       source.agg = 'unit',
+                                                       time.agg = 'month',
+                                                       return.monthly.data = T)
 ```
 
 We can plot the results as following using the `plot_impact_weighted()` function. Again, a customized title can be set using the `plot.title` argument. 
