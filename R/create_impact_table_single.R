@@ -77,6 +77,8 @@ create_impact_table_single <- function(data.linked,
       st_crs( dataset_sf$geometry) <-  "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
     )
     setnames(dataset_sf, metric, 'metric')
+    dataset_sf$ID <- datareduced$ID
+    dataset_sf$comb <- datareduced$comb
     myVector <- names( dataset_sf)
   }
 
