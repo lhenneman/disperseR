@@ -13,14 +13,14 @@ calculate_exposure <- function(year.E,
 
   #define defaults if none provided
   if (length(source.agg) > 1) {
-    print('Multiple source.agg provided, deaulting to "total".')
+    message('Multiple source.agg provided, deaulting to "total".')
     source.agg <- 'total'
   }
   if (source.agg %ni% c('total', 'facility', 'unit')) {
     stop('source.agg not recognized, please provide one of c("total", "facility", "unit").')
   }
   if (length(time.agg) > 1) {
-    print('Multiple time.agg provided, deaulting to "year".')
+    message('Multiple time.agg provided, deaulting to "year".')
     time.agg <- 'year'
   }
   if (time.agg %ni% c('year', 'month')) {
@@ -42,7 +42,7 @@ calculate_exposure <- function(year.E,
   # Create directory to store output files if it does not exist
   if (is.null(exp_dir)) {
     exp_dir <- file.path(getwd(), 'rdata_hyspdisp')
-    print(paste('No exp_dir provided. Defaulting to', exp_dir))
+    message(paste('No exp_dir provided. Defaulting to', exp_dir))
   }
   dir.create(exp_dir, recursive = TRUE, showWarnings = F)
 
@@ -53,7 +53,7 @@ calculate_exposure <- function(year.E,
   monthly.filelist <- c()
 
   #Iterate over months of the year
-  print(
+  message(
     paste0(
       "Calculating ", link.to, " exposures for HYSPLIT year ",
       year.D,
@@ -74,8 +74,8 @@ calculate_exposure <- function(year.E,
     map.name <- paste0("MAP", i, ".", year.D)
     if (map.name %ni% ls(envir = globalenv())
         & map.name %ni% ls()) {
-      warning(
-        paste(
+      message(
+        paste('  ',
           map.name,
           'not loaded in environment. If you want it linked, either load RData file before or specify rda_file'
         )
@@ -95,13 +95,13 @@ calculate_exposure <- function(year.E,
       id.v <- 'ZIP'
       month_mapping <- month_mapping[ZIP != 'ZIP']
     } else if( link.to == 'counties'){
-      id.v <- c("statefp", "countyfp", "state.name", "name", "geoid")
+      id.v <- c("statefp", "countyfp", "state_name", "name", "geoid")
     } else if( link.to == 'grids')
       id.v <- c('x', 'y')
 
     month_mapping[is.na(month_mapping)] <- 0
-    names(month_mapping) <-
-      gsub('_|-|\\*', '.', names(month_mapping))
+    names(month_mapping)[names(month_mapping) %ni% 'state_name'] <-
+      gsub('_|-|\\*', '.', names(month_mapping)[names(month_mapping) %ni% 'state_name'])
 
     month_mapping_long <- melt(
       month_mapping,
