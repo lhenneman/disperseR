@@ -400,18 +400,48 @@ Same as before, `zoom = T` by default and is authomatically adjusted depending o
 Please note that the produced graph will be automatically saved in the folder specified in the `graph.dir` argument. Here we set `graph.dir  = graph_dir`. `graph_dir` should have been automatically created by the `create_dirs()` function. 
 
 ```{r, fig.height = 7, fig.width = 7}
-zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked = zip_exp_ann,
-  data.units = unitsrun,
-  zcta.dataset = zcta_dataset,  
-  time.agg = 'year',
-  metric = 'hyads',
-  legend.title = 'Aggregate HyADS exposure',  
-  zoom = T, # TRUE by default
-  graph.dir = graph_dir, 
-  map.month = NULL, # NULL by default change if time.agg = 'month'
-  legend.text.angle = 0) # 0 by default
+zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked = exp_ann_unit_zip,
+                                                    data.units = unitsrun,
+                                                    link.to = 'zips',
+                                                    zcta.dataset = zcta_dataset,
+                                                    time.agg = 'year',
+                                                    metric = 'hyads',
+                                                    legend.name = 'Aggregate HyADS exposure',
+                                                    zoom = T, # TRUE by default
+                                                    graph.dir = graph_dir,
+                                                    map.month = NULL, # NULL by default change if time.agg = 'month'
+                                                    # other parameters passed to ggplot2::theme()
+                                                    axis.text = element_blank(),
+                                                    legend.position = c( .75, .15)) # 0 by default
+counties_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked = exp_ann_unit_counties,
+                                                      data.units = unitsrun,
+                                                      link.to = 'counties',
+                                                      counties. = USAboundaries::us_counties( ),
+                                                      time.agg = 'year',
+                                                      metric = 'hyads',
+                                                      legend.name = 'Aggregate HyADS exposure',
+                                                      zoom = T, # TRUE by default
+                                                      graph.dir = graph_dir,
+                                                      map.month = NULL, # NULL by default change if time.agg = 'month'
+                                                      # other parameters passed to ggplot2::theme()
+                                                      axis.text = element_blank(),
+                                                      legend.position = c( .75, .15)) # 0 by default
+grids_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked = exp_ann_unit_grids,
+                                                      data.units = unitsrun,
+                                                      link.to = 'grids',
+                                                      time.agg = 'year',
+                                                      metric = 'hyads',
+                                                      legend.name = 'Aggregate HyADS exposure',
+                                                      zoom = T, # TRUE by default
+                                                      graph.dir = graph_dir,
+                                                      map.month = NULL, # NULL by default change if time.agg = 'month'
+                                                      # other parameters passed to ggplot2::theme()
+                                                      axis.text = element_blank(),
+                                                      legend.position = c( .75, .15)) # 0 by default
 
 zip_exp_ann_plot
+counties_exp_ann_plot
+grids_exp_ann_plot
 ```
 
 Let's now see how to plot a monthly exposure. 
