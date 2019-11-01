@@ -10,10 +10,10 @@ plot_impact_single  <- function(data.linked,
                                 plot.title = NULL,
                                 metric = 'N',
                                 legend.lims = NULL,
-                                legend.title = NULL,
+                                legend.name = NULL,
                                 graph.dir = NULL,
-                                zoom = T ,
-                                legend.text.angle = 0) {
+                                zoom = TRUE,
+                                ...) {
 
   dataset_sf <- create_impact_table_single(data.linked = data.linked,
                                            data.units = data.units,
@@ -24,6 +24,7 @@ plot_impact_single  <- function(data.linked,
                                            map.unitID = map.unitID,
                                            metric = metric)
   dataset_sf$geometry <- st_transform( dataset_sf$geometry, "+proj=longlat +datum=WGS84 +no_defs")
+  year.use <- as( substr( map.month, 1, 4), 'integer')
 
   ## coordinates
   coord <- data.table( st_coordinates( na.omit( dataset_sf)$geometry))
@@ -56,7 +57,7 @@ plot_impact_single  <- function(data.linked,
 
   ### graph parameters
   colorscale <- scale_color_viridis(
-    name = legend.title,
+    name = legend.name,
     discrete = F,
     option = 'magma',
     limits = legend.lims,
@@ -72,7 +73,7 @@ plot_impact_single  <- function(data.linked,
   )
 
   fillscale <- scale_fill_viridis(
-    name = legend.title,
+    name = legend.name,
     discrete = F,
     option = 'magma',
     limits = legend.lims,
@@ -89,6 +90,8 @@ plot_impact_single  <- function(data.linked,
 
   ## graph
 
+
+  # make a title if missing
   if (is.null(plot.title)) {
     stringmonth <-
       month.abb[as.numeric(substring(map.month, 5, nchar(map.month)))]
@@ -97,6 +100,23 @@ plot_impact_single  <- function(data.linked,
       map.unitID
     )
   }
+
+  # make a default
+  theme.default <- theme(
+    plot.title = if (!is.null(plot.title)) {
+      element_text(size = 16, hjust = 0.5)
+    } else
+      element_blank(),
+    axis.title = element_blank(),
+    legend.position = c(.20, .15),
+    legend.text = element_text(size = 8),
+    legend.background = element_rect(fill = 'transparent'),
+    legend.key.size = unit(.05, 'npc'),
+    legend.direction = 'horizontal'
+  )
+
+
+  # make the plot
   gg <-
     ggplot(data = dataset_sf, aes(fill  = metric, color = metric)) +
     theme_bw() +
@@ -123,19 +143,9 @@ plot_impact_single  <- function(data.linked,
                       ylim = c(minlat, maxlat)) +
     colorscale +
     fillscale +
+    theme.default +
     theme(
-      plot.title = if (!is.null(plot.title)) {
-        element_text(size = 16, hjust = 0.5)
-      } else
-        element_blank(),
-      axis.title = element_blank(),
-      axis.title.x = element_blank(),
-      axis.title.y = element_blank(),
-      legend.position = c(.20, .15),
-      legend.text = element_text(size = 8, angle = legend.text.angle),
-      legend.background = element_rect(fill = 'transparent'),
-      legend.key.size = unit(.05, 'npc'),
-      legend.direction = 'horizontal'
+      ...
     )
 
   if (!(is.null(graph.dir))) {
