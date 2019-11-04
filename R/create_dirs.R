@@ -20,6 +20,8 @@ create_dirs <- function(location=file.path('~', 'Desktop')) {
   ## Main - Project Folder
   main_dir <- file.path(location, 'main')
   assign("main_dir", main_dir, envir = .GlobalEnv)
+  if( file.exists(main_dir))
+    message("main directory exists -- don't worry, I'm not overwriting anything!")
   dir.create(main_dir, showWarnings = FALSE)
 
   ###### Input

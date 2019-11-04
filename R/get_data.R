@@ -1,11 +1,3 @@
-
-##########################################################################################
-##########################################################################################
-
-##########################################################################################
-##########################################################################################
-
-
 #' create a set of directories to run disperseR
 #'
 #' \code{get_data}
@@ -119,9 +111,14 @@ get_data <-
         message("   File already exist, not downloading.")
       }
 
+      zcta.shp <- file.path(directory, 'cb_2017_us_zcta510_500k.shp')
+      if (!file.exists(zcta.shp)) {
+        message("   Unzipping ZCTA file.")
+        unzip( file, exdir = zcta_dir)
+      }
+
       message("   Starting Preprocessing")
-      zcta <- file.path(directory, 'cb_2017_us_zcta510_500k.shp')
-      zcta <- raster::shapefile(x = zcta)
+      zcta <- raster::shapefile(x = zcta.shp)
       # It is recommended to transform the ZCTA shapefile to a known projection to maintain consistency throughout the allocation process.
       # Lat-lon projections are preferred, such as the [North American Albers Equal Area Conic](https://epsg.io/102008):
       p4s <-
@@ -188,7 +185,7 @@ get_data <-
           is.null(startmonth) |
           is.null(endyear) | is.null(endmonth)) {
         stop("Please specify the metfiles dates correctly. Please refer to documentation")
-
+      }
         inputdates <-
           c(
             paste(startyear, startmonth, "01", sep = "/"),
@@ -218,7 +215,7 @@ get_data <-
         if (length(metfiles) == 0) {
           message("   No files to download. Requested files already available")
         }
-      }
+
     }
 
 

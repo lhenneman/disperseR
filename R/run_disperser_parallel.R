@@ -1,6 +1,6 @@
 #' run the fac model in parallel
 #'
-#' \code{run_disperser_parallel} takes the following arguments
+#' \code{run_disperser_parallel}
 #'
 #' It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it.
 #'
@@ -9,23 +9,17 @@
 #'
 #' @param pbl.height Monthly mean planetary boundary layer heights. See vignettes for more information
 #'
-#' @param crosswalk. Crosswalk ZCTA-to-ZIP. See vignettes for more information
-#'
-#' @param zcta. ZCTA shape file. See vignette for more information
-#'
 #' @param species The package has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`.
-#'
-#' @param link2zip
 #'
 #' @param proc_dir directory where the function saves temporary files while running. This is automatically defined by `create_dirs()`
 #'
 #' @param overwrite if output files already exist should they be overwritten? This is `false` by default.
 #'
-#' @param npart
+#' @param npart number of air parcels tracked by HYSPLIT. Defaults to 100
 #'
 #' @param mc.cores on how many cores should R split the computations. set to  parallel::detectCores() or set to 1 if you want to serial computation.
 #'
-#' @param keep.hysplit.files
+#' @param keep.hysplit.files logical. If FALSE (the default), clears storage space in the `proc_dir` by removing all HYSPLIT files
 #'
 #'
 #' @return This function returns fac model results.
@@ -35,13 +29,10 @@
 
 run_disperser_parallel <- function(input.refs = NULL,
   pbl.height = NULL,
-  crosswalk.= NULL,
-  zcta. = NULL,
   species = 'so2',
-  link2zip = F,
   proc_dir = proc_dir,
   overwrite = F,
-  npart = NULL,
+  npart = 100,
   mc.cores = parallel::detectCores(),
   keep.hysplit.files = FALSE){
 
@@ -53,35 +44,26 @@ run_disperser_parallel <- function(input.refs = NULL,
       FUN = run_fac,
       input.refs = input.refs,
       pbl.height = pbl.height,
-      crosswalk.= crosswalk.,
-      zcta. = zcta.,
       species =   species,
-      link2zip = link2zip,
       proc_dir = proc_dir,
       overwrite = overwrite,
       npart =  npart,
-      keep.hysplit.files,
+      keep.hysplit.files = keep.hysplit.files,
       mc.cores = mc.cores)
   }
 
 
 run_fac <- function(x,
   input.refs = input.refs,
-  crosswalk. = crosswalk,
   pbl.height = pbl.height,
-  zcta. = zcta.,
   species = species,
   npart = npart,
   overwrite = overwrite,
-  link2zip = link2zip,
   keep.hysplit.files,
   proc_dir = proc_dir) {
 
   subset <- input.refs[x]
   print(subset)
-
-  zcta <- zcta.
-  crosswalk <- crosswalk.
 
   ## function to negate
   '%ni%' <- function(x, y) {
@@ -150,38 +132,18 @@ run_fac <- function(x,
   ))
   message(paste("output file", output_file))
 
-  zip_output_file <- file.path(
-    ziplink_dir,
-    paste0(
-      "single_ziplink_",
-      subset$ID,
-      "_",
-      subset$start_day,
-      "_",
-      formatC(
-        subset$start_hour,
-        width = 2,
-        format = "d",
-        flag = "0"
-      ),
-      ".csv"
-    )
-  )
 
   ## Initial output data.table
-  out1 <-
+  out <-
     paste(
       "Partial trimmed parcel locations (below height 0 and the highest PBL height) already exist at",
       output_file
     )
-  out2 <-
-    paste("ZIP code parcel counts not called for or already exist at",
-      zip_output_file)
 
   ## Check if output parcel locations file already exists
-  tmp.exists <- system(paste("ls -f", file.path(output_file)), intern = TRUE)
+  tmp.exists <- file.exists( file.path(output_file))
 
-  if (output_file %ni% tmp.exists | overwrite == TRUE) {
+  if (!tmp.exists | overwrite == TRUE) {
     message("Defining HYSPLIT model parameters and running the model.")
 
     ## Create run directory
@@ -203,14 +165,10 @@ run_fac <- function(x,
       disperseR::add_species(
         name = species_param$name,
         pdiam = species_param$pdiam,
-        # okay
         density = 0,
-        # okay
         shape_factor = 0,
-        # okay
-        #resuspension = species_param$resuspension
         ddep_vel = species_param$ddep_vel
-      ) %>% # okay
+      ) %>%
       disperseR::add_grid(range = c(0.5, 0.5),
         division = c(0.1, 0.1)) %>%
       disperseR::add_params(
@@ -221,7 +179,8 @@ run_fac <- function(x,
         start_day = as(subset$start_day, 'character'),
         start_hour = subset$start_hour,
         direction = "forward",
-        met_type = "reanalysis"
+        met_type = "reanalysis",
+        met_dir = meteo_dir
       ) %>%
       disperseR::run_model(npart = npart, run.dir = run_dir)
 
@@ -243,7 +202,7 @@ run_fac <- function(x,
     partial_trimmed_parcel_locs <-
       disp_df_trim[, save.vars, with = FALSE]
     write.csv(partial_trimmed_parcel_locs, output_file)
-    out1 <-
+    out <-
       paste(
         "Partial trimmed parcel locations (below height 0 and the highest PBL height) written to",
         output_file
@@ -254,44 +213,7 @@ run_fac <- function(x,
       unlink(run_dir, recursive = TRUE)
   }
 
-  if (link2zip == TRUE) {
-    print("Linking parcel locations to ZIP codes. This could take a few minutes...")
 
-    # Check if pbl.height is defined
-    if (!hasArg(pbl.height))
-      stop("Please define a pbl.height file")
-
-    # Check if crosswalk is defined
-    if (!hasArg(crosswalk.))
-      stop("Please define a crosswalk file to link zips")
-
-    #Read output file from hysplit
-    disp_df <- fread(output_file)
-
-    #Check if extent matches the hpbl raster (pbl.height)
-    d_xmin <- min(disp_df$lon)
-    e_xmin <- extent(pbl.height)[1]
-    if (d_xmin < e_xmin) {
-      pbl.height <- rotate(pbl.height)
-    }
-
-    ## trim values above PBL
-    disp_df_trim <- trim_pbl(disp_df, rasterin = pbl.height)
-
-    ## link to zips
-    disp_df_link <- link_zip(
-      disp_df_trim,
-      zc = zcta.,
-      cw = crosswalk,
-      gridfirst = TRUE,
-      rasterin = pbl.height
-    )
-
-    # Write to output csv file
-    write.csv(disp_df_link[, .(ZIP, N)], zip_output_file)
-    out2 <- paste("ZIP code parcel counts written to", zip_output_file)
-  }
-  out <- data.table(out = c(out1, out2))
   return(out)
 }
 

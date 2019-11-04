@@ -5,8 +5,7 @@
 \title{run the fac model in parallel}
 \usage{
 run_disperser_parallel(input.refs = NULL, pbl.height = NULL,
-  crosswalk. = NULL, zcta. = NULL, species = "so2", link2zip = F,
-  proc_dir = proc_dir, overwrite = F, npart = NULL,
+  species = "so2", proc_dir = proc_dir, overwrite = F, npart = 100,
   mc.cores = parallel::detectCores(), keep.hysplit.files = FALSE)
 }
 \arguments{
@@ -14,29 +13,23 @@ run_disperser_parallel(input.refs = NULL, pbl.height = NULL,
 
 \item{pbl.height}{Monthly mean planetary boundary layer heights. See vignettes for more information}
 
-\item{crosswalk.}{Crosswalk ZCTA-to-ZIP. See vignettes for more information}
-
-\item{zcta.}{ZCTA shape file. See vignette for more information}
-
 \item{species}{The package has the possibility to use two types of species. The default one is `species = 'so2'`, but you can also use particulate sulfate `species = 'so4p'`.}
-
-\item{link2zip}{}
 
 \item{proc_dir}{directory where the function saves temporary files while running. This is automatically defined by `create_dirs()`}
 
 \item{overwrite}{if output files already exist should they be overwritten? This is `false` by default.}
 
-\item{npart}{}
+\item{npart}{number of air parcels tracked by HYSPLIT. Defaults to 100}
 
 \item{mc.cores}{on how many cores should R split the computations. set to  parallel::detectCores() or set to 1 if you want to serial computation.}
 
-\item{keep.hysplit.files}{}
+\item{keep.hysplit.files}{logical. If FALSE (the default), clears storage space in the `proc_dir` by removing all HYSPLIT files}
 }
 \value{
 This function returns fac model results.
 }
 \description{
-\code{run_disperser_parallel} takes the following arguments
+\code{run_disperser_parallel}
 }
 \details{
 It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it.
