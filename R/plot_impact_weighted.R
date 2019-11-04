@@ -39,8 +39,7 @@ plot_impact_weighted <- function(data.linked,
           all.y = T
         ))
     } else if( link.to == 'counties'){
-      dataset_sf <- data.table(dataunits,
-                               merge(
+      dataset_sf <- data.table(merge(
                                  counties.[, c( "statefp",
                                                 "countyfp",
                                                 "state_name",
@@ -194,8 +193,7 @@ plot_impact_weighted <- function(data.linked,
           all.y = T
         ))
     } else if( link.to == 'counties'){
-      dataset_sf <- data.table(dataunits,
-                               merge(
+      dataset_sf <- data.table(merge(
                                  counties.[, c( "statefp",
                                                 "countyfp",
                                                 "state_name",
