@@ -1,3 +1,32 @@
+#' create a set of directories to run disperseR
+#'
+#' \code{plot_impact_unit}
+#'
+#' @description `plot_impact_unit()` produces two graphs. One is a map showing where the units are and showing their rank and the other one contains bar plots.
+#'
+#'
+#' @param data.linked data for plotting as output from disperseR::calculate_exposure()
+#'
+#' @param zip.codes list of ZIP codes (as character strings) for ranking
+#'
+#' @param y.lim vertical limits for the spatial plot
+#'
+#' @param x.lim horizontal limits for the spatial plot
+#'
+#' @param plot.title plot title character string
+#'
+#' @param legend.lims legend limits. as c( lower,upper)
+#'
+#' @param legend.title legend title as string
+#'
+#' @param legend.text.angle angle of legend text (helpful for large numbers)
+#'
+#' @param graph.dir location to save output.
+#'
+#'
+#' @return Creates directories (does not overwrite if existing). Outputs string variables with paths to the environment.
+
+
 #' @export plot_impact_unit
 
 plot_impact_unit <- function(data.linked = NULL,

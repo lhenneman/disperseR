@@ -1,6 +1,6 @@
 #' run the fac model in parallel
 #'
-#' \code{run_disperser_parallel} takes the following arguments
+#' \code{run_disperser_parallel}
 #'
 #' It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it.
 #'
@@ -15,11 +15,11 @@
 #'
 #' @param overwrite if output files already exist should they be overwritten? This is `false` by default.
 #'
-#' @param npart
+#' @param npart number of air parcels tracked by HYSPLIT. Defaults to 100
 #'
 #' @param mc.cores on how many cores should R split the computations. set to  parallel::detectCores() or set to 1 if you want to serial computation.
 #'
-#' @param keep.hysplit.files
+#' @param keep.hysplit.files logical. If FALSE (the default), clears storage space in the `proc_dir` by removing all HYSPLIT files
 #'
 #'
 #' @return This function returns fac model results.
@@ -32,7 +32,7 @@ run_disperser_parallel <- function(input.refs = NULL,
   species = 'so2',
   proc_dir = proc_dir,
   overwrite = F,
-  npart = NULL,
+  npart = 100,
   mc.cores = parallel::detectCores(),
   keep.hysplit.files = FALSE){
 

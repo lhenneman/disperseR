@@ -1,7 +1,7 @@
 #' Read a `listing` file
 #' @param file_path The path to the \code{listing} file.
 #' @noRd
-#'  @export read_listing_file
+#' @export read_listing_file
 read_listing_file <- function(file_path) {
   as.vector(
     read.table(

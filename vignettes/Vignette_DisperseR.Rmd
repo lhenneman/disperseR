@@ -207,7 +207,8 @@ Changing `duration.run.hours` to values less than that applied in `run_disperser
 `res.link` sets the grid resolution in meters (default is 12000 or 12km). Since parcel locations are first assigned to a grid before further spatial allocation, this setting has the potential to impact all results. A higher `res.link` with `link.to = "grids"` will result in faster run time and smaller output files.
 
 ```{r}
-linked_zips <- disperseR::link_all_units(units.run = unitsrun,
+linked_zips <- disperseR::link_all_units(
+  units.run = unitsrun,
   link.to = 'zips',
   mc.cores = parallel::detectCores(),
   year.mons = yearmons,
@@ -218,7 +219,8 @@ linked_zips <- disperseR::link_all_units(units.run = unitsrun,
   overwrite = FALSE)
 
 # link all units to counties
-linked_counties <- disperseR::link_all_units(units.run=unitsrun,
+linked_counties <- disperseR::link_all_units(
+  units.run=unitsrun,
   link.to = 'counties',
   mc.cores = parallel::detectCores(),
   year.mons = yearmons,
@@ -229,7 +231,8 @@ linked_counties <- disperseR::link_all_units(units.run=unitsrun,
   overwrite = FALSE)
 
 # link all units to grids
-linked_grids <- disperseR::link_all_units(units.run=unitsrun,
+linked_grids <- disperseR::link_all_units(
+  units.run=unitsrun,
   link.to = 'grids',
   mc.cores = parallel::detectCores(),
   year.mons = yearmons,

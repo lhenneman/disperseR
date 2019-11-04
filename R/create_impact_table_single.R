@@ -1,3 +1,29 @@
+#' \code{create_impact_table_single}
+#'
+#'
+#' @description `create_impact_table_single()` takes output from `link_all_units()` and creates a table of spatial impacts
+#'
+#'
+#' @param data.linked data for plotting as output from disperseR::link_all_units()
+#'
+#' @param data.units information on unit locations as output from disperseR::units()
+#'
+#' @param link.to spatial scale for plotting. One of 'zips', 'counties', or 'grids' that should match original input to disperseR::link_all_units()
+#'
+#' @param zcta.dataset ZIP code/ZCTA sptial dataset as imported by disperseR::get_data() or subset thereof
+#'
+#' @param counties. US counties dataset as imported using USAboundaries::us_counties( ) or subset thereof
+#'
+#' @param metric plotting metric in `data.linked` input. Defaults to 'hyads', the default output of disperseR::calculate_exposure().
+#'
+#' @param map.month specific month to map in form YYYYMM if time.agg = 'month'. Can be created using disperseR::get_yearmon()
+#'
+#' @param map.unitID specific unit to map as string. Must match 'ID' column in data.units.
+#'
+#'
+#' @return An sf data.table of impacts for a single unit and month suitable for plotting
+#'
+#'
 #' @export create_impact_table_single
 create_impact_table_single <- function(data.linked,
                                        data.units,

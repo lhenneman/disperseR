@@ -1,4 +1,21 @@
-#' @export combine_monthly_ziplinks
+#' create a set of directories to run disperseR
+#'
+#' \code{combine_monthly_links}
+#'
+#' @description `combine_monthly_links()` combines linked files produced with `disperseR::link_all_units()` into lists of data.tables for easier manipulating
+#'
+#'
+#' @param month_YYYYMMs months and years to combine. Format created by `disperseR::get_yearmon()``
+#'
+#' @param link.to spatial scale for plotting. One of 'zips', 'counties', or 'grids' that should match original input to disperseR::link_all_units()
+#'
+#' @param filename What should the resulting RData file be called? Defulats to `paste0( 'hyads_unwgted_', link.to, '.RData')`
+#'
+#'
+#' @return Saves an .RData file to the rdata_dir defined by `disperseR::create_dirs()` with filename `filename`.
+#'
+#'
+#' @export combine_monthly_links
 
 combine_monthly_links <- function( month_YYYYMMs,
                                    link.to = 'zips',

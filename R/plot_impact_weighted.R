@@ -1,3 +1,39 @@
+#' \code{plot_impact_weighted}
+#'
+#'
+#' @description `plot_impact_weighted()` takes output from `calculate_exposure()` and creates a spatial plot
+#'
+#'
+#' @param data.linked data for plotting as output from disperseR::calculate_exposure()
+#'
+#' @param data.units information on unit locations as output from disperseR::units()
+#'
+#' @param link.to spatial scale for plotting. One of 'zips', 'counties', or 'grids' that should match original input to disperseR::calculate_exposure()
+#'
+#' @param zcta.dataset ZIP code/ZCTA sptial dataset as imported by disperseR::get_data() or subset thereof. Required only if link.to = 'zips'.
+#'
+#' @param counties. US counties dataset as imported using USAboundaries::us_counties( ) or subset thereof. Required only if link.to = 'counties'.
+#'
+#' @param metric plotting metric in `data.linked` input. Defaults to 'hyads', the default output of disperseR::calculate_exposure().
+#'
+#' @param time.agg time aggregation matching original input to disperseR::calculate_exposure(). Can be 'month' or 'year'
+#'
+#' @param legend.lims legend limits string. Defaults to NULL, which creates a scale from 0 to the 95th percentile of the 'metric'. Should be in the form c(lower,upper).
+#'
+#' @param legend.name legend name string. Defaults to NULL, which creates a legend title of 'Aggregate HyADS Exposure'.
+#'
+#' @param plot.name plot title string. Defaults to NULL, or a blank title
+#'
+#' @param map.month specific month to map in form YYYYMM if time.agg = 'month'. Can be created using disperseR::get_yearmon()
+#'
+#' @param graph.dir location to save output.
+#'
+#' @param ... modeling parameters passed to ggplot2::theme()
+#'
+#'
+#' @return Creates ggplot object of spatial HyADS impacts
+
+
 #' @export plot_impact_weighted
 
 plot_impact_weighted <- function(data.linked,

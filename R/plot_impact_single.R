@@ -1,3 +1,39 @@
+#' \code{plot_impact_single}
+#'
+#'
+#' @description `plot_impact_single()` takes output from `link_all_units()` and creates a spatial plot
+#'
+#'
+#' @param data.linked data for plotting as output from disperseR::link_all_units()
+#'
+#' @param data.units information on unit locations as output from disperseR::units()
+#'
+#' @param link.to spatial scale for plotting. One of 'zips', 'counties', or 'grids' that should match original input to disperseR::link_all_units()
+#'
+#' @param zcta.dataset ZIP code/ZCTA sptial dataset as imported by disperseR::get_data() or subset thereof. Required only if link.to = 'zips'.
+#'
+#' @param counties. US counties dataset as imported using USAboundaries::us_counties( ) or subset thereof. Required only if link.to = 'counties'.
+#'
+#' @param metric plotting metric in `data.linked` input. Defaults to 'hyads', the default output of disperseR::calculate_exposure().
+#'
+#' @param legend.lims legend limits string. Defaults to NULL, which creates a scale from 0 to the 95th percentile of the 'metric'. Should be in the form c(lower,upper).
+#'
+#' @param legend.name legend name string. Defaults to NULL, which creates a legend title of 'Aggregate HyADS Exposure'.
+#'
+#' @param plot.name plot title string. Defaults to NULL, or a descriptive title combining the metric, map.month, and map.unitID
+#'
+#' @param map.month specific month to map in form YYYYMM if time.agg = 'month'. Can be created using disperseR::get_yearmon()
+#'
+#' @param map.unitID specific unit to map as string. Must match 'ID' column in data.units.
+#'
+#' @param graph.dir location to save output.
+#'
+#' @param ... modeling parameters passed to ggplot2::theme()
+#'
+#'
+#' @return Creates ggplot object of spatial HyADS impacts
+
+
 #' @export plot_impact_single
 
 plot_impact_single  <- function(data.linked,
@@ -7,7 +43,7 @@ plot_impact_single  <- function(data.linked,
                                 counties. = NULL,
                                 map.month,
                                 map.unitID,
-                                plot.title = NULL,
+                                plot.name = NULL,
                                 metric = 'N',
                                 legend.lims = NULL,
                                 legend.name = NULL,
@@ -92,10 +128,10 @@ plot_impact_single  <- function(data.linked,
 
 
   # make a title if missing
-  if (is.null(plot.title)) {
+  if (is.null(plot.name)) {
     stringmonth <-
       month.abb[as.numeric(substring(map.month, 5, nchar(map.month)))]
-    plot.title = paste(
+    plot.name = paste(
       stringmonth , substr(map.month, start = 1, stop = 4), 'HyADS Partial Raw Exposure from Unit:',
       map.unitID
     )
@@ -103,7 +139,7 @@ plot_impact_single  <- function(data.linked,
 
   # make a default
   theme.default <- theme(
-    plot.title = if (!is.null(plot.title)) {
+    plot.title = if (!is.null(plot.name)) {
       element_text(size = 16, hjust = 0.5)
     } else
       element_blank(),
@@ -120,7 +156,7 @@ plot_impact_single  <- function(data.linked,
   gg <-
     ggplot(data = dataset_sf, aes(fill  = metric, color = metric)) +
     theme_bw() +
-    labs(title = plot.title) +
+    labs(title = plot.name) +
     geom_polygon(
       data = map_data("state"),
       aes(x = long, y = lat, group = group),

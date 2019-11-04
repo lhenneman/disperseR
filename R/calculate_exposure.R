@@ -1,4 +1,33 @@
+#' create a set of directories to run disperseR
+#'
+#' \code{calculate_exposure}
+#'
+#' @description `calculate_exposure()` takes linked HYSPLIT outputs combined using `disperseR::combine_monthly_links()` and sums them by emissions. The results can be aggregated to three different source levels and two different time scales. Various combinations of `year.E` and `year.D` can be applied to develop counterfactual scenarios.
+#'
+#'
+#' @param year.E emissions year
+#'
+#' @param year.D HYSPLIT year
+#'
+#' @param link.to spatial scale for plotting. One of 'zips', 'counties', or 'grids' that should match original input to disperseR::link_all_units()
+#'
+#' @param pollutant name of column in `units.mo` for weighting
+#'
+#' @param rda_file specification of data location produced by `disperseR::combine_monthly_links()`. Can denote 'loaded' if the object is loaded in the .GlobalEnv() or a file location
+#'
+#' @param exo_dir file path to save resulting exposure dataset
+#'
+#' @param source.agg source aggregation level
+#'
+#' @param time.agg time aggregation level
+#'
+#' @param return.monthly.data logical. If TRUE, returns monthly datasets if `time.agg = 'month'`. Set to FALSE to save memory space.
+#'
+#' @return Creates directories (does not overwrite if existing). Outputs string variables with paths to the environment.
+
+
 #' @export calculate_exposure
+
 calculate_exposure <- function(year.E,
                                year.D,
                                link.to = 'zips',
