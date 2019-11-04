@@ -261,26 +261,29 @@ Keep in mind, since we only modeled a subset of the potential model runs defined
 We select the spatial link based on the `link.to` argument. The function returns data.tables that include an `sf` geometry column for easy plotting.
 
 ```{r}
-impact_table_zip_single <- disperseR::create_impact_table_single(data.linked=linked_zips,
-                                                             link.to = 'zips',
-                                                             data.units = unitsrun,
-                                                             zcta.dataset = zcta_dataset,
-                                                             map.unitID = "3136-1",
-                                                             map.month = "200511",
-                                                             metric = 'N')
-impact_table_county_single <- disperseR::create_impact_table_single(data.linked=linked_counties,
-                                                                    link.to = 'counties',
-                                                                    data.units = unitsrun,
-                                                                    counties. = USAboundaries::us_counties( ),
-                                                                    map.unitID = "3136-1",
-                                                                    map.month = "200511",
-                                                                    metric = 'N')
-impact_table_grid_single <- disperseR::create_impact_table_single(data.linked=linked_grids,
-                                                                    link.to = 'grids',
-                                                                    data.units = unitsrun,
-                                                                    map.unitID = "3136-1",
-                                                                    map.month = "200511",
-                                                                    metric = 'N')
+impact_table_zip_single <- disperseR::create_impact_table_single(
+  data.linked=linked_zips,
+  link.to = 'zips',
+  data.units = unitsrun,
+  zcta.dataset = zcta_dataset,
+  map.unitID = "3136-1",
+  map.month = "200511",
+  metric = 'N')
+impact_table_county_single <- disperseR::create_impact_table_single(
+  data.linked=linked_counties,
+  link.to = 'counties',
+  data.units = unitsrun,
+  counties. = USAboundaries::us_counties( ),
+  map.unitID = "3136-1",
+  map.month = "200511",
+  metric = 'N')
+impact_table_grid_single <- disperseR::create_impact_table_single(
+  data.linked=linked_grids,
+  link.to = 'grids',
+  data.units = unitsrun,
+  map.unitID = "3136-1",
+  map.month = "200511",
+  metric = 'N')
 
 head(impact_table_zip_single)
 ```
@@ -290,44 +293,47 @@ In a similar way we can just plot the results using the `plot_impact_single()` f
 `zoom = T` by default and is authomatically adjusted depending on the plot values. You can set `zoom = F` to display the map of the whole country. Note that the linked grids extend beyond the US boarders because any grid across the world may be impacted by the given facilities.
 
 ```{r, fig.height = 7, fig.width = 7}
-link_plot_zips <- disperseR::plot_impact_single(data.linked = linked_zips,
-                                                link.to = 'zips',
-                                                map.unitID = "3136-1",
-                                                map.month = "20061",
-                                                data.units = unitsrun,
-                                                zcta.dataset = zcta_dataset,
-                                                metric = 'N',
-                                                graph.dir = graph_dir,
-                                                zoom = T, # TRUE by default
-                                                legend.name = 'HyADS raw exposure',
-                                                # other parameters passed to ggplot2::theme()
-                                                axis.text = element_blank(),
-                                                legend.position = c( .75, .15))
-link_plot_grids <- disperseR::plot_impact_single(data.linked = linked_grids,
-                                                 link.to = 'grids',
-                                                 map.unitID = "3136-1",
-                                                 map.month = "20061",
-                                                 data.units = unitsrun,
-                                                 metric = 'N',
-                                                 graph.dir = graph_dir,
-                                                 zoom = F, # TRUE by default
-                                                 legend.name = 'HyADS raw exposure',
-                                                 # other parameters passed to ggplot2::theme()
-                                                 axis.text = element_blank(),
-                                                 legend.position = c( .75, .15))
-link_plot_counties <- disperseR::plot_impact_single(data.linked = linked_counties,
-                                                 link.to = 'counties',
-                                                 map.unitID = "3136-1",
-                                                 map.month = "20061",
-                                                 counties. = USAboundaries::us_counties( ),
-                                                 data.units = unitsrun,
-                                                 metric = 'N',
-                                                 graph.dir = graph_dir,
-                                                 zoom = T, # TRUE by default
-                                                 legend.name = 'HyADS raw exposure',
-                                                 # other parameters passed to ggplot2::theme()
-                                                 axis.text = element_blank(),
-                                                 legend.position = c( .75, .15))
+link_plot_zips <- disperseR::plot_impact_single(
+  data.linked = linked_zips,
+  link.to = 'zips',
+  map.unitID = "3136-1",
+  map.month = "20061",
+  data.units = unitsrun,
+  zcta.dataset = zcta_dataset,
+  metric = 'N',
+  graph.dir = graph_dir,
+  zoom = T, # TRUE by default
+  legend.name = 'HyADS raw exposure',
+  # other parameters passed to ggplot2::theme()
+  axis.text = element_blank(),
+  legend.position = c( .75, .15))
+link_plot_grids <- disperseR::plot_impact_single(
+  data.linked = linked_grids,
+  link.to = 'grids',
+  map.unitID = "3136-1",
+  map.month = "20061",
+  data.units = unitsrun,
+  metric = 'N',
+  graph.dir = graph_dir,
+  zoom = F, # TRUE by default
+  legend.name = 'HyADS raw exposure',
+  # other parameters passed to ggplot2::theme()
+  axis.text = element_blank(),
+  legend.position = c( .75, .15))
+link_plot_counties <- disperseR::plot_impact_single(
+  data.linked = linked_counties,
+  link.to = 'counties',
+  map.unitID = "3136-1",
+  map.month = "20061",
+  counties. = USAboundaries::us_counties( ),
+  data.units = unitsrun,
+  metric = 'N',
+  graph.dir = graph_dir,
+  zoom = T, # TRUE by default
+  legend.name = 'HyADS raw exposure',
+  # other parameters passed to ggplot2::theme()
+  axis.text = element_blank(),
+  legend.position = c( .75, .15))
   
 link_plot_zips
 link_plot_grids
@@ -346,15 +352,18 @@ In practice, these two worker functions may need to be implemented in parallel R
 
 
 ```{r}
-combined_ziplinks <- disperseR::combine_monthly_links(month_YYYYMMs = yearmons,
-                                                      link.to = 'zips',
-                                                      filename = 'hyads_vig_unwgted_zips.RData')
-combined_countylinks <- disperseR::combine_monthly_links(month_YYYYMMs = yearmons,
-                                                         link.to = 'counties',
-                                                         filename = 'hyads_vig_unwgted_counties.RData')
-combined_gridlinks <- disperseR::combine_monthly_links(month_YYYYMMs = yearmons,
-                                                       link.to = 'grids',
-                                                       filename = 'hyads_vig_unwgted_grids.RData')
+combined_ziplinks <- disperseR::combine_monthly_links(
+  month_YYYYMMs = yearmons,
+  link.to = 'zips',
+  filename = 'hyads_vig_unwgted_zips.RData')
+combined_countylinks <- disperseR::combine_monthly_links(
+  month_YYYYMMs = yearmons,
+  link.to = 'counties',
+  filename = 'hyads_vig_unwgted_counties.RData')
+combined_gridlinks <- disperseR::combine_monthly_links(
+  month_YYYYMMs = yearmons,
+  link.to = 'grids',
+  filename = 'hyads_vig_unwgted_grids.RData')
 names(combined_ziplinks)
 ```
 
@@ -368,41 +377,41 @@ The `create_impact_table_weighted()` function takes as input the .RData file cre
 Here, we first calculate the annual HyADS emissions weighted exposure for all emissions modeled above and plot the results. The plots require a large amount of working memory, and may require you to clear your image history (if using RStudio).
 
 ```{r}
-exp_ann_unit_zip <- disperseR::calculate_exposure(year.E = 2005,
-                                                  year.D = 2005,
-                                                  link.to = 'zips',
-                                                  pollutant = 'SO2.tons',
-                                                  rda_file = file.path(rdata_dir,
-                                                                       "hyads_vig_unwgted_zips.RData"),
-                                                  exp_dir = exp_dir,
-                                                  units.mo = PP.units.monthly1995_2017,
-                                                  source.agg = 'unit',
-                                                  time.agg = 'month',
-                                                  return.monthly.data = T)
+exp_ann_unit_zip <- disperseR::calculate_exposure(
+  year.E = 2005,
+  year.D = 2005,
+  link.to = 'zips',
+  pollutant = 'SO2.tons',
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_zips.RData"),
+  exp_dir = exp_dir,
+  units.mo = PP.units.monthly1995_2017,
+  source.agg = 'unit',
+  time.agg = 'month',
+  return.monthly.data = T)
 
-exp_ann_unit_grids <- disperseR::calculate_exposure(year.E = 2005,
-                                                    year.D = 2005,
-                                                    link.to = 'grids',
-                                                    pollutant = 'SO2.tons',
-                                                    rda_file = file.path(rdata_dir,
-                                                                         "hyads_vig_unwgted_grids.RData"),
-                                                    exp_dir = exp_dir,
-                                                    units.mo = PP.units.monthly1995_2017,
-                                                    source.agg = 'unit',
-                                                    time.agg = 'month',
-                                                    return.monthly.data = T)
+exp_ann_unit_grids <- disperseR::calculate_exposure(
+  year.E = 2005,
+  year.D = 2005,
+  link.to = 'grids',
+  pollutant = 'SO2.tons',
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_grids.RData"),
+  exp_dir = exp_dir,
+  units.mo = PP.units.monthly1995_2017,
+  source.agg = 'unit',
+  time.agg = 'month',
+  return.monthly.data = T)
 
-exp_ann_unit_counties <- disperseR::calculate_exposure(year.E = 2005,
-                                                       year.D = 2005,
-                                                       link.to = 'counties',
-                                                       pollutant = 'SO2.tons',
-                                                       rda_file = file.path(rdata_dir,
-                                                                            "hyads_vig_unwgted_counties.RData"),
-                                                       exp_dir = exp_dir,
-                                                       units.mo = PP.units.monthly1995_2017,
-                                                       source.agg = 'unit',
-                                                       time.agg = 'month',
-                                                       return.monthly.data = T)
+exp_ann_unit_counties <- disperseR::calculate_exposure(
+  year.E = 2005,
+  year.D = 2005,
+  link.to = 'counties',
+  pollutant = 'SO2.tons',
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_counties.RData"),
+  exp_dir = exp_dir,
+  units.mo = PP.units.monthly1995_2017,
+  source.agg = 'unit',
+  time.agg = 'month',
+  return.monthly.data = T)
 ```
 
 We can plot the results as following using the `plot_impact_weighted()` function. Again, a customized title can be set using the `plot.name` argument, and addional arguments can be passed to ggplot2's `theme` function to customize. 
@@ -412,44 +421,49 @@ Same as before, `zoom = T` by default and is authomatically adjusted depending o
 Please note that the produced graph will be automatically saved in the folder specified in the `graph.dir` argument. Here we set `graph.dir  = graph_dir`. `graph_dir` should have been automatically created by the `create_dirs()` function. 
 
 ```{r, fig.height = 7, fig.width = 7}
-zip_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked = exp_ann_unit_zip,
-                                                    data.units = unitsrun,
-                                                    link.to = 'zips',
-                                                    zcta.dataset = zcta_dataset,
-                                                    time.agg = 'year',
-                                                    metric = 'hyads',
-                                                    legend.name = 'Aggregate HyADS exposure',
-                                                    zoom = T, # TRUE by default
-                                                    graph.dir = graph_dir,
-                                                    map.month = NULL, # NULL by default change if time.agg = 'month'
-                                                    # other parameters passed to ggplot2::theme()
-                                                    axis.text = element_blank(),
-                                                    legend.position = c( .75, .15)) # 0 by default
-counties_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked = exp_ann_unit_counties,
-                                                      data.units = unitsrun,
-                                                      link.to = 'counties',
-                                                      counties. = USAboundaries::us_counties( ),
-                                                      time.agg = 'year',
-                                                      metric = 'hyads',
-                                                      legend.name = 'Aggregate HyADS exposure',
-                                                      zoom = T, # TRUE by default
-                                                      graph.dir = graph_dir,
-                                                      map.month = NULL, # NULL by default change if time.agg = 'month'
-                                                      # other parameters passed to ggplot2::theme()
-                                                      axis.text = element_blank(),
-                                                      legend.position = c( .75, .15)) # 0 by default
-grids_exp_ann_plot <- disperseR::plot_impact_weighted(data.linked = exp_ann_unit_grids,
-                                                      data.units = unitsrun,
-                                                      link.to = 'grids',
-                                                      time.agg = 'year',
-                                                      metric = 'hyads',
-                                                      legend.name = 'Aggregate HyADS exposure',
-                                                      zoom = T, # TRUE by default
-                                                      graph.dir = graph_dir,
-                                                      map.month = NULL, # NULL by default change if time.agg = 'month'
-                                                      # other parameters passed to ggplot2::theme()
-                                                      axis.text = element_blank(),
-                                                      legend.position = c( .75, .15)) # 0 by default
+zip_exp_ann_plot <- disperseR::plot_impact_weighted(
+  data.linked = exp_ann_unit_zip,
+  data.units = unitsrun,
+  link.to = 'zips',
+  zcta.dataset = zcta_dataset,
+  time.agg = 'year',
+  metric = 'hyads',
+  legend.name = 'Aggregate HyADS exposure',
+  zoom = T, # TRUE by default
+  graph.dir = graph_dir,
+  map.month = NULL, # NULL by default change if time.agg = 'month'
+  # other parameters passed to ggplot2::theme()
+  axis.text = element_blank(),
+  legend.position = c( .75, .15)) # 0 by default
+
+counties_exp_ann_plot <- disperseR::plot_impact_weighted(
+  data.linked = exp_ann_unit_counties,
+  data.units = unitsrun,
+  link.to = 'counties',
+  counties. = USAboundaries::us_counties( ),
+  time.agg = 'year',
+  metric = 'hyads',
+  legend.name = 'Aggregate HyADS exposure',
+  zoom = T, # TRUE by default
+  graph.dir = graph_dir,
+  map.month = NULL, # NULL by default change if time.agg = 'month'
+  # other parameters passed to ggplot2::theme()
+  axis.text = element_blank(),
+  legend.position = c( .75, .15)) # 0 by default
+
+grids_exp_ann_plot <- disperseR::plot_impact_weighted(
+  data.linked = exp_ann_unit_grids,
+  data.units = unitsrun,
+  link.to = 'grids',
+  time.agg = 'year',
+  metric = 'hyads',
+  legend.name = 'Aggregate HyADS exposure',
+  zoom = T, # TRUE by default
+  graph.dir = graph_dir,
+  map.month = NULL, # NULL by default change if time.agg = 'month'
+  # other parameters passed to ggplot2::theme()
+  axis.text = element_blank(),
+  legend.position = c( .75, .15)) # 0 by default
 
 zip_exp_ann_plot
 counties_exp_ann_plot
@@ -463,53 +477,54 @@ Results are saved to the `exp_dir` and returned, but `return.monthly.data` must 
 **It is very important to provide a month for which we have available data**
 
 ```{r}
-exp_mon_unit_zip <- disperseR::calculate_exposure(year.E = 2005,
-                                                  year.D = 2005,
-                                                  link.to = 'zips',
-                                                  pollutant = 'SO2.tons',
-                                                  rda_file = file.path(rdata_dir,
-                                                                       "hyads_vig_unwgted_zips.RData"),
-                                                  exp_dir = exp_dir,
-                                                  units.mo = PP.units.monthly1995_2017,
-                                                  source.agg = 'unit',
-                                                  time.agg = 'month',
-                                                  return.monthly.data = T)
+exp_mon_unit_zip <- disperseR::calculate_exposure(
+  year.E = 2005,
+  year.D = 2005,
+  link.to = 'zips',
+  pollutant = 'SO2.tons',
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_zips.RData"),
+  exp_dir = exp_dir,
+  units.mo = PP.units.monthly1995_2017,
+  source.agg = 'unit',
+  time.agg = 'month',
+  return.monthly.data = T)
 
-exp_mon_unit_grids <- disperseR::calculate_exposure(year.E = 2005,
-                                                    year.D = 2005,
-                                                    link.to = 'grids',
-                                                    pollutant = 'SO2.tons',
-                                                    rda_file = file.path(rdata_dir,
-                                                                         "hyads_vig_unwgted_grids.RData"),
-                                                    exp_dir = exp_dir,
-                                                    units.mo = PP.units.monthly1995_2017,
-                                                    source.agg = 'unit',
-                                                    time.agg = 'month',
-                                                    return.monthly.data = T)
+exp_mon_unit_grids <- disperseR::calculate_exposure(
+  year.E = 2005,
+  year.D = 2005,
+  link.to = 'grids',
+  pollutant = 'SO2.tons',
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_grids.RData"),
+  exp_dir = exp_dir,
+  units.mo = PP.units.monthly1995_2017,
+  source.agg = 'unit',
+  time.agg = 'month',
+  return.monthly.data = T)
 
-exp_mon_unit_counties <- disperseR::calculate_exposure(year.E = 2005,
-                                                       year.D = 2005,
-                                                       link.to = 'counties',
-                                                       pollutant = 'SO2.tons',
-                                                       rda_file = file.path(rdata_dir,
-                                                                            "hyads_vig_unwgted_counties.RData"),
-                                                       exp_dir = exp_dir,
-                                                       units.mo = PP.units.monthly1995_2017,
-                                                       source.agg = 'unit',
-                                                       time.agg = 'month',
-                                                       return.monthly.data = T)
+exp_mon_unit_counties <- disperseR::calculate_exposure(
+  year.E = 2005,
+  year.D = 2005,
+  link.to = 'counties',
+  pollutant = 'SO2.tons',
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_counties.RData"),
+  exp_dir = exp_dir,
+  units.mo = PP.units.monthly1995_2017,
+  source.agg = 'unit',
+  time.agg = 'month',
+  return.monthly.data = T)
 ```
 
 
 
 ```{r, fig.height = 7, fig.width = 7}
-zip_exp_mon_plot <- disperseR::plot_impact_weighted(data.linked = exp_mon_unit_zip,
+zip_exp_mon_plot <- disperseR::plot_impact_weighted(
+  data.linked = exp_mon_unit_zip,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   time.agg = 'month',
   map.month = "200511", 
   metric = 'hyads',
-  legend.title = 'Montly HyADS exposure', 
+  legend.name = 'Montly HyADS exposure', 
   zoom = T, # TRUE by default
   graph.dir = graph_dir)
 
@@ -549,10 +564,12 @@ zip_exp_unit_mon2006 <- disperseR::calculate_exposure(
 zip_exp_unit_mon <- rbind(zip_exp_unit_mon2005, zip_exp_unit_mon2006)
 ```
 
+And now we can plot the results
 ```{r, fig.height = 4, fig.width = 7}
 zipcodes <- c("13039","21798", "03804")
 
-zip_exp_unit <- disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon, 
+zip_exp_unit <- disperseR::plot_impact_unit(
+  data.linked = zip_exp_unit_mon, 
   zip.codes = zipcodes,
   graph.dir = graph_dir)
 ```
@@ -564,16 +581,16 @@ In the examples provided above, we selected coal units a priori to analyze. Howe
 The following code snippet applies the `calc_exposure()` function to calculate annual impacts by unit (here, only the two units selected above), then rank-orders their population-weighted exposures on Pennsylvania using the `rankfacs_by_popwgt_location()` function. 
 
 ```{r}
-zip_exp_ann_unit <- disperseR::calculate_exposure(year.E = 2005,
-                                      year.D = 2005,
-                                      link.to = 'zips',
-                                      pollutant = 'SO2.tons',
-                                      rda_file = file.path(rdata_dir, 
-                                                            "hyads_vig_unwgted_zips.RData"),
-                                      exp_dir = exp_dir,
-                                      units.mo = PP.units.monthly1995_2017,
-                                      source.agg = 'unit',
-                                      time.agg = 'year')
+zip_exp_ann_unit <- disperseR::calculate_exposure(
+  year.E = 2005,
+  year.D = 2005,
+  link.to = 'zips',
+  pollutant = 'SO2.tons',
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_zips.RData"),
+  exp_dir = exp_dir,
+  units.mo = PP.units.monthly1995_2017,
+  source.agg = 'unit',
+  time.agg = 'year')
 # add column year for proper merge
 zip_exp_ann_unit[, year := 2005]
 ```
@@ -582,7 +599,8 @@ In this function, the input ZIP-code linkage dataset is defined by  `zip_exp_ann
 
 
 ```{r}
-unitRanks2005 <- disperseR::rankfacs_by_popwgt_location(data.linked = zip_exp_ann_unit,
+unitRanks2005 <- disperseR::rankfacs_by_popwgt_location(
+  data.linked = zip_exp_ann_unit,
   crosswalk. = crosswalk,
   rank.by = c('hyads'),
   state.value = 'PA', 
@@ -599,7 +617,8 @@ unitRanks2005
 The function below results in two graphs. One is a map showing where the units are and showing their rank and the other one contains bar plots. 
 
 ```{r, fig.height = 4, fig.width = 7}
-plotUnitsRanked <- disperseR::plot_units_ranked(data.units = unitsrun, 
+plotUnitsRanked <- disperseR::plot_units_ranked(
+  data.units = unitsrun, 
   data.ranked = unitRanks2005,
   year = 2005, 
   graph.dir = graph_dir)
