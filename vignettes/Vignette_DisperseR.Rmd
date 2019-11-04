@@ -56,6 +56,8 @@ This will set up is the following folders and paths to them :
 
 Note that not specifying the `location` argument will lead to a default Desktop location for the project folder. You can specify another folder by typing: `disperseR::create_dirs(location="/Users/username/projectlocation")` instead. 
 
+You should run this command before each disperseR session because the function defines global environment variables pointing to these directories. Don't worry, your previous data will not be overwritten.
+
 ```{r}
 disperseR::create_dirs() 
 ```
@@ -107,7 +109,6 @@ unitsrun2006 <- disperseR::units %>%
   dplyr::top_n(2, SOx)  # sort and take the two rows with the biggest value for SOx
 
 head(unitsrun2005)
-head(unitsrun2006)
 
 # append together and transform to data table 
 unitsrun<-data.table::data.table(rbind(unitsrun2005, unitsrun2006))
@@ -119,14 +120,16 @@ unitsrun<-data.table::data.table(rbind(unitsrun2005, unitsrun2006))
 
 HYSPLIT, as applied here, tracks air parcels emitted at certain times and locations. `disperseR` refers to these as *emissions events*. Once HYSPLIT has been run for each emissions event, the simulated parcel locations are aggregated by source, time, and location. The functions below are written to enable runs of many emissions events.
 
-To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the startday argument, and `duration = 240` denotes that the emitted air parcels are tracked for 240 hours (10 days). 10 days is reasonable first-order upper bound of sulfur's atmospheric lifetime. The result of running this function is a `data.table` that you can see below. 
+To define an object that includes all emission events in a given time period, we can use the helper function `define_inputs()`. This takes as inputs a starting and ending day, and outputs a table of values whose rows will later correspond to inputs into the main `disperseR` functions. The following command combines the units defined above with four times a day for January-July in 2005 (we show an example for this short period of time here to keep the computation manageable for a desktop computer). Four daily emissions events are defined by the startday argument, and `duration = 120` denotes that the emitted air parcels are tracked for 120 hours (5 days). Note that most application of HyADS to date have used `duration = 240` (10 days); we use 5 days here to keep this example snappy.
+
+The result of running this function is a `data.table` that you can see below. 
 
 ```{r}
 input_refs <- disperseR::define_inputs(units = unitsrun,
   startday = '2005-11-01',
   endday = '2006-02-28',
   start.hours =  c(0, 6, 12, 18),
-  duration = 240)
+  duration = 120)
 
 head(input_refs)
 ```
@@ -279,10 +282,12 @@ impact_table_grid_single <- disperseR::create_impact_table_single(data.linked=li
                                                                     map.month = "200511",
                                                                     metric = 'N')
 
-head(impact_table_single)
+head(impact_table_zip_single)
 ```
 
-In a similar way we can just plot the results using the `plot_impact_single()` function. A customized title can be set using the `plot.title` argument.
+In a similar way we can just plot the results using the `plot_impact_single()` function. A customized title can be set using the `plot.name` argument. Additional inputs can be passed to ggplot2's `theme` function to customize your plot.
+
+`zoom = T` by default and is authomatically adjusted depending on the plot values. You can set `zoom = F` to display the map of the whole country. Note that the linked grids extend beyond the US boarders because any grid across the world may be impacted by the given facilities.
 
 ```{r, fig.height = 7, fig.width = 7}
 link_plot_zips <- disperseR::plot_impact_single(data.linked = linked_zips,
@@ -293,9 +298,11 @@ link_plot_zips <- disperseR::plot_impact_single(data.linked = linked_zips,
                                                 zcta.dataset = zcta_dataset,
                                                 metric = 'N',
                                                 graph.dir = graph_dir,
-                                                legend.text.angle = 0, # 0 by default
                                                 zoom = T, # TRUE by default
-                                                legend.title = 'HyADS raw exposure')
+                                                legend.name = 'HyADS raw exposure',
+                                                # other parameters passed to ggplot2::theme()
+                                                axis.text = element_blank(),
+                                                legend.position = c( .75, .15))
 link_plot_grids <- disperseR::plot_impact_single(data.linked = linked_grids,
                                                  link.to = 'grids',
                                                  map.unitID = "3136-1",
@@ -303,9 +310,11 @@ link_plot_grids <- disperseR::plot_impact_single(data.linked = linked_grids,
                                                  data.units = unitsrun,
                                                  metric = 'N',
                                                  graph.dir = graph_dir,
-                                                 legend.text.angle = 0, # 0 by default
                                                  zoom = F, # TRUE by default
-                                                 legend.title = 'HyADS raw exposure')
+                                                 legend.name = 'HyADS raw exposure',
+                                                 # other parameters passed to ggplot2::theme()
+                                                 axis.text = element_blank(),
+                                                 legend.position = c( .75, .15))
 link_plot_counties <- disperseR::plot_impact_single(data.linked = linked_counties,
                                                  link.to = 'counties',
                                                  map.unitID = "3136-1",
@@ -314,22 +323,25 @@ link_plot_counties <- disperseR::plot_impact_single(data.linked = linked_countie
                                                  data.units = unitsrun,
                                                  metric = 'N',
                                                  graph.dir = graph_dir,
-                                                 legend.text.angle = 0, # 0 by default
                                                  zoom = T, # TRUE by default
-                                                 legend.title = 'HyADS raw exposure')
+                                                 legend.name = 'HyADS raw exposure',
+                                                 # other parameters passed to ggplot2::theme()
+                                                 axis.text = element_blank(),
+                                                 legend.position = c( .75, .15))
   
 link_plot_zips
 link_plot_grids
 link_plot_counties
 ```
 
-`zoom = T` by default and is authomatically adjusted depending on the plot values. You can set `zoom = F` to display the map of the whole country. 
 
 ### Combine all results into RData file.
 So far, we have run two worker functions important to the implementation of HyADS:
 
-`run_disperser_parallel()` ran HYSPLIT for unit-date-time emission event combinations and saved an output file for each gathered output files from `run_disperser_parallel()`. Then the `link_all_units()` function grouped them by month and unit, and linked the HYSPLIT parcel locations contained in the files to various three different scales.
-In practice, these two worker functions may need to be implemented in parallel R sessions on a cluster to improve efficiency. It helps for future analyses to gather the relevant monthly files and save them as a single RData file. This is made possible by `combine_monthly_links()`, which saves an RData file of annual monthly results to the `rda_dir`.
+- `run_disperser_parallel()` ran HYSPLIT for unit-date-time emission event combinations and saved an output file for each gathered output files from `run_disperser_parallel()`. 
+- `link_all_units()` function grouped them by month and unit, and linked the HYSPLIT parcel locations contained in the files to various three different scales.
+
+In practice, these two worker functions may need to be implemented in parallel R sessions on a cluster to improve efficiency. It helps for future analyses to gather the relevant monthly files and save them as a single RData file. This is made possible by `combine_monthly_links()`, which saves an RData file of annual monthly results to the `rda_dir`. Names of the resulting objects give the year-month combinations in each object.
 
 
 
@@ -393,7 +405,7 @@ exp_ann_unit_counties <- disperseR::calculate_exposure(year.E = 2005,
                                                        return.monthly.data = T)
 ```
 
-We can plot the results as following using the `plot_impact_weighted()` function. Again, a customized title can be set using the `plot.title` argument. 
+We can plot the results as following using the `plot_impact_weighted()` function. Again, a customized title can be set using the `plot.name` argument, and addional arguments can be passed to ggplot2's `theme` function to customize. 
 
 Same as before, `zoom = T` by default and is authomatically adjusted depending on the plot values. You can set `zoom = F` to display the map of the whole country. 
 
@@ -448,23 +460,50 @@ Let's now see how to plot a monthly exposure.
 
 Results are saved to the `exp_dir` and returned, but `return.monthly.data` must be set to true to return data when `time.agg = 'month'` (the default was set to save working memory space).
 
+**It is very important to provide a month for which we have available data**
+
 ```{r}
-zip_exp_mon <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
-  units.mo = PP.units.monthly1995_2017,
-  year.E = 2005,
-  year.D = 2005,
-  pollutant = 'SO2.tons',
-  source.agg = 'total',
-  time.agg = 'month',
-  exp_dir = exp_dir, 
-  return.monthly.data = T)
+exp_mon_unit_zip <- disperseR::calculate_exposure(year.E = 2005,
+                                                  year.D = 2005,
+                                                  link.to = 'zips',
+                                                  pollutant = 'SO2.tons',
+                                                  rda_file = file.path(rdata_dir,
+                                                                       "hyads_vig_unwgted_zips.RData"),
+                                                  exp_dir = exp_dir,
+                                                  units.mo = PP.units.monthly1995_2017,
+                                                  source.agg = 'unit',
+                                                  time.agg = 'month',
+                                                  return.monthly.data = T)
+
+exp_mon_unit_grids <- disperseR::calculate_exposure(year.E = 2005,
+                                                    year.D = 2005,
+                                                    link.to = 'grids',
+                                                    pollutant = 'SO2.tons',
+                                                    rda_file = file.path(rdata_dir,
+                                                                         "hyads_vig_unwgted_grids.RData"),
+                                                    exp_dir = exp_dir,
+                                                    units.mo = PP.units.monthly1995_2017,
+                                                    source.agg = 'unit',
+                                                    time.agg = 'month',
+                                                    return.monthly.data = T)
+
+exp_mon_unit_counties <- disperseR::calculate_exposure(year.E = 2005,
+                                                       year.D = 2005,
+                                                       link.to = 'counties',
+                                                       pollutant = 'SO2.tons',
+                                                       rda_file = file.path(rdata_dir,
+                                                                            "hyads_vig_unwgted_counties.RData"),
+                                                       exp_dir = exp_dir,
+                                                       units.mo = PP.units.monthly1995_2017,
+                                                       source.agg = 'unit',
+                                                       time.agg = 'month',
+                                                       return.monthly.data = T)
 ```
 
 
-**It is very important to provide a month for which we have available data**
 
 ```{r, fig.height = 7, fig.width = 7}
-zip_exp_mon_plot <- disperseR::plot_impact_weighted(data.linked = zip_exp_mon,
+zip_exp_mon_plot <- disperseR::plot_impact_weighted(data.linked = exp_mon_unit_zip,
   data.units = unitsrun,
   zcta.dataset = zcta_dataset,  
   time.agg = 'month',
@@ -482,26 +521,30 @@ zip_exp_mon_plot
 Next, we calculate the monthly emissions weighted HyADS exposure (again, only from the select few runs we initiated above). The code below plots the monthly exposure contributions of the three units in ZIP codes 17815, 08210, 13849, 17229. The location of the zip codes can be seen on the small map on the right side of the plot. Please note that the axis values are different for different ZIP codes. 
 
 ```{r}
-zip_exp_unit_mon2005 <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
-                                     units.mo = PP.units.monthly1995_2017,
-                                     year.E = 2005,
-                                     year.D = 2005,
-                                     pollutant = 'SO2.tons',
-                                     source.agg = 'unit', # note! 
-                                     time.agg = 'month',
-                                     exp_dir = exp_dir,
-                                     return.monthly.data = T)
+zip_exp_unit_mon2005 <- disperseR::calculate_exposure(
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_zips.RData"),
+  units.mo = PP.units.monthly1995_2017,
+  link.to = 'zips',
+  year.E = 2005,
+  year.D = 2005,
+  pollutant = 'SO2.tons',
+  source.agg = 'unit', # note! 
+  time.agg = 'month',
+  exp_dir = exp_dir,
+  return.monthly.data = T)
 
 
-zip_exp_unit_mon2006 <- disperseR::calculate_zip_exposure(rda_file = file.path(rdata_dir, "hyads_unwgted.RData"),
-                                     units.mo = PP.units.monthly1995_2017,
-                                     year.E = 2006,
-                                     year.D = 2006,
-                                     pollutant = 'SO2.tons',
-                                     source.agg = 'unit', # note! 
-                                     time.agg = 'month',
-                                     exp_dir = exp_dir,
-                                     return.monthly.data = T)
+zip_exp_unit_mon2006 <- disperseR::calculate_exposure(
+  rda_file = file.path(rdata_dir, "hyads_vig_unwgted_zips.RData"),
+  units.mo = PP.units.monthly1995_2017,
+  link.to = 'zips',
+  year.E = 2006,
+  year.D = 2006,
+  pollutant = 'SO2.tons',
+  source.agg = 'unit', # note! 
+  time.agg = 'month',
+  exp_dir = exp_dir,
+  return.monthly.data = T)
 
 zip_exp_unit_mon <- rbind(zip_exp_unit_mon2005, zip_exp_unit_mon2006)
 ```
@@ -518,14 +561,15 @@ zip_exp_unit <- disperseR::plot_impact_unit(data.linked = zip_exp_unit_mon,
 
 In the examples provided above, we selected coal units a priori to analyze. However, a benefit of HyADS over more complex models is the ability to easily rank-order emissions sources to identify the sources that contribute the most to exposure in a given area. 
 
-The following code snippet applies the `calc_zip_exposure()` function to calculate annual impacts by unit (here, only the two units selected above), then rank-orders their population-weighted exposures on Pennsylvania using the `rankfacs_by_popwgt_location()` function. 
+The following code snippet applies the `calc_exposure()` function to calculate annual impacts by unit (here, only the two units selected above), then rank-orders their population-weighted exposures on Pennsylvania using the `rankfacs_by_popwgt_location()` function. 
 
 ```{r}
-zip_exp_ann_unit <- disperseR::calculate_zip_exposure(year.E = 2005,
+zip_exp_ann_unit <- disperseR::calculate_exposure(year.E = 2005,
                                       year.D = 2005,
+                                      link.to = 'zips',
                                       pollutant = 'SO2.tons',
                                       rda_file = file.path(rdata_dir, 
-                                                            "hyads_unwgted.RData"),
+                                                            "hyads_vig_unwgted_zips.RData"),
                                       exp_dir = exp_dir,
                                       units.mo = PP.units.monthly1995_2017,
                                       source.agg = 'unit',
@@ -534,7 +578,7 @@ zip_exp_ann_unit <- disperseR::calculate_zip_exposure(year.E = 2005,
 zip_exp_ann_unit[, year := 2005]
 ```
 
-In this function, the input ZIP-code linkage dataset is defined by  `zip_exp_ann_unit`; the `rank.by` argument defines the variables in `zip_exp_ann_unit` to rank by—it is possible to define multiple values (e.g., rank.by = c( 'hyads', 'SOx')) to rank by multiple ranking variables if they are available; finally, `state.value`, `city.value`, and `zip.value` can be defined to limit the area of influence (here, we only rank these units’ influences on Pennsylvania with state.value = 'PA').
+In this function, the input ZIP-code linkage dataset is defined by  `zip_exp_ann_unit`; the `rank.by` argument defines the variables in `zip_exp_ann_unit` to rank by—it is possible to define multiple values (e.g., rank.by = c( 'hyads', 'SOx')) to rank by multiple ranking variables if they are available; finally, `state.value`, `city.value`, and `zip.value` can be defined to limit the area of influence (here, we only rank these units’ influences on Pennsylvania with state.value = 'PA'). For now, this function is only available for ZIP codes.
 
 
 ```{r}
