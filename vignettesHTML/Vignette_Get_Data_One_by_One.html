@@ -7,6 +7,7 @@
 <meta charset="utf-8" />
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -18,41 +19,67 @@
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css" data-origin="pandoc">
-div.sourceCode { overflow-x: auto; }
-table.sourceCode, tr.sourceCode, td.lineNumbers, td.sourceCode {
-  margin: 0; padding: 0; vertical-align: baseline; border: none; }
-table.sourceCode { width: 100%; line-height: 100%; }
-td.lineNumbers { text-align: right; padding-right: 4px; padding-left: 4px; color: #aaaaaa; border-right: 1px solid #aaaaaa; }
-td.sourceCode { padding-left: 5px; }
-code > span.kw { color: #007020; font-weight: bold; } /* Keyword */
-code > span.dt { color: #902000; } /* DataType */
-code > span.dv { color: #40a070; } /* DecVal */
-code > span.bn { color: #40a070; } /* BaseN */
-code > span.fl { color: #40a070; } /* Float */
-code > span.ch { color: #4070a0; } /* Char */
-code > span.st { color: #4070a0; } /* String */
-code > span.co { color: #60a0b0; font-style: italic; } /* Comment */
-code > span.ot { color: #007020; } /* Other */
-code > span.al { color: #ff0000; font-weight: bold; } /* Alert */
-code > span.fu { color: #06287e; } /* Function */
-code > span.er { color: #ff0000; font-weight: bold; } /* Error */
-code > span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
-code > span.cn { color: #880000; } /* Constant */
-code > span.sc { color: #4070a0; } /* SpecialChar */
-code > span.vs { color: #4070a0; } /* VerbatimString */
-code > span.ss { color: #bb6688; } /* SpecialString */
-code > span.im { } /* Import */
-code > span.va { color: #19177c; } /* Variable */
-code > span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
-code > span.op { color: #666666; } /* Operator */
-code > span.bu { } /* BuiltIn */
-code > span.ex { } /* Extension */
-code > span.pp { color: #bc7a00; } /* Preprocessor */
-code > span.at { color: #7d9029; } /* Attribute */
-code > span.do { color: #ba2121; font-style: italic; } /* Documentation */
-code > span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
-code > span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
-code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
 
 </style>
 <script>
@@ -68,7 +95,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
       if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
       var style = rule.style.cssText;
       // check if color or background-color is set
-      if (rule.style.color === '' || rule.style.backgroundColor === '') continue;
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
       // replace div.sourceCode by a pre.sourceCode rule
       sheets[i].deleteRule(j);
       sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
@@ -79,7 +106,189 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 
-<link href="data:text/css;charset=utf-8,body%20%7B%0Abackground%2Dcolor%3A%20%23fff%3B%0Amargin%3A%201em%20auto%3B%0Amax%2Dwidth%3A%20700px%3B%0Aoverflow%3A%20visible%3B%0Apadding%2Dleft%3A%202em%3B%0Apadding%2Dright%3A%202em%3B%0Afont%2Dfamily%3A%20%22Open%20Sans%22%2C%20%22Helvetica%20Neue%22%2C%20Helvetica%2C%20Arial%2C%20sans%2Dserif%3B%0Afont%2Dsize%3A%2014px%3B%0Aline%2Dheight%3A%201%2E35%3B%0A%7D%0A%23header%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0A%23TOC%20%7B%0Aclear%3A%20both%3B%0Amargin%3A%200%200%2010px%2010px%3B%0Apadding%3A%204px%3B%0Awidth%3A%20400px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Aborder%2Dradius%3A%205px%3B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Afont%2Dsize%3A%2013px%3B%0Aline%2Dheight%3A%201%2E3%3B%0A%7D%0A%23TOC%20%2Etoctitle%20%7B%0Afont%2Dweight%3A%20bold%3B%0Afont%2Dsize%3A%2015px%3B%0Amargin%2Dleft%3A%205px%3B%0A%7D%0A%23TOC%20ul%20%7B%0Apadding%2Dleft%3A%2040px%3B%0Amargin%2Dleft%3A%20%2D1%2E5em%3B%0Amargin%2Dtop%3A%205px%3B%0Amargin%2Dbottom%3A%205px%3B%0A%7D%0A%23TOC%20ul%20ul%20%7B%0Amargin%2Dleft%3A%20%2D2em%3B%0A%7D%0A%23TOC%20li%20%7B%0Aline%2Dheight%3A%2016px%3B%0A%7D%0Atable%20%7B%0Amargin%3A%201em%20auto%3B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dcolor%3A%20%23DDDDDD%3B%0Aborder%2Dstyle%3A%20outset%3B%0Aborder%2Dcollapse%3A%20collapse%3B%0A%7D%0Atable%20th%20%7B%0Aborder%2Dwidth%3A%202px%3B%0Apadding%3A%205px%3B%0Aborder%2Dstyle%3A%20inset%3B%0A%7D%0Atable%20td%20%7B%0Aborder%2Dwidth%3A%201px%3B%0Aborder%2Dstyle%3A%20inset%3B%0Aline%2Dheight%3A%2018px%3B%0Apadding%3A%205px%205px%3B%0A%7D%0Atable%2C%20table%20th%2C%20table%20td%20%7B%0Aborder%2Dleft%2Dstyle%3A%20none%3B%0Aborder%2Dright%2Dstyle%3A%20none%3B%0A%7D%0Atable%20thead%2C%20table%20tr%2Eeven%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Ap%20%7B%0Amargin%3A%200%2E5em%200%3B%0A%7D%0Ablockquote%20%7B%0Abackground%2Dcolor%3A%20%23f6f6f6%3B%0Apadding%3A%200%2E25em%200%2E75em%3B%0A%7D%0Ahr%20%7B%0Aborder%2Dstyle%3A%20solid%3B%0Aborder%3A%20none%3B%0Aborder%2Dtop%3A%201px%20solid%20%23777%3B%0Amargin%3A%2028px%200%3B%0A%7D%0Adl%20%7B%0Amargin%2Dleft%3A%200%3B%0A%7D%0Adl%20dd%20%7B%0Amargin%2Dbottom%3A%2013px%3B%0Amargin%2Dleft%3A%2013px%3B%0A%7D%0Adl%20dt%20%7B%0Afont%2Dweight%3A%20bold%3B%0A%7D%0Aul%20%7B%0Amargin%2Dtop%3A%200%3B%0A%7D%0Aul%20li%20%7B%0Alist%2Dstyle%3A%20circle%20outside%3B%0A%7D%0Aul%20ul%20%7B%0Amargin%2Dbottom%3A%200%3B%0A%7D%0Apre%2C%20code%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0Aborder%2Dradius%3A%203px%3B%0Acolor%3A%20%23333%3B%0Awhite%2Dspace%3A%20pre%2Dwrap%3B%20%0A%7D%0Apre%20%7B%0Aborder%2Dradius%3A%203px%3B%0Amargin%3A%205px%200px%2010px%200px%3B%0Apadding%3A%2010px%3B%0A%7D%0Apre%3Anot%28%5Bclass%5D%29%20%7B%0Abackground%2Dcolor%3A%20%23f7f7f7%3B%0A%7D%0Acode%20%7B%0Afont%2Dfamily%3A%20Consolas%2C%20Monaco%2C%20%27Courier%20New%27%2C%20monospace%3B%0Afont%2Dsize%3A%2085%25%3B%0A%7D%0Ap%20%3E%20code%2C%20li%20%3E%20code%20%7B%0Apadding%3A%202px%200px%3B%0A%7D%0Adiv%2Efigure%20%7B%0Atext%2Dalign%3A%20center%3B%0A%7D%0Aimg%20%7B%0Abackground%2Dcolor%3A%20%23FFFFFF%3B%0Apadding%3A%202px%3B%0Aborder%3A%201px%20solid%20%23DDDDDD%3B%0Aborder%2Dradius%3A%203px%3B%0Aborder%3A%201px%20solid%20%23CCCCCC%3B%0Amargin%3A%200%205px%3B%0A%7D%0Ah1%20%7B%0Amargin%2Dtop%3A%200%3B%0Afont%2Dsize%3A%2035px%3B%0Aline%2Dheight%3A%2040px%3B%0A%7D%0Ah2%20%7B%0Aborder%2Dbottom%3A%204px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Apadding%2Dbottom%3A%202px%3B%0Afont%2Dsize%3A%20145%25%3B%0A%7D%0Ah3%20%7B%0Aborder%2Dbottom%3A%202px%20solid%20%23f7f7f7%3B%0Apadding%2Dtop%3A%2010px%3B%0Afont%2Dsize%3A%20120%25%3B%0A%7D%0Ah4%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23f7f7f7%3B%0Amargin%2Dleft%3A%208px%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Ah5%2C%20h6%20%7B%0Aborder%2Dbottom%3A%201px%20solid%20%23ccc%3B%0Afont%2Dsize%3A%20105%25%3B%0A%7D%0Aa%20%7B%0Acolor%3A%20%230033dd%3B%0Atext%2Ddecoration%3A%20none%3B%0A%7D%0Aa%3Ahover%20%7B%0Acolor%3A%20%236666ff%3B%20%7D%0Aa%3Avisited%20%7B%0Acolor%3A%20%23800080%3B%20%7D%0Aa%3Avisited%3Ahover%20%7B%0Acolor%3A%20%23BB00BB%3B%20%7D%0Aa%5Bhref%5E%3D%22http%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0Aa%5Bhref%5E%3D%22https%3A%22%5D%20%7B%0Atext%2Ddecoration%3A%20underline%3B%20%7D%0A%0Acode%20%3E%20span%2Ekw%20%7B%20color%3A%20%23555%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Edt%20%7B%20color%3A%20%23902000%3B%20%7D%20%0Acode%20%3E%20span%2Edv%20%7B%20color%3A%20%2340a070%3B%20%7D%20%0Acode%20%3E%20span%2Ebn%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Efl%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Ech%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Est%20%7B%20color%3A%20%23d14%3B%20%7D%20%0Acode%20%3E%20span%2Eco%20%7B%20color%3A%20%23888888%3B%20font%2Dstyle%3A%20italic%3B%20%7D%20%0Acode%20%3E%20span%2Eot%20%7B%20color%3A%20%23007020%3B%20%7D%20%0Acode%20%3E%20span%2Eal%20%7B%20color%3A%20%23ff0000%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%0Acode%20%3E%20span%2Efu%20%7B%20color%3A%20%23900%3B%20font%2Dweight%3A%20bold%3B%20%7D%20%20code%20%3E%20span%2Eer%20%7B%20color%3A%20%23a61717%3B%20background%2Dcolor%3A%20%23e3d2d2%3B%20%7D%20%0A" rel="stylesheet" type="text/css" />
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#header {
+text-align: center;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; }  code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
 
 
 
@@ -96,157 +305,161 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 
 <p>Load packages</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(disperseR) <span class="co"># our package</span>
-<span class="kw">library</span>(ncdf4)
-<span class="kw">library</span>(data.table)
-<span class="kw">library</span>(tidyverse)
-<span class="kw">library</span>(sf)
-<span class="kw">library</span>(scales)
-<span class="kw">library</span>(ggsn)</code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="kw">library</span>(disperseR) <span class="co"># our package</span></a>
+<a class="sourceLine" id="cb1-2" data-line-number="2"><span class="kw">library</span>(ncdf4)</a>
+<a class="sourceLine" id="cb1-3" data-line-number="3"><span class="kw">library</span>(data.table)</a>
+<a class="sourceLine" id="cb1-4" data-line-number="4"><span class="kw">library</span>(tidyverse)</a>
+<a class="sourceLine" id="cb1-5" data-line-number="5"><span class="kw">library</span>(sf)</a>
+<a class="sourceLine" id="cb1-6" data-line-number="6"><span class="kw">library</span>(scales)</a>
+<a class="sourceLine" id="cb1-7" data-line-number="7"><span class="kw">library</span>(ggsn)</a></code></pre></div>
 <p>In this vignette we will show you how you can use the <code>disperseR::get_data()</code> function to download load your data one by one.</p>
 <p>In case you have not yet created your project folder use the following command.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disperseR::<span class="kw">create_dirs</span>()
-<span class="co">#&gt; Creating project setup</span>
-<span class="co">#&gt; Project created in :  ~/Desktop</span></code></pre></div>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1">disperseR<span class="op">::</span><span class="kw">create_dirs</span>()</a>
+<a class="sourceLine" id="cb2-2" data-line-number="2"><span class="co">#&gt; Creating project setup</span></a>
+<a class="sourceLine" id="cb2-3" data-line-number="3"><span class="co">#&gt; main directory exists -- don't worry, I'm not overwriting anything!</span></a>
+<a class="sourceLine" id="cb2-4" data-line-number="4"><span class="co">#&gt; Project created in :  ~/Desktop</span></a></code></pre></div>
 <div id="the-crosswalk" class="section level3">
 <h3>The crosswalk</h3>
 <p>ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk file. ZCTAs are not exact geographic matches to ZIP codes, and multiple groups compile and maintain Crosswalk files. We used the Crosswalk maintained by <a href="%22https://www.udsmapper.org/zcta-crosswalk.cfm%22">UDS Mapper</a> and prepossessed it also including information about the population size. While not necessary for the HYSPLIT model or processing of its outputs, population-weighted exposure metrics allow for direct comparisons between power plants. If you would like to know more details about how this crosswalk was prepared, we have attached a vignette that explains it <a href="https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html">here</a></p>
 <p>Let’s load the crosswalk file and assign it to <code>crosswalk</code></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">crosswalk &lt;-<span class="st"> </span>disperseR::crosswalk</code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">crosswalk &lt;-<span class="st"> </span>disperseR<span class="op">::</span>crosswalk</a></code></pre></div>
 <p>Let’s see the first rows of the dataset.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(crosswalk)
-<span class="co">#&gt;      ZIP       CITY  ZCTA STATE TOTALESTIMATE MARGINOFERROR</span>
-<span class="co">#&gt; 1: 00501 Holtsville 11742    NY         13158           801</span>
-<span class="co">#&gt; 2: 00544 Holtsville 11742    NY         13158           801</span>
-<span class="co">#&gt; 3: 00601   Adjuntas 00601    PR         17599           261</span>
-<span class="co">#&gt; 4: 00602     Aguada 00602    PR         39209           128</span>
-<span class="co">#&gt; 5: 00603  Aguadilla 00603    PR         50135           805</span>
-<span class="co">#&gt; 6: 00604  Aguadilla 00603    PR         50135           805</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="kw">head</span>(crosswalk)</a>
+<a class="sourceLine" id="cb4-2" data-line-number="2"><span class="co">#&gt;      ZIP       CITY  ZCTA STATE TOTALESTIMATE MARGINOFERROR</span></a>
+<a class="sourceLine" id="cb4-3" data-line-number="3"><span class="co">#&gt; 1: 00501 Holtsville 11742    NY         13158           801</span></a>
+<a class="sourceLine" id="cb4-4" data-line-number="4"><span class="co">#&gt; 2: 00544 Holtsville 11742    NY         13158           801</span></a>
+<a class="sourceLine" id="cb4-5" data-line-number="5"><span class="co">#&gt; 3: 00601   Adjuntas 00601    PR         17599           261</span></a>
+<a class="sourceLine" id="cb4-6" data-line-number="6"><span class="co">#&gt; 4: 00602     Aguada 00602    PR         39209           128</span></a>
+<a class="sourceLine" id="cb4-7" data-line-number="7"><span class="co">#&gt; 5: 00603  Aguadilla 00603    PR         50135           805</span></a>
+<a class="sourceLine" id="cb4-8" data-line-number="8"><span class="co">#&gt; 6: 00604  Aguadilla 00603    PR         50135           805</span></a></code></pre></div>
 </div>
 <div id="the-monthly-powerplant-emissions" class="section level3">
 <h3>The monthly powerplant emissions</h3>
 <p>The <code>disperseR</code> package also includes monthly power plant emissions, load, and heat input data, accessible using the following command:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">PP.units.monthly1995_2017 &lt;-<span class="st"> </span>disperseR::PP.units.monthly1995_2017</code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1">PP.units.monthly1995_<span class="dv">2017</span> &lt;-<span class="st"> </span>disperseR<span class="op">::</span>PP.units.monthly1995_<span class="dv">2017</span></a></code></pre></div>
 <p>Let’s see the first rows of the dataset.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(PP.units.monthly1995_2017)
-<span class="co">#&gt;    FacID Unit.ID Latitude Longitude year month SO2.tons NOx.tons</span>
-<span class="co">#&gt; 1:     3       1  31.0069  -88.0103 1997     1  549.668  182.981</span>
-<span class="co">#&gt; 2:     3       1  31.0069  -88.0103 1997     2  518.031  164.897</span>
-<span class="co">#&gt; 3:     3       1  31.0069  -88.0103 1997     3  541.160  198.754</span>
-<span class="co">#&gt; 4:     3       1  31.0069  -88.0103 1997     4  625.633  229.144</span>
-<span class="co">#&gt; 5:     3       1  31.0069  -88.0103 1997     5  646.820  214.673</span>
-<span class="co">#&gt; 6:     3       1  31.0069  -88.0103 1997     6  596.652  204.693</span>
-<span class="co">#&gt;    HeatIn.MMBtu GrossLoad.MWh uID</span>
-<span class="co">#&gt; 1:     781356.4         88691 3.1</span>
-<span class="co">#&gt; 2:     748454.5         88023 3.1</span>
-<span class="co">#&gt; 3:     749287.1         92233 3.1</span>
-<span class="co">#&gt; 4:     906910.5        100555 3.1</span>
-<span class="co">#&gt; 5:     890811.5         93559 3.1</span>
-<span class="co">#&gt; 6:     853542.6         89507 3.1</span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="kw">head</span>(PP.units.monthly1995_<span class="dv">2017</span>)</a>
+<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co">#&gt;    FacID Unit.ID Latitude Longitude year month SO2.tons NOx.tons</span></a>
+<a class="sourceLine" id="cb6-3" data-line-number="3"><span class="co">#&gt; 1:     3       1  31.0069  -88.0103 1997     1  549.668  182.981</span></a>
+<a class="sourceLine" id="cb6-4" data-line-number="4"><span class="co">#&gt; 2:     3       1  31.0069  -88.0103 1997     2  518.031  164.897</span></a>
+<a class="sourceLine" id="cb6-5" data-line-number="5"><span class="co">#&gt; 3:     3       1  31.0069  -88.0103 1997     3  541.160  198.754</span></a>
+<a class="sourceLine" id="cb6-6" data-line-number="6"><span class="co">#&gt; 4:     3       1  31.0069  -88.0103 1997     4  625.633  229.144</span></a>
+<a class="sourceLine" id="cb6-7" data-line-number="7"><span class="co">#&gt; 5:     3       1  31.0069  -88.0103 1997     5  646.820  214.673</span></a>
+<a class="sourceLine" id="cb6-8" data-line-number="8"><span class="co">#&gt; 6:     3       1  31.0069  -88.0103 1997     6  596.652  204.693</span></a>
+<a class="sourceLine" id="cb6-9" data-line-number="9"><span class="co">#&gt;    HeatIn.MMBtu GrossLoad.MWh uID</span></a>
+<a class="sourceLine" id="cb6-10" data-line-number="10"><span class="co">#&gt; 1:     781356.4         88691 3.1</span></a>
+<a class="sourceLine" id="cb6-11" data-line-number="11"><span class="co">#&gt; 2:     748454.5         88023 3.1</span></a>
+<a class="sourceLine" id="cb6-12" data-line-number="12"><span class="co">#&gt; 3:     749287.1         92233 3.1</span></a>
+<a class="sourceLine" id="cb6-13" data-line-number="13"><span class="co">#&gt; 4:     906910.5        100555 3.1</span></a>
+<a class="sourceLine" id="cb6-14" data-line-number="14"><span class="co">#&gt; 5:     890811.5         93559 3.1</span></a>
+<a class="sourceLine" id="cb6-15" data-line-number="15"><span class="co">#&gt; 6:     853542.6         89507 3.1</span></a></code></pre></div>
 </div>
 <div id="zip-code-coordinates" class="section level3">
 <h3>ZIP code coordinates</h3>
 <p>The <code>disperseR</code> package contains a data set with coordinates of ZIP codes. This might be useful for plotting, but it is not necessary as it will be used automatically by our plotting functions where required. We are using data from: <a href="https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/table/">Open Data Soft</a> If needed however, you can access it as follows:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">zipcodecoordinate &lt;-<span class="st"> </span>disperseR::zipcodecoordinate</code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">zipcodecoordinate &lt;-<span class="st"> </span>disperseR<span class="op">::</span>zipcodecoordinate</a></code></pre></div>
 <p>Let’s see the first rows of the dataset.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">head</span>(zipcodecoordinate)
-<span class="co">#&gt;     ZIP       City Latitude  Longitude</span>
-<span class="co">#&gt; 1 67553 Liebenthal 38.65495  -99.32062</span>
-<span class="co">#&gt; 2 85743     Tucson 32.33512 -111.14888</span>
-<span class="co">#&gt; 3 75016     Irving 32.76727  -96.77763</span>
-<span class="co">#&gt; 4 60401    Beecher 41.35048  -87.62408</span>
-<span class="co">#&gt; 5 80432       Como 39.24344 -105.79431</span>
-<span class="co">#&gt; 6 66081 Wolf River 39.77314  -95.23382</span></code></pre></div>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" data-line-number="1"><span class="kw">head</span>(zipcodecoordinate)</a>
+<a class="sourceLine" id="cb8-2" data-line-number="2"><span class="co">#&gt;     ZIP       City Latitude  Longitude</span></a>
+<a class="sourceLine" id="cb8-3" data-line-number="3"><span class="co">#&gt; 1 67553 Liebenthal 38.65495  -99.32062</span></a>
+<a class="sourceLine" id="cb8-4" data-line-number="4"><span class="co">#&gt; 2 85743     Tucson 32.33512 -111.14888</span></a>
+<a class="sourceLine" id="cb8-5" data-line-number="5"><span class="co">#&gt; 3 75016     Irving 32.76727  -96.77763</span></a>
+<a class="sourceLine" id="cb8-6" data-line-number="6"><span class="co">#&gt; 4 60401    Beecher 41.35048  -87.62408</span></a>
+<a class="sourceLine" id="cb8-7" data-line-number="7"><span class="co">#&gt; 5 80432       Como 39.24344 -105.79431</span></a>
+<a class="sourceLine" id="cb8-8" data-line-number="8"><span class="co">#&gt; 6 66081 Wolf River 39.77314  -95.23382</span></a></code></pre></div>
 <p>Click <a href="vignettes/Vignette_Zip_Code_Coordinate_Data_Preparation.html">here</a> for an optional vignette on how we prepared these data.</p>
 </div>
 <div id="the-shape-files" class="section level3">
 <h3>The shape files</h3>
 <p>Equally important is the ZCTA shape file. Using the <code>get_data()</code> function and setting <code>data = &quot;zctashapefile&quot;</code> you can download and preprocess the file from the <a href="http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip">US census website</a> automatically. If the file already exists in the correct folder, this function will preprocess it and load it into your R environment. We have also attached a vignette explaining this preprocessing in detail and you can see it <a href="https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_ZCTA_Shapefile_Preparation.html">here</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">zcta &lt;-<span class="st"> </span>disperseR::<span class="kw">get_data</span>(<span class="dt">data =</span> <span class="st">&quot;zctashapefile&quot;</span>)
-<span class="co">#&gt; File already exist, not downloading.</span>
-<span class="co">#&gt; Starting Preprocessing</span>
-<span class="co">#&gt; Preprocessing complete</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">zcta
-<span class="co">#&gt; class       : SpatialPolygonsDataFrame </span>
-<span class="co">#&gt; features    : 33144 </span>
-<span class="co">#&gt; extent      : -10142462, 3310068, -2072901, 4407201  (xmin, xmax, ymin, ymax)</span>
-<span class="co">#&gt; crs         : +proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +towgs84=0,0,0 </span>
-<span class="co">#&gt; variables   : 5</span>
-<span class="co">#&gt; names       : ZCTA5CE10,     AFFGEOID10, GEOID10,   ALAND10, AWATER10 </span>
-<span class="co">#&gt; min values  :     00601, 8600000US00601,   00601, 100004777,        0 </span>
-<span class="co">#&gt; max values  :     99929, 8600000US99929,   99929,  99999601,   999991</span></code></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" data-line-number="1">zcta &lt;-<span class="st"> </span>disperseR<span class="op">::</span><span class="kw">get_data</span>(<span class="dt">data =</span> <span class="st">&quot;zctashapefile&quot;</span>)</a>
+<a class="sourceLine" id="cb9-2" data-line-number="2"><span class="co">#&gt; File already exist, not downloading.</span></a>
+<a class="sourceLine" id="cb9-3" data-line-number="3"><span class="co">#&gt; Starting Preprocessing</span></a>
+<a class="sourceLine" id="cb9-4" data-line-number="4"><span class="co">#&gt; Preprocessing complete</span></a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" data-line-number="1">zcta</a>
+<a class="sourceLine" id="cb10-2" data-line-number="2"><span class="co">#&gt; class       : SpatialPolygonsDataFrame </span></a>
+<a class="sourceLine" id="cb10-3" data-line-number="3"><span class="co">#&gt; features    : 33144 </span></a>
+<a class="sourceLine" id="cb10-4" data-line-number="4"><span class="co">#&gt; extent      : -10142462, 3310068, -2072901, 4407201  (xmin, xmax, ymin, ymax)</span></a>
+<a class="sourceLine" id="cb10-5" data-line-number="5"><span class="co">#&gt; crs         : +proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +towgs84=0,0,0 </span></a>
+<a class="sourceLine" id="cb10-6" data-line-number="6"><span class="co">#&gt; variables   : 5</span></a>
+<a class="sourceLine" id="cb10-7" data-line-number="7"><span class="co">#&gt; names       : ZCTA5CE10,     AFFGEOID10, GEOID10,   ALAND10, AWATER10 </span></a>
+<a class="sourceLine" id="cb10-8" data-line-number="8"><span class="co">#&gt; min values  :     00601, 8600000US00601,   00601, 100004777,        0 </span></a>
+<a class="sourceLine" id="cb10-9" data-line-number="9"><span class="co">#&gt; max values  :     99929, 8600000US99929,   99929,  99999601,   999991</span></a></code></pre></div>
 </div>
 <div id="monthly-mean-planetary-boundary-layer-heights" class="section level3">
 <h3>Monthly mean planetary boundary layer heights</h3>
 <p>Another input that we need are the monthly mean boundary layer heights. We used the data available on the <a href="https://www.esrl.noaa.gov/psd/repository/entry/get/hpbl.mon.mean.nc?entryid=synth%3Ae570c8f9-ec09-4e89-93b4-babd5651e7a9%3AL05BUlIvTW9udGhsaWVzL21vbm9sZXZlbC9ocGJsLm1vbi5tZWFuLm5j">ESRL website</a>. Again, using the <code>get_data()</code> function and setting <code>data = &quot;pblheight&quot;</code>. If you need more information about how these data have been preprocessed just check the special vignette that is available with the package. You can see it <a href="https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Planetary_Layers_Data_Preparation.html">here</a>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pblheight &lt;-<span class="st"> </span>disperseR::<span class="kw">get_data</span>(<span class="dt">data =</span> <span class="st">&quot;pblheight&quot;</span>)
-<span class="co">#&gt; File already exist, not downloading.</span>
-<span class="co">#&gt; Preprocessing complete</span></code></pre></div>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">pblheight
-<span class="co">#&gt; class      : RasterBrick </span>
-<span class="co">#&gt; dimensions : 277, 349, 96673, 487  (nrow, ncol, ncell, nlayers)</span>
-<span class="co">#&gt; resolution : 32462.99, 32463  (x, y)</span>
-<span class="co">#&gt; extent     : -16231.49, 11313351, -16231.5, 8976020  (xmin, xmax, ymin, ymax)</span>
-<span class="co">#&gt; crs        : +proj=lcc +x_0=5632642.22547 +y_0=4612545.65137 +lat_0=50 +lon_0=-107 +lat_1=50 +ellps=WGS84 +lat_2=45 </span>
-<span class="co">#&gt; source     : /Users/majagarbulinska/Desktop/main/input/hpbl/hpbl.mon.mean.nc </span>
-<span class="co">#&gt; names      : X1979.01.01, X1979.02.01, X1979.03.01, X1979.04.01, X1979.05.01, X1979.06.01, X1979.07.01, X1979.08.01, X1979.09.01, X1979.10.01, X1979.11.01, X1979.12.01, X1980.01.01, X1980.02.01, X1980.03.01, ... </span>
-<span class="co">#&gt; Date/time  : 1979-01-01, 2019-07-01 (min, max)</span>
-<span class="co">#&gt; varname    : hpbl</span></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" data-line-number="1">pblheight &lt;-<span class="st"> </span>disperseR<span class="op">::</span><span class="kw">get_data</span>(<span class="dt">data =</span> <span class="st">&quot;pblheight&quot;</span>)</a>
+<a class="sourceLine" id="cb11-2" data-line-number="2"><span class="co">#&gt; File already exist, not downloading.</span></a>
+<a class="sourceLine" id="cb11-3" data-line-number="3"><span class="co">#&gt; Preprocessing complete</span></a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" data-line-number="1">pblheight</a>
+<a class="sourceLine" id="cb12-2" data-line-number="2"><span class="co">#&gt; class      : RasterBrick </span></a>
+<a class="sourceLine" id="cb12-3" data-line-number="3"><span class="co">#&gt; dimensions : 277, 349, 96673, 489  (nrow, ncol, ncell, nlayers)</span></a>
+<a class="sourceLine" id="cb12-4" data-line-number="4"><span class="co">#&gt; resolution : 32462.99, 32463  (x, y)</span></a>
+<a class="sourceLine" id="cb12-5" data-line-number="5"><span class="co">#&gt; extent     : -16231.49, 11313351, -16231.5, 8976020  (xmin, xmax, ymin, ymax)</span></a>
+<a class="sourceLine" id="cb12-6" data-line-number="6"><span class="co">#&gt; crs        : +proj=lcc +x_0=5632642.22547 +y_0=4612545.65137 +lat_0=50 +lon_0=-107 +lat_1=50 +ellps=WGS84 +lat_2=45 </span></a>
+<a class="sourceLine" id="cb12-7" data-line-number="7"><span class="co">#&gt; source     : /Users/lhenneman/Desktop/main/input/hpbl/hpbl.mon.mean.nc </span></a>
+<a class="sourceLine" id="cb12-8" data-line-number="8"><span class="co">#&gt; names      : X1979.01.01, X1979.02.01, X1979.03.01, X1979.04.01, X1979.05.01, X1979.06.01, X1979.07.01, X1979.08.01, X1979.09.01, X1979.10.01, X1979.11.01, X1979.12.01, X1980.01.01, X1980.02.01, X1980.03.01, ... </span></a>
+<a class="sourceLine" id="cb12-9" data-line-number="9"><span class="co">#&gt; Date/time  : 1979-01-01, 2019-09-01 (min, max)</span></a>
+<a class="sourceLine" id="cb12-10" data-line-number="10"><span class="co">#&gt; varname    : hpbl</span></a></code></pre></div>
 </div>
 <div id="the-units-data" class="section level3">
 <h3>The units data</h3>
 <p>This package contains annual emissions and stack height data from <a href="https://ampd.epa.gov/ampd/">EPA’s Air Markets Program Data</a> and the <a href="https://www.eia.gov/electricity/data/eia860/">Energy Information Agency</a> for years 2003-2012. Again, if you would like to know how these data were prepared please see the special vignette that we have attached to this package. Click to see it. <a href="https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html">here</a></p>
 <p>Now, we need to select the power plants whose impact we will analyse. In this case, we’ll use the two units in 2005 with the greatest SOx emissions, and two with the greatest SOx emissions in 2006. You are free to choose your own units. You can see that unit “3136-1” is on top of the ranking in both years.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">unitsrun2005 &lt;-<span class="st"> </span>disperseR::units %&gt;%<span class="st"> </span>
-<span class="st">  </span>dplyr::<span class="kw">filter</span>(year ==<span class="dv">2005</span>)%&gt;%<span class="st"> </span>
-<span class="st">  </span>dplyr::<span class="kw">top_n</span>(<span class="dv">2</span>, SOx) 
-
-unitsrun2006 &lt;-<span class="st"> </span>disperseR::units %&gt;%<span class="st"> </span>
-<span class="st">  </span>dplyr::<span class="kw">filter</span>(year ==<span class="dv">2006</span>)%&gt;%<span class="st"> </span>
-<span class="st">  </span>dplyr::<span class="kw">top_n</span>(<span class="dv">2</span>, SOx) 
-
-<span class="kw">head</span>(unitsrun2005)
-<span class="co">#&gt;       ID Latitude Longitude      SOx      CO2      NOx   Height     Diam</span>
-<span class="co">#&gt; 1 3136-1  40.6604  -79.3411 183555.8 13322458 13787.34 171.6024 10.36320</span>
-<span class="co">#&gt; 2 3149-1  41.0714  -76.6672 240250.9 18188647 22388.27 213.3600  9.38784</span>
-<span class="co">#&gt;   Velocity     Temp inputed year    uID</span>
-<span class="co">#&gt; 1  38.7096 283.6983       0 2005 3136.1</span>
-<span class="co">#&gt; 2  39.6240 285.7033       0 2005 3149.1</span>
-<span class="kw">head</span>(unitsrun2006)
-<span class="co">#&gt;       ID Latitude Longitude      SOx     CO2      NOx   Height    Diam</span>
-<span class="co">#&gt; 1 3136-1  40.6604  -79.3411 77544.22 5789319 5434.327 171.6024 10.3632</span>
-<span class="co">#&gt; 2 3136-2  40.6604  -79.3411 86809.31 6481797 7349.269 171.6024 10.3632</span>
-<span class="co">#&gt;   Velocity     Temp inputed year    uID</span>
-<span class="co">#&gt; 1  38.7096 283.6983       0 2006 3136.1</span>
-<span class="co">#&gt; 2  38.7096 283.6983       0 2006 3136.2</span></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" data-line-number="1">unitsrun2005 &lt;-<span class="st"> </span>disperseR<span class="op">::</span>units <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-2" data-line-number="2"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(year <span class="op">==</span><span class="dv">2005</span>)<span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-3" data-line-number="3"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">top_n</span>(<span class="dv">2</span>, SOx) </a>
+<a class="sourceLine" id="cb13-4" data-line-number="4"></a>
+<a class="sourceLine" id="cb13-5" data-line-number="5">unitsrun2006 &lt;-<span class="st"> </span>disperseR<span class="op">::</span>units <span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-6" data-line-number="6"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">filter</span>(year <span class="op">==</span><span class="dv">2006</span>)<span class="op">%&gt;%</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb13-7" data-line-number="7"><span class="st">  </span>dplyr<span class="op">::</span><span class="kw">top_n</span>(<span class="dv">2</span>, SOx) </a>
+<a class="sourceLine" id="cb13-8" data-line-number="8"></a>
+<a class="sourceLine" id="cb13-9" data-line-number="9"><span class="kw">head</span>(unitsrun2005)</a>
+<a class="sourceLine" id="cb13-10" data-line-number="10"><span class="co">#&gt;       ID Latitude Longitude      SOx      CO2      NOx   Height inputed</span></a>
+<a class="sourceLine" id="cb13-11" data-line-number="11"><span class="co">#&gt; 1 3136-1  40.6604  -79.3411 183555.8 13322458 13787.34 171.6024       0</span></a>
+<a class="sourceLine" id="cb13-12" data-line-number="12"><span class="co">#&gt; 2 3149-1  41.0714  -76.6672 240250.9 18188647 22388.27 213.3600       0</span></a>
+<a class="sourceLine" id="cb13-13" data-line-number="13"><span class="co">#&gt;   year    uID</span></a>
+<a class="sourceLine" id="cb13-14" data-line-number="14"><span class="co">#&gt; 1 2005 3136.1</span></a>
+<a class="sourceLine" id="cb13-15" data-line-number="15"><span class="co">#&gt; 2 2005 3149.1</span></a>
+<a class="sourceLine" id="cb13-16" data-line-number="16"><span class="kw">head</span>(unitsrun2006)</a>
+<a class="sourceLine" id="cb13-17" data-line-number="17"><span class="co">#&gt;       ID Latitude Longitude      SOx     CO2      NOx   Height inputed</span></a>
+<a class="sourceLine" id="cb13-18" data-line-number="18"><span class="co">#&gt; 1 3136-1  40.6604  -79.3411 77544.22 5789319 5434.327 171.6024       0</span></a>
+<a class="sourceLine" id="cb13-19" data-line-number="19"><span class="co">#&gt; 2 3136-2  40.6604  -79.3411 86809.31 6481797 7349.269 171.6024       0</span></a>
+<a class="sourceLine" id="cb13-20" data-line-number="20"><span class="co">#&gt;   year    uID</span></a>
+<a class="sourceLine" id="cb13-21" data-line-number="21"><span class="co">#&gt; 1 2006 3136.1</span></a>
+<a class="sourceLine" id="cb13-22" data-line-number="22"><span class="co">#&gt; 2 2006 3136.2</span></a></code></pre></div>
 <p>Below append the two datasets together and transform it to <code>data.table</code> format.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">unitsrun &lt;-<span class="st"> </span>data.table::<span class="kw">data.table</span>(<span class="kw">rbind</span>(unitsrun2005, unitsrun2006)) </code></pre></div>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" data-line-number="1">unitsrun &lt;-<span class="st"> </span>data.table<span class="op">::</span><span class="kw">data.table</span>(<span class="kw">rbind</span>(unitsrun2005, unitsrun2006)) </a></code></pre></div>
 <p>Let’s look at the data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">unitsrun
-<span class="co">#&gt;        ID Latitude Longitude       SOx      CO2       NOx   Height</span>
-<span class="co">#&gt; 1: 3136-1  40.6604  -79.3411 183555.84 13322458 13787.340 171.6024</span>
-<span class="co">#&gt; 2: 3149-1  41.0714  -76.6672 240250.87 18188647 22388.272 213.3600</span>
-<span class="co">#&gt; 3: 3136-1  40.6604  -79.3411  77544.22  5789319  5434.327 171.6024</span>
-<span class="co">#&gt; 4: 3136-2  40.6604  -79.3411  86809.31  6481797  7349.269 171.6024</span>
-<span class="co">#&gt;        Diam Velocity     Temp inputed year    uID</span>
-<span class="co">#&gt; 1: 10.36320  38.7096 283.6983       0 2005 3136.1</span>
-<span class="co">#&gt; 2:  9.38784  39.6240 285.7033       0 2005 3149.1</span>
-<span class="co">#&gt; 3: 10.36320  38.7096 283.6983       0 2006 3136.1</span>
-<span class="co">#&gt; 4: 10.36320  38.7096 283.6983       0 2006 3136.2</span></code></pre></div>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" data-line-number="1">unitsrun</a>
+<a class="sourceLine" id="cb15-2" data-line-number="2"><span class="co">#&gt;        ID Latitude Longitude       SOx      CO2       NOx   Height inputed</span></a>
+<a class="sourceLine" id="cb15-3" data-line-number="3"><span class="co">#&gt; 1: 3136-1  40.6604  -79.3411 183555.84 13322458 13787.340 171.6024       0</span></a>
+<a class="sourceLine" id="cb15-4" data-line-number="4"><span class="co">#&gt; 2: 3149-1  41.0714  -76.6672 240250.87 18188647 22388.272 213.3600       0</span></a>
+<a class="sourceLine" id="cb15-5" data-line-number="5"><span class="co">#&gt; 3: 3136-1  40.6604  -79.3411  77544.22  5789319  5434.327 171.6024       0</span></a>
+<a class="sourceLine" id="cb15-6" data-line-number="6"><span class="co">#&gt; 4: 3136-2  40.6604  -79.3411  86809.31  6481797  7349.269 171.6024       0</span></a>
+<a class="sourceLine" id="cb15-7" data-line-number="7"><span class="co">#&gt;    year    uID</span></a>
+<a class="sourceLine" id="cb15-8" data-line-number="8"><span class="co">#&gt; 1: 2005 3136.1</span></a>
+<a class="sourceLine" id="cb15-9" data-line-number="9"><span class="co">#&gt; 2: 2005 3149.1</span></a>
+<a class="sourceLine" id="cb15-10" data-line-number="10"><span class="co">#&gt; 3: 2006 3136.1</span></a>
+<a class="sourceLine" id="cb15-11" data-line-number="11"><span class="co">#&gt; 4: 2006 3136.2</span></a></code></pre></div>
 </div>
 <div id="the-meteorology-files" class="section level3">
 <h3>The meteorology files</h3>
 <p>Download reanalysis meteorology files. Below we show code to test for the meteorology files needed for the present run. They will be downloaded if they are not already in the <code>meteo_dir</code> folder. The reanalysis met files are about 120 MB each.</p>
 <p>If you, for example, you want to download files for Jan-Jul 2005, you just have to use the <code>get_data()</code> function and set <code>data = &quot;metfiles&quot;</code>, <code>start.year = &quot;2005&quot;</code>, <code>start.month = &quot;01&quot;</code>, <code>end.year = &quot;2005&quot;</code>, and <code>end.month = &quot;03&quot;</code>. See below.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">disperseR::<span class="kw">get_data</span>(<span class="dt">data =</span> <span class="st">&quot;metfiles&quot;</span>, 
-  <span class="dt">start.year =</span> <span class="st">&quot;2005&quot;</span>, 
-  <span class="dt">start.month =</span> <span class="st">&quot;07&quot;</span>, 
-  <span class="dt">end.year=</span><span class="st">&quot;2006&quot;</span>, 
-  <span class="dt">end.month=</span><span class="st">&quot;06&quot;</span>)
-<span class="co">#&gt; No files to download. Requested files already available</span></code></pre></div>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" data-line-number="1">disperseR<span class="op">::</span><span class="kw">get_data</span>(<span class="dt">data =</span> <span class="st">&quot;metfiles&quot;</span>, </a>
+<a class="sourceLine" id="cb16-2" data-line-number="2">  <span class="dt">start.year =</span> <span class="st">&quot;2005&quot;</span>, </a>
+<a class="sourceLine" id="cb16-3" data-line-number="3">  <span class="dt">start.month =</span> <span class="st">&quot;07&quot;</span>, </a>
+<a class="sourceLine" id="cb16-4" data-line-number="4">  <span class="dt">end.year=</span><span class="st">&quot;2006&quot;</span>, </a>
+<a class="sourceLine" id="cb16-5" data-line-number="5">  <span class="dt">end.month=</span><span class="st">&quot;06&quot;</span>)</a>
+<a class="sourceLine" id="cb16-6" data-line-number="6"><span class="co">#&gt; No files to download. Requested files already available</span></a></code></pre></div>
 <p>Now the data should be downloaded to your <code>meteo_dir</code> directory and we can start the analysis.</p>
 </div>
 
+
+
+<!-- code folding -->
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
