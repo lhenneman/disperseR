@@ -49,7 +49,7 @@ Thanks to the [hyspdisp package](https://github.com/lhenneman/hyspdisp), for exa
 
 We know it is sometimes difficult to start working with a new package, especially if you are not very familiar with R. We also believe in reproducible research. This is why we have included several vignettes to help you with the process.
 
--   [The main vignette for disperseR](%22http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Disperse.html%22)
+-   [The main vignette for disperseR](http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Disperse.html)
 -   [Load data one by one](%22https://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html%22)
 -   [Crosswalk data preparation (optional)](%22http://htmlpreview.github.io/?https://github.com/garbulinskamaja/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html%22)
 -   [Planetary layers data preparation (optional)](%22https://www.dropbox.com/s/4f07vsyp9ql13ai/Vignette_Planetary_Layers_Data_Preparation.html?dl=0%22)
