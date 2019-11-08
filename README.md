@@ -77,6 +77,9 @@ improved?
 
   - Graph functions now have many automatic features.
 
+  - Documentation has been much improved. The `?FUNCTION` syntax should
+    work to access help files.
+
 ### Vignettes attached with the package
 
 We know it is sometimes difficult to start working with a new package,
