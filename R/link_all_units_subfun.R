@@ -8,7 +8,8 @@ link_to <- function(d,
                     cw = NULL,
                     county.sp = NULL,
                     rasterin = NULL,
-                    res.link. = 12000) {
+                    res.link. = 12000,
+                    pbl. = TRUE) {
 
   xy <- d[, .(lon, lat)]
   spdf.in <- SpatialPointsDataFrame( coords = xy,
@@ -36,7 +37,12 @@ link_to <- function(d,
   cells <- cellFromXY( r, spdf)
   tab <- table( cells)
   pbls <- pbl_layer.d[as.numeric( names( tab))]
-  r[as.numeric( names( tab))] <- tab / pbls
+
+  # concentration - divide by pbl or not
+  if( pbl.){
+    r[as.numeric( names( tab))] <- tab / pbls
+  } else
+    r[as.numeric( names( tab))] <- tab / pbls
 
   # crop around point locations for faster extracting
   e <- extent(spdf)
@@ -210,7 +216,8 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    duration.run.hours = duration.run.hours,
                                    pbl.height,
                                    res.link.,
-                                   overwrite = F){
+                                   overwrite = F,
+                                   pbl. = TRUE){
 
   unitID <- unit$ID
 
@@ -280,17 +287,21 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
       pbl.height <- rotate( pbl.height)
 
     ## Trim PBL's
-    d_trim <- trim_pbl( d,
-                        rasterin = pbl.height)
-    print( paste( Sys.time(), "PBLs trimmed"))
+    if( pbl_trim){
+      d_trim <- trim_pbl( d,
+                          rasterin = hpbl_raster)
+      print( paste( Sys.time(), "PBLs trimmed"))
+    } else
+      d_trim <- d
 
     ## Link to grid
     p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
     disp_df_link <- link_to( d = d_trim,
-                              link.to = 'grids',
-                              p4string = p4s,
-                              rasterin = pbl.height,
-                              res.link. = res.link.)
+                             link.to = 'grids',
+                             p4string = p4s,
+                             rasterin = pbl.height,
+                             res.link. = res.link.,
+                             pbl. = pbl.)
     print(  paste( Sys.time(), "Grids linked"))
     out <- disp_df_link
     out$month <- as( month_YYYYMM, 'character')
@@ -322,7 +333,8 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
                                      duration.run.hours = duration.run.hours,
                                      pbl.height,
                                      res.link.,
-                                     overwrite = F){
+                                     overwrite = F,
+                                     pbl. = TRUE){
 
   unitID <- unit$ID
 
@@ -394,20 +406,24 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
       pbl.height <- rotate( pbl.height)
 
     ## Trim PBL's
-    d_trim <- trim_pbl( d, rasterin = pbl.height)
-    print( paste( Sys.time(), "PBLs trimmed"))
+    if( pbl_trim){
+      d_trim <- trim_pbl( d,
+                          rasterin = hpbl_raster)
+      print( paste( Sys.time(), "PBLs trimmed"))
+    } else
+      d_trim <- d
 
-    ## Link counties
-    counties.sp <- sf::as_Spatial( counties)
+    unties.sp <- sf::as_Spatial( counties)
     p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
     counties.sp <- spTransform(counties.sp, p4s)
 
     disp_df_link <- link_to( d = d_trim,
-                              link.to = 'counties',
-                              county.sp = counties.sp,
-                              p4string = proj4string( counties.sp),
-                              rasterin = pbl.height,
-                              res.link. = res.link.)
+                             link.to = 'counties',
+                             county.sp = counties.sp,
+                             p4string = proj4string( counties.sp),
+                             rasterin = pbl.height,
+                             res.link. = res.link.,
+                             pbl. = pbl.)
 
     print(  paste( Sys.time(), "Counties linked"))
 
@@ -442,7 +458,8 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
                                 pbl.height=NULL,
                                 crosswalk.,
                                 res.link.,
-                                overwrite = F) {
+                                overwrite = F,
+                                pbl. = TRUE) {
   unitID <- unit$ID
 
   if ((is.null(start.date) | is.null(end.date)) & is.null(month_YYYYMM))
@@ -525,8 +542,12 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
     }
 
     ## Trim PBL's
-    d_trim <- trim_pbl(d, rasterin = pbl.height)
-    print(paste(Sys.time(), "PBLs trimmed"))
+    if( pbl_trim){
+      d_trim <- trim_pbl( d,
+                          rasterin = hpbl_raster)
+      print( paste( Sys.time(), "PBLs trimmed"))
+    } else
+      d_trim <- d
 
     ## Link zips
     p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
@@ -538,7 +559,8 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
         cw = crosswalk.,
         p4string = p4s,
         rasterin = pbl.height,
-        res.link. = res.link.
+        res.link. = res.link.,
+        pbl. = pbl.
       )
     print(paste(Sys.time(), "ZIPs linked"))
 
