@@ -85,7 +85,7 @@ reproducible research. This is why we have included several vignettes to
 help you with the process.
 
   - [The main vignette for
-    disperseR](https://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/dev/vignettes/Vignette_DisperseR.html)
+    disperseR](https://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_DisperseR.html)
   - [Load data one by
     one](http://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html)
   - [Crosswalk data preparation
