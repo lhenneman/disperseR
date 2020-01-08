@@ -127,7 +127,7 @@ run_fac <- function(x,
         format = "d",
         flag = "0"
       ),
-      ".csv"
+      ".fst"
     )
   ))
   message(paste("output file", output_file))
@@ -201,7 +201,7 @@ run_fac <- function(x,
     save.vars <- c('lon', 'lat', 'height', 'Pdate', 'hour')
     partial_trimmed_parcel_locs <-
       disp_df_trim[, save.vars, with = FALSE]
-    write.csv(partial_trimmed_parcel_locs, output_file)
+    write.fst(partial_trimmed_parcel_locs, output_file)
     out <-
       paste(
         "Partial trimmed parcel locations (below height 0 and the highest PBL height) written to",

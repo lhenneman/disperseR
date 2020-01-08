@@ -31,7 +31,8 @@ Depends:
     ggmap, 
     ggrepel,
     sf, 
-    viridis
+    viridis,
+    fst
 Suggests:
 VignetteBuilder: knitr
 Encoding: UTF-8

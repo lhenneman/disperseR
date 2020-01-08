@@ -28,6 +28,8 @@
 #'
 #' @param res.link Defines the grid resolution (in meters---defaults to 12000m = 12km) for linking. This is important for all link.to values, since parcel locations are first put on this grid before spatially allocating to other spatial domains.
 #'
+#' @param crop.usa Logical. For grid links, crop the output to only over the lower 48 US states? Ignored for county and ZIP code links.
+#'
 #' @return vector of months that you can loop over
 
 
@@ -45,7 +47,9 @@ link_all_units<- function(units.run,
                           counties. = NULL,
                           duration.run.hours = 240,
                           res.link = 12000,
-                          overwrite = FALSE) {
+                          overwrite = FALSE,
+                          pbl.trim = FALSE,
+                          crop.usa = FALSE) {
 
   if ((is.null(start.date) |
        is.null(end.date)) & is.null(year.mons)) {
@@ -68,7 +72,8 @@ link_all_units<- function(units.run,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
       res.link. = res.link,
-      mc.cores = mc.cores
+      mc.cores = mc.cores,
+      pbl. = pbl.trim
     )
 
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
@@ -88,7 +93,8 @@ link_all_units<- function(units.run,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
       res.link. = res.link,
-      mc.cores = mc.cores
+      mc.cores = mc.cores,
+      pbl. = pbl.trim
     )
 
     linked_counties <- data.table::rbindlist(Filter(is.data.table, linked_counties))
@@ -107,7 +113,9 @@ link_all_units<- function(units.run,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
       res.link. = res.link,
-      mc.cores = mc.cores
+      mc.cores = mc.cores,
+      pbl. = pbl.trim,
+      crop.usa = crop.usa
     )
 
     linked_grids <- data.table::rbindlist(Filter(is.data.table, linked_grids))
