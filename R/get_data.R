@@ -197,6 +197,7 @@ get_data <-
         }
 
         ### ZCTA dataset
+        directory <- zcta_dir
 
         message("Start getting the ZCTA dataset for graphs")
 
