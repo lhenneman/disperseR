@@ -31,8 +31,8 @@ define_inputs <-
 
     out <- data.table(
       expand.grid(
-        ID = units$ID,
-        year = units$year,
+        ID = unique( units$ID),
+        year = unique( units$year),
         start_hour = start.hours,
         start_day = seq.Date(
           from = as.Date(startday.date),
