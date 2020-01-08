@@ -128,26 +128,6 @@ get_data <-
       assign("zcta", zcta.trans, envir = .GlobalEnv)
       message("   Assigned to zcta variable")
 
-      ### ZCTA dataset
-
-      message("Start getting the ZCTA dataset for graphs")
-
-      message("   Starting Preprocessing")
-      zcta <- file.path(directory, 'cb_2017_us_zcta510_500k.shp')
-      zcta <- sf::st_read(zcta)
-      data.table::setnames(zcta, 'ZCTA5CE10', 'ZCTA')
-      zcta <-
-        merge(
-          zcta,
-          disperseR::crosswalk,
-          by = "ZCTA",
-          all = F,
-          allow.cartesian = TRUE
-        )
-      message("   Preprocessing complete")
-      assign("zcta_dataset", zcta, envir = .GlobalEnv)
-      message("   Assigned to zcta_dataset variable")
-
       ### pblheight
 
       ## planetary layers data
@@ -215,6 +195,27 @@ get_data <-
         if (length(metfiles) == 0) {
           message("   No files to download. Requested files already available")
         }
+
+        ### ZCTA dataset
+
+        message("Start getting the ZCTA dataset for graphs")
+
+        message("   Starting Preprocessing")
+        zcta <- file.path(directory, 'cb_2017_us_zcta510_500k.shp')
+        zcta <- sf::st_read(zcta)
+        data.table::setnames(zcta, 'ZCTA5CE10', 'ZCTA')
+        zcta <-
+          merge(
+            zcta,
+            disperseR::crosswalk,
+            by = "ZCTA",
+            all = F,
+            allow.cartesian = TRUE
+          )
+        message("   Preprocessing complete")
+        assign("zcta_dataset", zcta, envir = .GlobalEnv)
+        message("   Assigned to zcta_dataset variable")
+
 
     }
 
