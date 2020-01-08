@@ -44,9 +44,9 @@ define_inputs <-
       )
     )
 
-    out <- out[as.character(year)==format(as.Date(out$start_day, format="%d/%m/%Y"),"%Y")]
-    out <- unique(merge(out, units, by = c('ID', 'year')))
     # get only the input year for which we get units data
+    out <- out[year==year( start_day)]
+    out <- unique(merge(out, units, by = c('ID', 'year')))
 
     return(out)
   }
