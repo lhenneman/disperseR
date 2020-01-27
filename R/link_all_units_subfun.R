@@ -237,7 +237,8 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    res.link.,
                                    overwrite = F,
                                    pbl. = TRUE,
-                                   crop.usa = FALSE){
+                                   crop.usa = FALSE,
+                                   return.linked.data.){
 
   unitID <- unit$ID
 
@@ -344,12 +345,16 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
     if( nrow( out) != 0){
       ## write to file
       write.fst( out,output_file)
-      print( paste( Sys.time(), "Linked ZIPs  and saved to", output_file))
+      print( paste( Sys.time(), "Linked grids and saved to", output_file))
     }
   } else {
     print( paste("File", output_file, "already exists! Use overwrite = TRUE to over write"))
-    out <- read.fst( output_file, as.data.table = TRUE)
+    if( return.linked.data.)
+      out <- read.fst( output_file, as.data.table = TRUE)
   }
+
+  if( !return.linked.data.)
+    out <- data.table( x = numeric(), y = numeric(), N = numeric())
 
   out$month <- as( month_YYYYMM, 'character')
   out$ID <- unitID
@@ -368,7 +373,8 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
                                      pbl.height,
                                      res.link.,
                                      overwrite = F,
-                                     pbl. = TRUE){
+                                     pbl. = TRUE,
+                                     return.linked.data.){
 
   unitID <- unit$ID
 
@@ -479,8 +485,18 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
     }
   } else {
     print( paste("File", output_file, "already exists! Use overwrite = TRUE to over write"))
-    out <- read.fst( output_file, as.data.table = TRUE)
+
+    if( return.linked.data.)
+      out <- read.fst( output_file, as.data.table = TRUE)
   }
+
+  if( !return.linked.data.)
+    out <- data.table( statefp = character(),
+                       countyfp = character(),
+                       state_name = character(),
+                       name = character(),
+                       geoid = character(),
+                       N = numeric())
 
   out$month <- as( month_YYYYMM, 'character')
   out$ID <- unitID
@@ -498,7 +514,8 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
                                 crosswalk.,
                                 res.link.,
                                 overwrite = F,
-                                pbl. = TRUE) {
+                                pbl. = TRUE,
+                                return.linked.data.) {
   unitID <- unit$ID
 
   if ((is.null(start.date) | is.null(end.date)) & is.null(month_YYYYMM))
@@ -624,8 +641,13 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
       zip_output_file,
       "already exists! Use overwrite = TRUE to over write"
     ))
-    out <- read.fst(zip_output_file, as.data.table = TRUE)
+    if( return.linked.data.)
+      out <- read.fst(zip_output_file, as.data.table = TRUE)
+
   }
+
+  if( !return.linked.data.)
+    out <- data.table( ZIP = character(), N = numeric())
 
   out$month <- as( month_YYYYMM, 'character')
   out$ID <- unitID

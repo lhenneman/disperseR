@@ -30,6 +30,8 @@
 #'
 #' @param crop.usa Logical. For grid links, crop the output to only over the lower 48 US states? Ignored for county and ZIP code links.
 #'
+#' @param crop.usa Logical. For grid links, crop the output to only over the lower 48 US states? Ignored for county and ZIP code links.
+#'
 #' @return vector of months that you can loop over
 
 
@@ -49,7 +51,8 @@ link_all_units<- function(units.run,
                           res.link = 12000,
                           overwrite = FALSE,
                           pbl.trim = FALSE,
-                          crop.usa = FALSE) {
+                          crop.usa = FALSE,
+                          return.linked.data = TRUE) {
 
   if ((is.null(start.date) |
        is.null(end.date)) & is.null(year.mons)) {
@@ -73,7 +76,8 @@ link_all_units<- function(units.run,
       overwrite = overwrite,
       res.link. = res.link,
       mc.cores = mc.cores,
-      pbl. = pbl.trim
+      pbl. = pbl.trim,
+      return.linked.data. = return.linked.data
     )
 
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
@@ -94,7 +98,8 @@ link_all_units<- function(units.run,
       overwrite = overwrite,
       res.link. = res.link,
       mc.cores = mc.cores,
-      pbl. = pbl.trim
+      pbl. = pbl.trim,
+      return.linked.data. = return.linked.data
     )
 
     linked_counties <- data.table::rbindlist(Filter(is.data.table, linked_counties))
@@ -115,7 +120,8 @@ link_all_units<- function(units.run,
       res.link. = res.link,
       mc.cores = mc.cores,
       pbl. = pbl.trim,
-      crop.usa = crop.usa
+      crop.usa = crop.usa,
+      return.linked.data. = return.linked.data
     )
 
     linked_grids <- data.table::rbindlist(Filter(is.data.table, linked_grids))
