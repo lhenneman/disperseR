@@ -55,7 +55,7 @@ run_model <- function(model, npart = 2500, run.dir) {
         species = model$species,
         grids = model$grids,
         return_disp_df = TRUE,
-        write_disp_CSV = TRUE,
+        write_disp_CSV = FALSE,
         run_dir = run.dir
       )
 
