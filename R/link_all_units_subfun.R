@@ -18,21 +18,12 @@ link_to <- function(d,
                                      proj4string = CRS( "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
   spdf <- spTransform( spdf.in, p4string)
 
-  # extract data layer from raster, disaggregate to .1°x.1°
-  # pbl_layer.t <- projectRaster( pbl_layer,
-  #                               crs = CRS( proj4string( spdf)))
-
-  # aim for a resolution of res.link.
-  # pbl_resolution <- res( pbl_layer.t)
-  # print( pbl_resolution)
-  # x_fact <- floor( pbl_resolution[1] / res.link.)
-  # y_fact <- floor( pbl_resolution[2] / res.link.)
-  # print(c( x_fact, y_fact))
-  # pbl_layer.d <- disaggregate( pbl_layer.t,
-  #                              fact = c( x_fact, y_fact))
-
   # create raster with resolution res.link.
   e <- extent(spdf)
+  e@xmin <- floor(  e@xmin / res.link.) * res.link.
+  e@ymin <- floor(  e@ymin / res.link.) * res.link.
+  e@xmax <- ceiling(e@xmax / res.link.) * res.link.
+  e@ymax <- ceiling(e@ymax / res.link.) * res.link.
   r <- raster( ext = e, resolution = res.link., crs = CRS( proj4string( spdf)))
   values( r) <- NA
 
