@@ -67,7 +67,7 @@ link_all_units<- function(units.run,
 
   zips_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
-      yearmons,
+      year.mons,
       disperseR::disperser_link_zips,
       unit = unit,
       pbl.height = pbl.height,
@@ -89,7 +89,7 @@ link_all_units<- function(units.run,
 
   counties_link_parallel <- function(unit) {
     linked_counties <- parallel::mclapply(
-      yearmons,
+      year.mons,
       disperseR::disperser_link_counties,
       unit = unit,
       pbl.height = pbl.height,
@@ -111,7 +111,7 @@ link_all_units<- function(units.run,
 
   grids_link_parallel <- function(unit) {
     linked_grids <- parallel::mclapply(
-      yearmons,
+      year.mons,
       disperseR::disperser_link_grids,
       unit = unit,
       pbl.height = pbl.height,
