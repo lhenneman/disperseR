@@ -221,7 +221,7 @@ calculate_exposure <- function(year.E,
 
       if (nrow(exposures) != 0) {
         write.fst(exposures,
-                  file = file.mo)
+                  path = file.mo)
         monthly.filelist[i] <- file.mo
       }
       #re-initiate ZIP exposure data.table
@@ -259,7 +259,7 @@ calculate_exposure <- function(year.E,
                          ))
     if (nrow(exposures) != 0) {
       write.fst(exposures,
-                file = file.yr)
+                path = file.yr)
     }
 
     return(exposures)
