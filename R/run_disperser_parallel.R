@@ -112,9 +112,17 @@ run_fac <- function(x,
   #########################################################################################################
   ## Check if Height parameter in unit is NA
 
+  # create sharded directory structure
+  hysp_dir_yr <- file.path( hysp_dir, subset$year)
+  hysp_dir_mo <- file.path( hysp_dir_yr,
+                            formatC(
+                              month( subset$start_day),
+                              width = 2, flag = '0'))
+  dir.create( hysp_dir_mo, showWarnings = TRUE, recursive = TRUE)
+
   ## Define output file names
   output_file <- path.expand(file.path(
-    hysp_dir,
+    hysp_dir_mo,
     paste0(
       "hyspdisp_",
       subset$ID,

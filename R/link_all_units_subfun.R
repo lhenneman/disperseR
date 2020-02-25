@@ -291,6 +291,7 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
     files.read <-
       list.files( path = hysp_dir,
                   pattern = pattern.file,
+                  recursive = T,
                   full.names = T)
 
     ## read in the files
@@ -422,6 +423,7 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
     files.read <-
       list.files(path = hysp_dir,
                  pattern = pattern.file,
+                 recursive = T,
                  full.names = T)
 
     ## read in the files
@@ -570,6 +572,7 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
     files.read <-
       list.files(path = hysp_dir,
                  pattern = pattern.file,
+                 recursive = T,
                  full.names = T)
 
     ## read in the files
