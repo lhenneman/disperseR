@@ -288,10 +288,15 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
               paste(vec_filedates, collapse = '|'),
               ').*\\.fst$'
       )
+    hysp_dir.path <-
+      paste0( hysp_dir,
+              unique( paste( year( vec_filedates),
+                             formatC( month( vec_filedates), width = 2, flag = '0'),
+                             sep = '/')))
     files.read <-
-      list.files( path = hysp_dir,
+      list.files( path = hysp_dir.path,
                   pattern = pattern.file,
-                  recursive = T,
+                  recursive = F,
                   full.names = T)
 
     ## read in the files
