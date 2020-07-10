@@ -105,8 +105,8 @@ calculate_exposure <- function(year.E,
         & map.name %ni% ls()) {
       message(
         paste('  ',
-          map.name,
-          'not loaded in environment. If you want it linked, either load RData file before or specify rda_file'
+              map.name,
+              'not loaded in environment. If you want it linked, either load RData file before or specify rda_file'
         )
       )
       next
@@ -119,7 +119,7 @@ calculate_exposure <- function(year.E,
                                        envir = globalenv()))
     }
 
-     #melt them to long format
+    #melt them to long format
     if( link.to == 'zips'){
       id.v <- 'ZIP'
       month_mapping <- month_mapping[ZIP != 'ZIP']
@@ -155,12 +155,18 @@ calculate_exposure <- function(year.E,
     # Sum by ZIP and uID if calculating annual
     if (time.agg == 'year') {
       # define aggregation strings
-      if (source.agg == 'total')
+      if (source.agg == 'total'){
         sum.by <- id.v
-      if (source.agg == 'facility')
+        file.by <- '_exposures_total_'
+      }
+      if (source.agg == 'facility'){
         sum.by <- c(id.v, 'FacID')
-      if (source.agg == 'unit')
+        file.by <- '_exposures_byfacility_'
+      }
+      if (source.agg == 'unit'){
         sum.by <- c(id.v, 'uID')
+        file.by <- '_exposures_byunit_'
+      }
 
       # calculate exposure, label year/month
       PP.linkage[, `:=` (Exposure  = pollutant * N)]
@@ -175,12 +181,18 @@ calculate_exposure <- function(year.E,
                              by = sum.by]
     } else {
       # define aggregation strings
-      if (source.agg == 'total')
+      if (source.agg == 'total'){
         sum.by <- c(id.v, 'yearmonth')
-      if (source.agg == 'facility')
+        file.by <- '_exposures_total_'
+      }
+      if (source.agg == 'facility'){
         sum.by <- c(id.v, 'FacID', 'yearmonth')
-      if (source.agg == 'unit')
+        file.by <- '_exposures_byfacility_'
+      }
+      if (source.agg == 'unit'){
         sum.by <- c(id.v, 'uID', 'yearmonth')
+        file.by <- '_exposures_byunit_'
+      }
 
       # add month
       PP.linkage[, `:=` (
@@ -197,19 +209,19 @@ calculate_exposure <- function(year.E,
       file.mo <- file.path(exp_dir,
                            paste0(
                              link.to,
-                             '_exposures_byunit_',
+                             file.by,
                              paste0(year.E, '_', formatC(
                                i, width = 2, flag = '0'
                              )),
-                             '.csv'
+                             '.fst'
                            ))
 
       if( link.to == 'zips')
         exposures <- exposures[ZIP != '   NA']
 
       if (nrow(exposures) != 0) {
-        write.csv(exposures,
-                  file = file.mo)
+        write.fst(exposures,
+                  path = file.mo)
         monthly.filelist[i] <- file.mo
       }
       #re-initiate ZIP exposure data.table
@@ -237,16 +249,24 @@ calculate_exposure <- function(year.E,
         ))]
       exposures <- exposures[ZIP != '   NA']
     }
+    # write to file, add monthly file to list if not empty data.table
+    file.yr <- file.path(exp_dir,
+                         paste0(
+                           link.to,
+                           file.by,
+                           year.E,
+                           '.fst'
+                         ))
+    if (nrow(exposures) != 0) {
+      write.fst(exposures,
+                path = file.yr)
+    }
+
     return(exposures)
   } else {
     if (return.monthly.data) {
       out <- rbindlist(lapply(na.omit(monthly.filelist),
-                              fread,
-                              keepLeadingZeros = T,
-                              drop = 'V1'))
-      out[,  `:=` (
-        hyads = as(hyads, 'numeric')
-      )]
+                              read.fst))
 
       if( link.to == 'zips')
         out <- out[ZIP != '   NA']

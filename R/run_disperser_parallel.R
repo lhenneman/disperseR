@@ -112,9 +112,17 @@ run_fac <- function(x,
   #########################################################################################################
   ## Check if Height parameter in unit is NA
 
+  # create sharded directory structure
+  hysp_dir_yr <- file.path( hysp_dir, subset$year)
+  hysp_dir_mo <- file.path( hysp_dir_yr,
+                            formatC(
+                              month( subset$start_day),
+                              width = 2, flag = '0'))
+  dir.create( hysp_dir_mo, showWarnings = TRUE, recursive = TRUE)
+
   ## Define output file names
   output_file <- path.expand(file.path(
-    hysp_dir,
+    hysp_dir_mo,
     paste0(
       "hyspdisp_",
       subset$ID,
@@ -127,7 +135,7 @@ run_fac <- function(x,
         format = "d",
         flag = "0"
       ),
-      ".csv"
+      ".fst"
     )
   ))
   message(paste("output file", output_file))
@@ -201,7 +209,7 @@ run_fac <- function(x,
     save.vars <- c('lon', 'lat', 'height', 'Pdate', 'hour')
     partial_trimmed_parcel_locs <-
       disp_df_trim[, save.vars, with = FALSE]
-    write.csv(partial_trimmed_parcel_locs, output_file)
+    write.fst(partial_trimmed_parcel_locs, output_file)
     out <-
       paste(
         "Partial trimmed parcel locations (below height 0 and the highest PBL height) written to",

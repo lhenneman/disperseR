@@ -9,7 +9,8 @@ link_to <- function(d,
                     county.sp = NULL,
                     rasterin = NULL,
                     res.link. = 12000,
-                    pbl. = TRUE) {
+                    pbl. = TRUE,
+                    crop.usa = FALSE) {
 
   xy <- d[, .(lon, lat)]
   spdf.in <- SpatialPointsDataFrame( coords = xy,
@@ -17,38 +18,47 @@ link_to <- function(d,
                                      proj4string = CRS( "+proj=longlat +datum=WGS84 +ellps=WGS84 +towgs84=0,0,0"))
   spdf <- spTransform( spdf.in, p4string)
 
-  # extract data layer from raster, disaggregate to .1°x.1°
-  pbl_layer <- subset_nc_date(hpbl_brick = rasterin,
-                              vardate = d$Pdate[1])
-  pbl_layer.t <- projectRaster( pbl_layer,
-                                crs = CRS( proj4string( spdf)))
-
-  # aim for a resolution of res.link.
-  pbl_resolution <- res( pbl_layer.t)
-  x_fact <- floor( pbl_resolution[1] / res.link.)
-  y_fact <- floor( pbl_resolution[2] / res.link.)
-  pbl_layer.d <- disaggregate( pbl_layer.t,
-                               fact = c( x_fact, y_fact))
+  # create raster with resolution res.link.
+  e <- extent(spdf)
+  e@xmin <- floor(  e@xmin / res.link.) * res.link.
+  e@ymin <- floor(  e@ymin / res.link.) * res.link.
+  e@xmax <- ceiling(e@xmax / res.link.) * res.link.
+  e@ymax <- ceiling(e@ymax / res.link.) * res.link.
+  r <- raster( ext = e, resolution = res.link., crs = CRS( proj4string( spdf)))
+  values( r) <- NA
 
   # count number of particles in each cell,
   # find original raster cells, divide number by pbl
-  r <- pbl_layer.d
-  values( r) <- NA
   cells <- cellFromXY( r, spdf)
   tab <- table( cells)
-  pbls <- pbl_layer.d[as.numeric( names( tab))]
 
   # concentration - divide by pbl or not
   if( pbl.){
+    # reproject pbl's to raster
+    pbl_layer <- subset_nc_date( hpbl_brick = rasterin,
+                                 vardate = d$Pdate[1])
+    pbl_layer.d <- projectRaster( pbl_layer, r)
+    pbls <- pbl_layer.d[as.numeric( names( tab))]
+
     r[as.numeric( names( tab))] <- tab / pbls
   } else
-    r[as.numeric( names( tab))] <- tab / pbls
+    r[as.numeric( names( tab))] <- tab
 
   # crop around point locations for faster extracting
-  e <- extent(spdf)
   r2 <- crop( trim(r,
                    padding = 1),
               e)
+
+  # mask around USA for smaller files
+  if( crop.usa){
+    usa <- rnaturalearth::ne_countries(scale = 110, type = "countries", country = "United States of America",
+                                       geounit = NULL, sovereignty = NULL,
+                                       returnclass = c("sp"))
+    usa.sub <- disaggregate(usa)[6,]
+    crop.extent <- usa.sub
+    crop.extent.proj <- projectExtent( crop.extent, p4string)
+    r2 <- crop( r2, crop.extent.proj)
+  }
 
   # if return.grid, return xyz object
   if( link.to == 'grids'){
@@ -118,7 +128,7 @@ link_to <- function(d,
                            groups = zc_groups,
                            raster_obj = r3))
 
-  setnames(or, names(pbl_layer), 'N')
+  names(or) <- 'N'
   D <- data.table( cbind( zc_trim@data,
                           or))
 
@@ -217,7 +227,9 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    pbl.height,
                                    res.link.,
                                    overwrite = F,
-                                   pbl. = TRUE){
+                                   pbl. = TRUE,
+                                   crop.usa = FALSE,
+                                   return.linked.data.){
 
   unitID <- unit$ID
 
@@ -248,27 +260,47 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    unit$ID, "_",
                                    start.date, "_",
                                    end.date,
-                                   ".csv"))
+                                   ".fst"))
 
   ## Run the zip linkages
   if( !file.exists( output_file) | overwrite == T){
 
     ## identify dates for hyspdisp averages and dates for files to read in
-    vec_dates <- seq.Date( as.Date( start.date),
-                           as.Date( end.date),
-                           by = '1 day')
-    vec_filedates <- seq.Date( from = as.Date( start.date) - ceiling( duration.run.hours / 24),
-                               to = as.Date( end.date),
-                               by = '1 day')
+    vec_dates <-
+      as(
+        seq.Date(
+          as.Date(start.date),
+          as.Date(end.date),
+          by = '1 day'),
+        'character')
+    vec_filedates <-
+      seq.Date(
+        from = as.Date( start.date) - ceiling( duration.run.hours / 24),
+        to = as.Date( end.date),
+        by = '1 day'
+      )
 
     ## list the files
-    pattern.file <- paste0( '_', gsub( '[*]', '[*]', unit$ID), '_(', paste(vec_filedates, collapse = '|'), ')')
-    files.read <- list.files(path = hysp_dir,
-                             pattern = pattern.file,
-                             full.names = T)
+    pattern.file <-
+      paste0( '_',
+              gsub( '[*]', '[*]', unit$ID),
+              '_(',
+              paste(vec_filedates, collapse = '|'),
+              ').*\\.fst$'
+      )
+    hysp_dir.path <-
+      paste0( hysp_dir,
+              unique( paste( year( vec_filedates),
+                             formatC( month( vec_filedates), width = 2, flag = '0'),
+                             sep = '/')))
+    files.read <-
+      list.files( path = hysp_dir.path,
+                  pattern = pattern.file,
+                  recursive = F,
+                  full.names = T)
 
     ## read in the files
-    l <- lapply(files.read, fread, keepLeadingZeros = TRUE)
+    l <- lapply( files.read, read.fst, as.data.table = TRUE)
 
     ## Combine all parcels into single data table
     d <- rbindlist(l)
@@ -277,19 +309,18 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
     print(  paste( Sys.time(), "Files read and combined"))
 
     ## Trim dates & first hour
-    d <- d[d$Pdate %in% as( c( vec_dates), "character") &
-             hour > 1,]
-
-    #Check if extent matches the hpbl raster
-    d_xmin <- min( d$lon)
-    e_xmin <- extent( pbl.height)[1]
-    if( d_xmin < e_xmin - 5)
-      pbl.height <- rotate( pbl.height)
+    d <- d[ as( Pdate, 'character') %in% vec_dates & hour > 1, ]
 
     ## Trim PBL's
-    if( pbl_trim){
+    if( pbl.){
+      #Check if extent matches the hpbl raster
+      d_xmin <- min( d$lon)
+      e_xmin <- extent( pbl.height)[1]
+      if( d_xmin < e_xmin - 5)
+        pbl.height <- rotate( pbl.height)
+
       d_trim <- trim_pbl( d,
-                          rasterin = hpbl_raster)
+                          rasterin = pbl.height)
       print( paste( Sys.time(), "PBLs trimmed"))
     } else
       d_trim <- d
@@ -301,7 +332,8 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                              p4string = p4s,
                              rasterin = pbl.height,
                              res.link. = res.link.,
-                             pbl. = pbl.)
+                             pbl. = pbl.,
+                             crop.usa = crop.usa)
     print(  paste( Sys.time(), "Grids linked"))
     out <- disp_df_link
     out$month <- as( month_YYYYMM, 'character')
@@ -309,13 +341,17 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
 
     if( nrow( out) != 0){
       ## write to file
-      write.csv( out,output_file)
-      print( paste( Sys.time(), "Linked ZIPs  and saved to", output_file))
+      write.fst( out,output_file)
+      print( paste( Sys.time(), "Linked grids and saved to", output_file))
     }
   } else {
     print( paste("File", output_file, "already exists! Use overwrite = TRUE to over write"))
-    out <- fread( output_file, keepLeadingZeros = TRUE)
+    if( return.linked.data.)
+      out <- read.fst( output_file, as.data.table = TRUE)
   }
+
+  if( !return.linked.data.)
+    out <- data.table( x = numeric(), y = numeric(), N = numeric())
 
   out$month <- as( month_YYYYMM, 'character')
   out$ID <- unitID
@@ -334,7 +370,8 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
                                      pbl.height,
                                      res.link.,
                                      overwrite = F,
-                                     pbl. = TRUE){
+                                     pbl. = TRUE,
+                                     return.linked.data.){
 
   unitID <- unit$ID
 
@@ -360,18 +397,24 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
   ## name the eventual output file
   output_file <-
     file.path( ziplink_dir,
-               paste0("countylinks_", unit$ID, "_", start.date, "_", end.date, ".csv"))
+               paste0("countylinks_", unit$ID, "_", start.date, "_", end.date, ".fst"))
 
   ## Run the zip linkages
   if( !file.exists( output_file) | overwrite == T){
 
     ## identify dates for hyspdisp averages and dates for files to read in
-    vec_dates <- seq.Date( as.Date( start.date),
-                           as.Date( end.date),
-                           by = '1 day')
-    vec_filedates <- seq.Date( from = as.Date( start.date) - ceiling( duration.run.hours / 24),
-                               to = as.Date( end.date),
-                               by = '1 day')
+    vec_dates <-
+      as(
+        seq.Date(
+          as.Date(start.date),
+          as.Date(end.date),
+          by = '1 day'),
+        'character')
+    vec_filedates <-
+      seq.Date(
+        from = as.Date( start.date) - ceiling( duration.run.hours / 24),
+        to = as.Date( end.date),
+        by = '1 day')
 
     ## list the files
     pattern.file <-
@@ -380,15 +423,16 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
         gsub('[*]', '[*]', unitID),
         '_(',
         paste(vec_filedates, collapse = '|'),
-        ')'
+        ').*\\.fst$'
       )
     files.read <-
       list.files(path = hysp_dir,
                  pattern = pattern.file,
+                 recursive = T,
                  full.names = T)
 
     ## read in the files
-    l <- lapply(files.read, fread, keepLeadingZeros = TRUE)
+    l <- lapply(files.read, read.fst, as.data.table = TRUE)
 
     ## Combine all parcels into single data table
     d <- rbindlist(l)
@@ -397,23 +441,23 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
     print(  paste( Sys.time(), "Files read and combined"))
 
     ## Trim dates & first hour
-    d <- d[d$Pdate %in% as( c( vec_dates), "character") & hour > 1,]
-
-    #Check if extent matches the hpbl raster
-    d_xmin <- min( d$lon)
-    e_xmin <- extent( pbl.height)[1]
-    if( d_xmin < e_xmin - 5)
-      pbl.height <- rotate( pbl.height)
+    d <- d[ as( Pdate, 'character') %in% vec_dates & hour > 1, ]
 
     ## Trim PBL's
-    if( pbl_trim){
+    if( pbl.){
+      #Check if extent matches the hpbl raster
+      d_xmin <- min( d$lon)
+      e_xmin <- extent( pbl.height)[1]
+      if( d_xmin < e_xmin - 5)
+        pbl.height <- rotate( pbl.height)
+
       d_trim <- trim_pbl( d,
-                          rasterin = hpbl_raster)
+                          rasterin = pbl.height)
       print( paste( Sys.time(), "PBLs trimmed"))
     } else
       d_trim <- d
 
-    unties.sp <- sf::as_Spatial( counties)
+    counties.sp <- sf::as_Spatial( counties)
     p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
     counties.sp <- spTransform(counties.sp, p4s)
 
@@ -433,15 +477,24 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
 
     if( nrow( out) != 0){
       ## write to file
-      write.csv( out,
-                 output_file)
+      write.fst( out, output_file)
 
       print( paste( Sys.time(), "Linked counties and saved to", output_file))
     }
   } else {
     print( paste("File", output_file, "already exists! Use overwrite = TRUE to over write"))
-    out <- fread( output_file, keepLeadingZeros = TRUE)
+
+    if( return.linked.data.)
+      out <- read.fst( output_file, as.data.table = TRUE)
   }
+
+  if( !return.linked.data.)
+    out <- data.table( statefp = character(),
+                       countyfp = character(),
+                       state_name = character(),
+                       name = character(),
+                       geoid = character(),
+                       N = numeric())
 
   out$month <- as( month_YYYYMM, 'character')
   out$ID <- unitID
@@ -459,7 +512,8 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
                                 crosswalk.,
                                 res.link.,
                                 overwrite = F,
-                                pbl. = TRUE) {
+                                pbl. = TRUE,
+                                return.linked.data.) {
   unitID <- unit$ID
 
   if ((is.null(start.date) | is.null(end.date)) & is.null(month_YYYYMM))
@@ -489,14 +543,19 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
   ## name the eventual output file
   zip_output_file <-
     file.path(ziplink_dir,
-              paste0("ziplinks_", unit$ID, "_", start.date, "_", end.date, ".csv"))
+              paste0("ziplinks_", unit$ID, "_", start.date, "_", end.date, ".fst"))
 
 
   ## Run the zip linkages
   if (!file.exists(zip_output_file) | overwrite == T) {
     ## identify dates for hyspdisp averages and dates for files to read in
     vec_dates <-
-      seq.Date(as.Date(start.date), as.Date(end.date), by = '1 day')
+      as(
+        seq.Date(
+          as.Date(start.date),
+          as.Date(end.date),
+          by = '1 day'),
+        'character')
 
     vec_filedates <-
       seq.Date(
@@ -513,15 +572,16 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
         gsub('[*]', '[*]', unitID),
         '_(',
         paste(vec_filedates, collapse = '|'),
-        ')'
+        ').*\\.fst$'
       )
     files.read <-
       list.files(path = hysp_dir,
                  pattern = pattern.file,
+                 recursive = T,
                  full.names = T)
 
     ## read in the files
-    l <- lapply(files.read, fread, keepLeadingZeros = TRUE)
+    l <- lapply(files.read, read.fst, as.data.table = TRUE)
 
     ## Combine all parcels into single data table
     d <- rbindlist(l)
@@ -532,19 +592,19 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
     print(paste(Sys.time(), "Files read and combined"))
 
     ## Trim dates & first hour
-    d <- d[d$Pdate %in% as(c(vec_dates), "character") & hour > 1, ]
-
-    #Check if extent matches the hpbl raster
-    d_xmin <- min(d$lon)
-    e_xmin <- extent(pbl.height)[1]
-    if (d_xmin < e_xmin - 5) {
-      pbl.height <- rotate(pbl.height)
-    }
+    d <- d[ as( Pdate, 'character') %in% vec_dates & hour > 1, ]
 
     ## Trim PBL's
-    if( pbl_trim){
+    if( pbl.){
+      #Check if extent matches the hpbl raster
+      d_xmin <- min(d$lon)
+      e_xmin <- extent(pbl.height)[1]
+      if (d_xmin < e_xmin - 5) {
+        pbl.height <- rotate(pbl.height)
+      }
+
       d_trim <- trim_pbl( d,
-                          rasterin = hpbl_raster)
+                          rasterin = pbl.height)
       print( paste( Sys.time(), "PBLs trimmed"))
     } else
       d_trim <- d
@@ -571,7 +631,7 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
 
     ## write to file
     if (nrow(out) != 0) {
-      write.csv(out, zip_output_file)
+      write.fst(out, zip_output_file)
       print(paste(Sys.time(), "Linked ZIPs and saved to", zip_output_file))
     }
   } else {
@@ -580,8 +640,13 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
       zip_output_file,
       "already exists! Use overwrite = TRUE to over write"
     ))
-    out <- fread(zip_output_file, keepLeadingZeros = TRUE)
+    if( return.linked.data.)
+      out <- read.fst(zip_output_file, as.data.table = TRUE)
+
   }
+
+  if( !return.linked.data.)
+    out <- data.table( ZIP = character(), N = numeric())
 
   out$month <- as( month_YYYYMM, 'character')
   out$ID <- unitID

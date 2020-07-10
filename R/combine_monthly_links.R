@@ -30,11 +30,11 @@ combine_monthly_links <- function( month_YYYYMMs,
     month.h <- formatC(month.m, width = 2, format = "d", flag = "0")
 
     if( link.to == 'zips'){
-      pattern <- paste0('ziplinks.*', year.h, '-', month.h)
+      pattern <- paste0('ziplinks.*', year.h, '-', month.h, '.*\\.fst$')
     } else if( link.to == 'grids'){
-      pattern <- paste0('gridlinks.*', year.h, '-', month.h)
+      pattern <- paste0('gridlinks.*', year.h, '-', month.h, '.*\\.fst$')
     } else if( link.to == 'counties'){
-      pattern <- paste0('countylinks.*', year.h, '-', month.h)
+      pattern <- paste0('countylinks.*', year.h, '-', month.h, '.*\\.fst$')
     }
 
     files.month <-
@@ -48,7 +48,7 @@ combine_monthly_links <- function( month_YYYYMMs,
       print(paste('Reading and merging month', month.h, 'in year', year.h))
 
       unitnames <-
-        gsub(paste0('.*links_|_', year.h, '-', month.h , '.*csv$'),
+        gsub(paste0('.*links_|_', year.h, '-', month.h , '.*fst$'),
              '',
              files.month)
       names(files.month) <- unitnames

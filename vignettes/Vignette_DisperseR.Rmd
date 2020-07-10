@@ -34,6 +34,7 @@ library(ggsn)
 library(gridExtra)
 library(ggmap)
 library(ggrepel)
+library(fst)
 ```
 
 Next, we will use the `create_dirs()` function that creates a project folder with all the necessary sub folders. We recommend that you begin by setting up your project with this function. Provide the path to where you would like your project to live in the `location` argument. By default, if you do not specify the path, this function will create a main directory on your desktop. It will also assign paths to string variables in your environment. 

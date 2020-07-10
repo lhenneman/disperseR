@@ -30,6 +30,10 @@
 #'
 #' @param res.link Defines the grid resolution (in meters---defaults to 12000m = 12km) for linking. This is important for all link.to values, since parcel locations are first put on this grid before spatially allocating to other spatial domains.
 #'
+#' @param crop.usa Logical. For grid links, crop the output to only over the lower 48 US states? Ignored for county and ZIP code links.
+#'
+#' @param crop.usa Logical. For grid links, crop the output to only over the lower 48 US states? Ignored for county and ZIP code links.
+#'
 #' @return vector of months that you can loop over
 
 
@@ -48,7 +52,10 @@ link_all_units<- function(units.run,
                           counties. = NULL,
                           duration.run.hours = 240,
                           res.link = 12000,
-                          overwrite = FALSE) {
+                          overwrite = FALSE,
+                          pbl.trim = FALSE,
+                          crop.usa = FALSE,
+                          return.linked.data = TRUE) {
 
   if ((is.null(start.date) |
        is.null(end.date)) & is.null(year.mons)) {
@@ -65,7 +72,7 @@ link_all_units<- function(units.run,
 
   zips_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
-      yearmons,
+      year.mons,
       disperseR::disperser_link_zips,
       unit = unit,
       pbl.height = pbl.height,
@@ -73,8 +80,9 @@ link_all_units<- function(units.run,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
       res.link. = res.link,
-      pbl. = pbl_trim,
-      mc.cores = mc.cores
+      mc.cores = mc.cores,
+      pbl. = pbl.trim,
+      return.linked.data. = return.linked.data
     )
 
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
@@ -86,7 +94,7 @@ link_all_units<- function(units.run,
 
   counties_link_parallel <- function(unit) {
     linked_counties <- parallel::mclapply(
-      yearmons,
+      year.mons,
       disperseR::disperser_link_counties,
       unit = unit,
       pbl.height = pbl.height,
@@ -94,8 +102,9 @@ link_all_units<- function(units.run,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
       res.link. = res.link,
-      pbl. = pbl_trim,
-      mc.cores = mc.cores
+      mc.cores = mc.cores,
+      pbl. = pbl.trim,
+      return.linked.data. = return.linked.data
     )
 
     linked_counties <- data.table::rbindlist(Filter(is.data.table, linked_counties))
@@ -107,15 +116,17 @@ link_all_units<- function(units.run,
 
   grids_link_parallel <- function(unit) {
     linked_grids <- parallel::mclapply(
-      yearmons,
+      year.mons,
       disperseR::disperser_link_grids,
       unit = unit,
       pbl.height = pbl.height,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
       res.link. = res.link,
-      pbl. = pbl_trim,
-      mc.cores = mc.cores
+      mc.cores = mc.cores,
+      pbl. = pbl.trim,
+      crop.usa = crop.usa,
+      return.linked.data. = return.linked.data
     )
 
     linked_grids <- data.table::rbindlist(Filter(is.data.table, linked_grids))
