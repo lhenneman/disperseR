@@ -16,7 +16,9 @@
 #'
 #' @param year.mons these are the months for which we would like to do the linking. You can use the get_yearmon() function to create a vector that can be an input here.
 #'
-#' @param pbl.height `pbl.height = pblheight` by default but you can change it. See the vignette
+#' @param pbl_trim logical. Trim parcel locations under monthly PBL heights and take concentration under PBL layer?
+#'
+#' @param pbl.height monthly boundary layer heights. required if pbl_trim = TRUE
 #'
 #' @param crosswalk. `crosswalk. = crosswalk` by default but you can change it. See the vignette
 #'
@@ -44,7 +46,8 @@ link_all_units<- function(units.run,
                           year.mons = NULL,
                           start.date = NULL,
                           end.date = NULL,
-                          pbl.height = pblheight,
+                          pbl_trim = TRUE,
+                          pbl.height = NULL,
                           crosswalk. = NULL,
                           counties. = NULL,
                           duration.run.hours = 240,
@@ -64,6 +67,8 @@ link_all_units<- function(units.run,
     stop( "crosswalk. must be provided if link.to == 'zips'")
   if (link.to == 'counties' & is.null(counties.))
     stop( "counties. must be provided if link.to == 'counties'")
+  if( pbl_trim & is.null( pbl.height))
+    stop( "pbl.height must be provided if pbl_trim == TRUE")
 
   zips_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
