@@ -230,7 +230,7 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    pbl. = TRUE,
                                    crop.usa = FALSE,
                                    return.linked.data.){
-
+print( 'wow')
   unitID <- unit$ID
 
   if( (is.null( start.date) | is.null( end.date)) & is.null( month_YYYYMM))
@@ -289,10 +289,10 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
               ').*\\.fst$'
       )
     hysp_dir.path <-
-      paste0( hysp_dir,
-              unique( paste( year( vec_filedates),
-                             formatC( month( vec_filedates), width = 2, flag = '0'),
-                             sep = '/')))
+      file.path( hysp_dir,
+                 unique( paste( year( vec_filedates),
+                                formatC( month( vec_filedates), width = 2, flag = '0'),
+                                sep = '/')))
     files.read <-
       list.files( path = hysp_dir.path,
                   pattern = pattern.file,
@@ -414,22 +414,27 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
       seq.Date(
         from = as.Date( start.date) - ceiling( duration.run.hours / 24),
         to = as.Date( end.date),
-        by = '1 day')
+        by = '1 day'
+      )
 
     ## list the files
     pattern.file <-
-      paste0(
-        'hyspdisp_',
-        gsub('[*]', '[*]', unitID),
-        '_(',
-        paste(vec_filedates, collapse = '|'),
-        ').*\\.fst$'
+      paste0( '_',
+              gsub( '[*]', '[*]', unit$ID),
+              '_(',
+              paste(vec_filedates, collapse = '|'),
+              ').*\\.fst$'
       )
+    hysp_dir.path <-
+      file.path( hysp_dir,
+                 unique( paste( year( vec_filedates),
+                                formatC( month( vec_filedates), width = 2, flag = '0'),
+                                sep = '/')))
     files.read <-
-      list.files(path = hysp_dir,
-                 pattern = pattern.file,
-                 recursive = T,
-                 full.names = T)
+      list.files( path = hysp_dir.path,
+                  pattern = pattern.file,
+                  recursive = F,
+                  full.names = T)
 
     ## read in the files
     l <- lapply(files.read, read.fst, as.data.table = TRUE)
@@ -556,29 +561,32 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
           as.Date(end.date),
           by = '1 day'),
         'character')
-
     vec_filedates <-
       seq.Date(
-        from = as.Date(start.date) - ceiling(duration.run.hours / 24),
-        to = as.Date(end.date),
+        from = as.Date( start.date) - ceiling( duration.run.hours / 24),
+        to = as.Date( end.date),
         by = '1 day'
       )
 
-
     ## list the files
     pattern.file <-
-      paste0(
-        'hyspdisp_',
-        gsub('[*]', '[*]', unitID),
-        '_(',
-        paste(vec_filedates, collapse = '|'),
-        ').*\\.fst$'
+      paste0( '_',
+              gsub( '[*]', '[*]', unit$ID),
+              '_(',
+              paste(vec_filedates, collapse = '|'),
+              ').*\\.fst$'
       )
+    hysp_dir.path <-
+      file.path( hysp_dir,
+                 unique( paste( year( vec_filedates),
+                                formatC( month( vec_filedates), width = 2, flag = '0'),
+                                sep = '/')))
     files.read <-
-      list.files(path = hysp_dir,
-                 pattern = pattern.file,
-                 recursive = T,
-                 full.names = T)
+      list.files( path = hysp_dir.path,
+                  pattern = pattern.file,
+                  recursive = F,
+                  full.names = T)
+
 
     ## read in the files
     l <- lapply(files.read, read.fst, as.data.table = TRUE)
