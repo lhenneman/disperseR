@@ -230,7 +230,6 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    pbl. = TRUE,
                                    crop.usa = FALSE,
                                    return.linked.data.){
-print( 'wow')
   unitID <- unit$ID
 
   if( (is.null( start.date) | is.null( end.date)) & is.null( month_YYYYMM))
