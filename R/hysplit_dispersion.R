@@ -59,7 +59,7 @@ hysplit_dispersion <- function(lat = 49.263,
   run_day <- as.POSIXct(run_day, origin = "1970-01-01", tz = "UTC")
 
   # Define starting time parameters
-  start_year_GMT <- substr(as.character(year(run_day)), 1, 4)
+  start_year_GMT <- substr(as.character(year(run_day)), 3, 4)
 
   start_month_GMT <- formatC(as.numeric(month(run_day)),
     width = 2, format = "d", flag = "0")
@@ -74,10 +74,13 @@ hysplit_dispersion <- function(lat = 49.263,
 
   # Determine the start time of the model run
   start_time_GMT <-
-    lubridate::ymd_hms(paste0(start_year_GMT, "-",
-                              start_month_GMT, "-",
-                              start_day_GMT, " ",
-                              start_hour, ":00:00"))
+    lubridate::ymd_hms(paste0(ifelse(start_year_GMT > 50,
+      paste0("19",
+        start_year_GMT),
+      start_year_GMT), "-",
+      start_month_GMT, "-",
+      start_day_GMT, " ",
+      start_hour, ":00:00"))
 
   # Determine the end time of the model run
   end_time_GMT <- as.POSIXct(ifelse(direction == "backward",
