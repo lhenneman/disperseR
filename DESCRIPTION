@@ -20,6 +20,7 @@ Depends:
     magrittr,
     raster,
     rgeos,
+    rgdal,
     sp,
     ncdf4, 
     maps, 
