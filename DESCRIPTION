@@ -16,6 +16,7 @@ License: GPL-3
 LazyData: true
 Depends:
     data.table,
+    downloader,
     magrittr,
     raster,
     rgeos,
