@@ -48,7 +48,7 @@ plot_impact_single  <- function(data.linked,
                                 legend.lims = NULL,
                                 legend.name = NULL,
                                 graph.dir = NULL,
-                                zoom = TRUE,
+                                zoom = TRUE, #zooming into map
                                 ...) {
 
   dataset_sf <- create_impact_table_single(data.linked = data.linked,
