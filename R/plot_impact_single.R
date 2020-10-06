@@ -37,19 +37,21 @@
 #' @export plot_impact_single
 
 plot_impact_single  <- function(data.linked,
-                                data.units,
-                                link.to = 'zips',
-                                zcta.dataset = NULL,
-                                counties. = NULL,
-                                map.month,
-                                map.unitID,
-                                plot.name = NULL,
-                                metric = 'N',
-                                legend.lims = NULL,
-                                legend.name = NULL,
-                                graph.dir = NULL,
-                                zoom = TRUE, #zooming into map
-                                ...) {
+                                  data.units,
+                                  link.to = 'zips',
+                                  zcta.dataset = NULL,
+                                  counties. = NULL,
+                                  map.month,
+                                  map.unitID,
+                                  plot.name = NULL,
+                                  metric = 'N',
+                                  legend.lims = NULL,
+                                  legend.name = NULL,
+                                  graph.dir = NULL,
+                                  zoom = TRUE, #zooming into map,
+                                  xlims= NULL,
+                                  ylims=NULL,
+                                  ...) {
 
   dataset_sf <- create_impact_table_single(data.linked = data.linked,
                                            data.units = data.units,
@@ -80,6 +82,15 @@ plot_impact_single  <- function(data.linked,
     minlat <- 24
     maxlat <- 50
   }
+
+  # -- find lat/lon range  -- #
+  if( !is.null( xlims) & !is.null( ylims)){
+
+    latlonrange <- data.table( xlim = xlims,
+                               ylim = ylims)
+  }
+
+
 
   dataunits <- data.units[ID == map.unitID & year == year.use]
   long <- dataunits$Longitude
@@ -175,8 +186,12 @@ plot_impact_single  <- function(data.linked,
       stroke = 2
     ) +
     scale_shape_discrete(solid = T) +
-    ggplot2::coord_sf(xlim = c(minlong, maxlong),
-                      ylim = c(minlat, maxlat)) +
+    coord_sf(
+      xlim = latlonrange$xlim,
+      ylim = latlonrange$ylim
+    ) +
+    # ggplot2::coord_sf(xlim = c(minlong, maxlong),
+    #                   ylim = c(minlat, maxlat)) +
     colorscale +
     fillscale +
     theme.default +
