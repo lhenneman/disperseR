@@ -98,6 +98,7 @@ create_impact_table_single <- function(data.linked,
   } else if( link.to == 'grids'){
     dataset_r <- suppressWarnings( rasterFromXYZ( datareduced))
     dataset_sp <- as( dataset_r, 'SpatialPolygonsDataFrame')
+    dataset_sp <- dataset_sp [ !is.na (dataset_sp$month) , ]
     dataset_sf <- st_as_sf( dataset_sp)
     suppressWarnings(
       st_crs( dataset_sf$geometry) <-  "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
