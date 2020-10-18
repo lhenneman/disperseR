@@ -4,11 +4,22 @@
 \alias{plot_impact_weighted}
 \title{\code{plot_impact_weighted}}
 \usage{
-plot_impact_weighted(data.linked, data.units, link.to = "zips",
-  zcta.dataset = NULL, counties. = NULL, metric = "hyads",
-  time.agg = "year", legend.lims = NULL, legend.name = NULL,
-  plot.name = NULL, map.month = NULL, graph.dir = NULL,
-  zoom = TRUE, ...)
+plot_impact_weighted(
+  data.linked,
+  data.units,
+  link.to = "zips",
+  zcta.dataset = NULL,
+  counties. = NULL,
+  metric = "hyads",
+  time.agg = "year",
+  legend.lims = NULL,
+  legend.name = NULL,
+  plot.name = NULL,
+  map.month = NULL,
+  graph.dir = NULL,
+  zoom = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data.linked}{data for plotting as output from disperseR::calculate_exposure()}

@@ -4,10 +4,24 @@
 \alias{link_all_units}
 \title{create a set of directories to run disperseR}
 \usage{
-link_all_units(units.run, link.to = "zips", mc.cores = detectCores(),
-  year.mons = NULL, start.date = NULL, end.date = NULL,
-  pbl.height = pblheight, crosswalk. = NULL, counties. = NULL,
-  duration.run.hours = 240, res.link = 12000, overwrite = FALSE)
+link_all_units(
+  units.run,
+  link.to = "zips",
+  mc.cores = detectCores(),
+  year.mons = NULL,
+  start.date = NULL,
+  end.date = NULL,
+  pbl_trim = TRUE,
+  pbl.height = NULL,
+  crosswalk. = NULL,
+  counties. = NULL,
+  duration.run.hours = 240,
+  res.link = 12000,
+  overwrite = FALSE,
+  pbl.trim = FALSE,
+  crop.usa = FALSE,
+  return.linked.data = TRUE
+)
 }
 \arguments{
 \item{units.run}{information on unit locations as output from disperseR::units()}
@@ -20,7 +34,9 @@ link_all_units(units.run, link.to = "zips", mc.cores = detectCores(),
 
 \item{start.date}{this argument is not necessary, but can be used if the user is interested in specifying a specific date to start the analysis with as opposed to using months. For example `start.date="2005-01-02"` for 2 January 2005. This argument are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided.}
 
-\item{pbl.height}{`pbl.height = pblheight` by default but you can change it. See the vignette}
+\item{pbl_trim}{logical. Trim parcel locations under monthly PBL heights and take concentration under PBL layer?}
+
+\item{pbl.height}{monthly boundary layer heights. required if pbl_trim = TRUE}
 
 \item{crosswalk.}{`crosswalk. = crosswalk` by default but you can change it. See the vignette}
 
@@ -29,6 +45,8 @@ link_all_units(units.run, link.to = "zips", mc.cores = detectCores(),
 \item{res.link}{Defines the grid resolution (in meters---defaults to 12000m = 12km) for linking. This is important for all link.to values, since parcel locations are first put on this grid before spatially allocating to other spatial domains.}
 
 \item{overwrite}{`overwrite = FALSE` by default. Would you like to overwrite files that already exist?}
+
+\item{crop.usa}{Logical. For grid links, crop the output to only over the lower 48 US states? Ignored for county and ZIP code links.}
 
 \item{start.end}{this argument is not necessary, but can be used if the user is interested in specifying a specific date to end the analysis with as opposed to using months. For example `start.date="2005-01-02"` for 2 January 2005.This argument are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided.}
 }

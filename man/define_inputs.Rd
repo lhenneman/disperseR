@@ -4,8 +4,13 @@
 \alias{define_inputs}
 \title{Define species parameters}
 \usage{
-define_inputs(units, startday, endday, start.hours = c(0, 6, 12, 18),
-  duration = 240)
+define_inputs(
+  units,
+  startday,
+  endday,
+  start.hours = c(0, 6, 12, 18),
+  duration = 240
+)
 }
 \arguments{
 \item{startday}{starting day for HyADS runs, must be in standard YYY-MM-DD format}

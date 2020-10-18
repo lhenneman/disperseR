@@ -4,8 +4,12 @@
 \alias{get_yearmon}
 \title{create a set of directories to run disperseR}
 \usage{
-get_yearmon(start.year = NULL, start.month = NULL, end.year = NULL,
-  end.month = NULL)
+get_yearmon(
+  start.year = NULL,
+  start.month = NULL,
+  end.year = NULL,
+  end.month = NULL
+)
 }
 \arguments{
 \item{start.year}{what year do you want your vector to start with? eg. start.year = "2005"}

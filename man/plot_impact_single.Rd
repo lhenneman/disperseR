@@ -4,10 +4,22 @@
 \alias{plot_impact_single}
 \title{\code{plot_impact_single}}
 \usage{
-plot_impact_single(data.linked, data.units, link.to = "zips",
-  zcta.dataset = NULL, counties. = NULL, map.month, map.unitID,
-  plot.name = NULL, metric = "N", legend.lims = NULL,
-  legend.name = NULL, graph.dir = NULL, zoom = TRUE, ...)
+plot_impact_single(
+  data.linked,
+  data.units,
+  link.to = "zips",
+  zcta.dataset = NULL,
+  counties. = NULL,
+  map.month,
+  map.unitID,
+  plot.name = NULL,
+  metric = "N",
+  legend.lims = NULL,
+  legend.name = NULL,
+  graph.dir = NULL,
+  zoom = TRUE,
+  ...
+)
 }
 \arguments{
 \item{data.linked}{data for plotting as output from disperseR::link_all_units()}

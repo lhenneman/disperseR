@@ -4,9 +4,17 @@
 \alias{plot_impact_unit}
 \title{create a set of directories to run disperseR}
 \usage{
-plot_impact_unit(data.linked = NULL, zip.codes = NULL, y.lim = c(24,
-  50), x.lim = c(-123, -69), plot.title = NULL, legend.lims = NULL,
-  legend.title = NULL, legend.text.angle = 0, graph.dir = NULL)
+plot_impact_unit(
+  data.linked = NULL,
+  zip.codes = NULL,
+  y.lim = c(24, 50),
+  x.lim = c(-123, -69),
+  plot.title = NULL,
+  legend.lims = NULL,
+  legend.title = NULL,
+  legend.text.angle = 0,
+  graph.dir = NULL
+)
 }
 \arguments{
 \item{data.linked}{data for plotting as output from disperseR::calculate_exposure()}

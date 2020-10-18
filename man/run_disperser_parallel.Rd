@@ -4,9 +4,16 @@
 \alias{run_disperser_parallel}
 \title{run the fac model in parallel}
 \usage{
-run_disperser_parallel(input.refs = NULL, pbl.height = NULL,
-  species = "so2", proc_dir = proc_dir, overwrite = F, npart = 100,
-  mc.cores = parallel::detectCores(), keep.hysplit.files = FALSE)
+run_disperser_parallel(
+  input.refs = NULL,
+  pbl.height = NULL,
+  species = "so2",
+  proc_dir = proc_dir,
+  overwrite = F,
+  npart = 100,
+  mc.cores = parallel::detectCores(),
+  keep.hysplit.files = FALSE
+)
 }
 \arguments{
 \item{input.refs}{should be the data table that is the result of the `define_input()` function or a subset of that dataset}

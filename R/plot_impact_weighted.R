@@ -252,7 +252,7 @@ plot_impact_weighted <- function(data.linked,
       suppressWarnings(
         st_crs( dataset_sf$geometry) <-  "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
       )
-      dataset_sf$ID <- data.linked$ID
+      dataset_sf$uID <- data.linked$uID
       dataset_sf$comb <- data.linked$comb
     }
 

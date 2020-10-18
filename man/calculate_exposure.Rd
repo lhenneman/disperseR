@@ -4,10 +4,18 @@
 \alias{calculate_exposure}
 \title{create a set of directories to run disperseR}
 \usage{
-calculate_exposure(year.E, year.D, link.to = "zips",
-  pollutant = "SO2..tons.", units.mo, rda_file = "loaded",
-  exp_dir = NULL, source.agg = c("total", "facility", "unit"),
-  time.agg = c("year", "month"), return.monthly.data = F)
+calculate_exposure(
+  year.E,
+  year.D,
+  link.to = "zips",
+  pollutant = "SO2..tons.",
+  units.mo,
+  rda_file = "loaded",
+  exp_dir = NULL,
+  source.agg = c("total", "facility", "unit"),
+  time.agg = c("year", "month"),
+  return.monthly.data = F
+)
 }
 \arguments{
 \item{year.E}{emissions year}

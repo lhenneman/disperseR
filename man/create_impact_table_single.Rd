@@ -4,9 +4,16 @@
 \alias{create_impact_table_single}
 \title{\code{create_impact_table_single}}
 \usage{
-create_impact_table_single(data.linked, data.units, link.to = "zips",
-  zcta.dataset = NULL, counties. = NULL, map.month, map.unitID,
-  metric = "N")
+create_impact_table_single(
+  data.linked,
+  data.units,
+  link.to = "zips",
+  zcta.dataset = NULL,
+  counties. = NULL,
+  map.month,
+  map.unitID,
+  metric = "N"
+)
 }
 \arguments{
 \item{data.linked}{data for plotting as output from disperseR::link_all_units()}
