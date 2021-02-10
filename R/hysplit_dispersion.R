@@ -35,8 +35,8 @@ hysplit_dispersion <- function(lat = 49.263,
   # If SETUP.CFG or ASCDATA.CFG do not exist in the
   # working directory, write default versions of those
   # config files
-  if (!("SETUP.CFG" %in% list.files()) |
-      !("ASCDATA.CFG" %in% list.files())) {
+  if (!("SETUP.CFG" %in% list.files(run_dir)) |
+      !("ASCDATA.CFG" %in% list.files(run_dir))) {
     disperseR::hysplit_config_init(run_dir)
   }
 
