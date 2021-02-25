@@ -12,6 +12,8 @@
 #'
 #' @param start.end this argument is not necessary, but can be used if the user is interested in specifying a specific date to end the analysis with as opposed to using months. For example `start.date="2005-01-02"` for 2 January 2005.This argument are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided.
 #'
+#' @param by.time this argument is not necessary, but can be used if the user is interested in specifying a time scale other than month for aggregating ("day" is currently the only option besides NULL)
+#'
 #' @param link.to one of 'zips', 'counties', or 'grids' to denote spatial linkage scale. zips and counties are only for the USA
 #'
 #' @param year.mons these are the months for which we would like to do the linking. You can use the get_yearmon() function to create a vector that can be an input here.
@@ -46,6 +48,7 @@ link_all_units<- function(units.run,
                           year.mons = NULL,
                           start.date = NULL,
                           end.date = NULL,
+                          by.time = "month",
                           pbl_trim = TRUE,
                           pbl.height = NULL,
                           crosswalk. = NULL,
@@ -70,9 +73,37 @@ link_all_units<- function(units.run,
   if( pbl_trim & is.null( pbl.height))
     stop( "pbl.height must be provided if pbl_trim == TRUE")
 
+  # define start and end dates as a list
+  if (is.null(start.date) | is.null(end.date)) {
+    start.date <-
+      as.Date(paste(
+        substr(year.mons, 1, 4),
+        substr(year.mons, 5, 6),
+        '01',
+        sep = '-'
+      ))
+    end.date <-
+      as.Date(
+      sapply(
+        start.date,
+        function( d) seq( d,
+          by = paste (1, by.time),
+          length.out = 2)[2] - 1
+        ),
+      origin = '1970-01-01')
+  }
+
+  # create list of dates to link
+   link_dates <- lapply( seq_along( start.date),
+                         function (n)
+                           list( start.date = start.date[n],
+                                 end.date = end.date[n]))
+
+
+  # run the link functions
   zips_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(
-      year.mons,
+      link_dates,
       disperseR::disperser_link_zips,
       unit = unit,
       pbl.height = pbl.height,
@@ -94,7 +125,7 @@ link_all_units<- function(units.run,
 
   counties_link_parallel <- function(unit) {
     linked_counties <- parallel::mclapply(
-      year.mons,
+      link_dates,
       disperseR::disperser_link_counties,
       unit = unit,
       pbl.height = pbl.height,
@@ -116,7 +147,7 @@ link_all_units<- function(units.run,
 
   grids_link_parallel <- function(unit) {
     linked_grids <- parallel::mclapply(
-      year.mons,
+      link_dates,
       disperseR::disperser_link_grids,
       unit = unit,
       pbl.height = pbl.height,

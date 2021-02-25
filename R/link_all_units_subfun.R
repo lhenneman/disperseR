@@ -219,7 +219,8 @@ trim_pbl <- function(Min,
 
 
 #' @export disperser_link_grids
-disperser_link_grids <- function(  month_YYYYMM = NULL,
+disperser_link_grids <- function(   link_dates = NULL,
+                                    month_YYYYMM = NULL,
                                    start.date = NULL,
                                    end.date = NULL,
                                    unit,
@@ -231,6 +232,12 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
                                    crop.usa = FALSE,
                                    return.linked.data.){
   unitID <- unit$ID
+
+  # use dates in link_dates if available
+  if( !is.null( link_dates)){
+    start.date <- link_dates$start.date
+    end.date <- link_dates$end.date
+  }
 
   if( (is.null( start.date) | is.null( end.date)) & is.null( month_YYYYMM))
     stop( "Define either a start.date and an end.date OR a month_YYYYMM")
@@ -360,7 +367,8 @@ disperser_link_grids <- function(  month_YYYYMM = NULL,
 
 
 #' @export disperser_link_counties
-disperser_link_counties <- function( month_YYYYMM = NULL,
+disperser_link_counties <- function(  link_dates = NULL,
+                                      month_YYYYMM = NULL,
                                      start.date = NULL,
                                      end.date = NULL,
                                      counties,
@@ -374,6 +382,11 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
 
   unitID <- unit$ID
 
+  # use dates in link_dates if available
+  if( !is.null( link_dates)){
+    start.date <- link_dates$start.date
+    end.date <- link_dates$end.date
+  }
   if ((is.null(start.date) | is.null(end.date)) & is.null(month_YYYYMM))
     stop("Define either a start.date and an end.date OR a month_YYYYMM")
   if (dim(unit)[1] > 1)
@@ -507,7 +520,8 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
 }
 
 #' @export disperser_link_zips
-disperser_link_zips <- function(month_YYYYMM = NULL,
+disperser_link_zips <- function( link_dates = NULL,
+                                 month_YYYYMM = NULL,
                                 start.date = NULL,
                                 end.date = NULL,
                                 unit,
@@ -520,6 +534,11 @@ disperser_link_zips <- function(month_YYYYMM = NULL,
                                 return.linked.data.) {
   unitID <- unit$ID
 
+  # use dates in link_dates if available
+  if( !is.null( link_dates)){
+    start.date <- link_dates$start.date
+    end.date <- link_dates$end.date
+  }
   if ((is.null(start.date) | is.null(end.date)) & is.null(month_YYYYMM))
     stop("Define either a start.date and an end.date OR a month_YYYYMM")
   if (dim(unit)[1] > 1)
