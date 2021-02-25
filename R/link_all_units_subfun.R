@@ -317,6 +317,7 @@ disperser_link_grids <- function(   link_dates = NULL,
     ## Trim dates & first hour
     d <- d[ as( Pdate, 'character') %in% vec_dates & hour > 1, ]
 
+    print( d)
     ## Trim PBL's
     if( pbl.){
       #Check if extent matches the hpbl raster

@@ -101,11 +101,11 @@ link_all_units<- function(units.run,
 
   print( link_dates)
   # run the link functions
-  zips_link_parallel <- function(unit) {
+  zips_link_parallel <- function(u) {
     linked_zips <- parallel::mclapply(
       link_dates,
-      disperseR::disperser_link_zips,
-      unit = unit,
+      disperser_link_zips, #disperseR::
+      unit = u,
       pbl.height = pbl.height,
       crosswalk. = crosswalk.,
       duration.run.hours = duration.run.hours,
@@ -117,17 +117,18 @@ link_all_units<- function(units.run,
     )
 
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
+    print( linked_zips)
     message(paste("processed unit", unit$ID, ""))
 
     linked_zips[, month := as( month, 'character')]
     return(linked_zips)
   }
 
-  counties_link_parallel <- function(unit) {
+  counties_link_parallel <- function(u) {
     linked_counties <- parallel::mclapply(
       link_dates,
       disperseR::disperser_link_counties,
-      unit = unit,
+      unit = u,
       pbl.height = pbl.height,
       counties = counties.,
       duration.run.hours = duration.run.hours,
@@ -145,11 +146,11 @@ link_all_units<- function(units.run,
     return(linked_counties)
   }
 
-  grids_link_parallel <- function(unit) {
+  grids_link_parallel <- function(u) {
     linked_grids <- parallel::mclapply(
       link_dates,
       disperseR::disperser_link_grids,
-      unit = unit,
+      unit = u,
       pbl.height = pbl.height,
       duration.run.hours = duration.run.hours,
       overwrite = overwrite,
