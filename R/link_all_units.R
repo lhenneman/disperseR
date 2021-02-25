@@ -84,22 +84,22 @@ link_all_units<- function(units.run,
       ))
     end.date <-
       as.Date(
-      sapply(
-        start.date,
-        function( d) seq( d,
-          by = paste (1, by.time),
-          length.out = 2)[2] - 1
+        sapply(
+          start.date,
+          function( d) seq( d,
+                            by = paste (1, by.time),
+                            length.out = 2)[2] - 1
         ),
-      origin = '1970-01-01')
+        origin = '1970-01-01')
   }
 
   # create list of dates to link
-   link_dates <- lapply( seq_along( start.date),
-                         function (n)
-                           list( start.date = start.date[n],
-                                 end.date = end.date[n]))
+  link_dates <- lapply( seq_along( start.date),
+                        function (n)
+                          list( start.date = start.date[n],
+                                end.date = end.date[n]))
 
-
+  print( link_dates)
   # run the link functions
   zips_link_parallel <- function(unit) {
     linked_zips <- parallel::mclapply(

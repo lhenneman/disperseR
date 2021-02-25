@@ -538,6 +538,7 @@ disperser_link_zips <- function( link_dates = NULL,
   if( !is.null( link_dates)){
     start.date <- link_dates$start.date
     end.date <- link_dates$end.date
+    print( c( start.date, end.date))
   }
   if ((is.null(start.date) | is.null(end.date)) & is.null(month_YYYYMM))
     stop("Define either a start.date and an end.date OR a month_YYYYMM")
