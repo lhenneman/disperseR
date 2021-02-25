@@ -99,7 +99,6 @@ link_all_units<- function(units.run,
                           list( start.date = start.date[n],
                                 end.date = end.date[n]))
 
-  print( link_dates)
   # run the link functions
   zips_link_parallel <- function(u) {
     linked_zips <- parallel::mclapply(
