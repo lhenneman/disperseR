@@ -119,12 +119,26 @@ Load `disperseR` into your R session.
 library(disperseR)
 ```
 
-**Docker**
+### Docker container for `disperseR`
+
+For those using Rstudio through rocker ([https://www.rocker-project.org/](https://www.rocker-project.org/)) or other dockerized container that runs Rstudio, we provide access to a rocker based image at Docker Hub. The [audiracmichelle/disperser](https://hub.docker.com/r/audiracmichelle/disperser) image has Rstudio and all the R and unix dependencies already installed to run `disperseR` quickly and reliably.
+
+In a `bash` or `sh` terminal, you can run the image directly from dockerhub using  
+
 ```{}
-docker build -t disperser .
-docker run -p 8787:8787 -e ROOT=true -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/kitematic/ disperser -it /bin/bash
+docker run -p 8787:8787 -e ROOT=true -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/kitematic/ audiracmichelle/disperser
 ```
 
+Or you can build the image using the Dockerfile found in this github repository 
+
+```{}
+docker build -t disperser .
+```
+
+Once the container is running, point your browser to `localhost:8787` and enjoy `disperseR` through your dockerized connection to Rstudio!
+
+
+Make sure to run the container from the location where you want tyou disperseR Rstudio project or R files are saved (or where you want them to be saved), `$(pwd):/home/rstudio/kitematic/` allows to sync the local volume with the container's volume.
 
 ### See the vignettes
 
