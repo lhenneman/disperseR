@@ -129,14 +129,14 @@ In a `bash` or `sh` terminal, you can run the image directly from dockerhub usin
 docker run -p 8787:8787 -e ROOT=true -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/kitematic/ audiracmichelle/disperser
 ```
 
-Or you can build the image using the Dockerfile found in this github repository 
+Or you can build the image using the Dockerfile found in this github repository and then run the container form the local image.
 
 ```{}
 docker build -t disperser .
+docker run -p 8787:8787 -e ROOT=true -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/kitematic/ disperser
 ```
 
 Once the container is running, point your browser to `localhost:8787` and enjoy `disperseR` through your dockerized connection to Rstudio!
-
 
 Make sure to run the container from the location where you want tyou disperseR Rstudio project or R files are saved (or where you want them to be saved), `$(pwd):/home/rstudio/kitematic/` allows to sync the local volume with the container's volume.
 

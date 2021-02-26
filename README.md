@@ -88,7 +88,7 @@ reproducible research. This is why we have included several vignettes to
 help you with the process.
 
   - [The main vignette for
-    disperseR](https://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/dev/vignettesHTML/Vignette_DisperseR.html)
+    disperseR](https://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_DisperseR.html)
   - [Load data one by
     one](http://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html)
   - [Crosswalk data preparation
@@ -147,8 +147,7 @@ data that are attached:
 ### Example graphical output
 
 `disperseR` has functions that let you plot your results. Here is just
-one of many
-examples.
+one of many examples.
 
 <img width="500" alt="Screen Shot 2019-09-11 at 10 51 52" src="https://user-images.githubusercontent.com/43005886/64708191-344fe900-d482-11e9-952e-d21007f8c846.png">
 
@@ -173,8 +172,7 @@ have added links to access already rendered vignettes on GitHub.*
 
 Continue by typing the following in your R console. This will download
 the package from GitHub, install it and build the vignettes. This might
-take some
-minutes.
+take some minutes.
 
 ``` r
 devtools::install_github("lhenneman/disperseR", force = TRUE, build_vignettes = TRUE)
@@ -185,6 +183,35 @@ Load `disperseR` into your R session.
 ``` r
 library(disperseR)
 ```
+
+### Docker container for `disperseR`
+
+For those using Rstudio through rocker
+(<https://www.rocker-project.org/>) or other dockerized container that
+runs Rstudio, we provide access to a rocker based image at Docker Hub.
+The
+[audiracmichelle/disperser](https://hub.docker.com/r/audiracmichelle/disperser)
+image has Rstudio and all the R and unix dependencies already installed
+to run `disperseR` quickly and reliably.
+
+In a `bash` or `sh` terminal, you can run the image directly from
+dockerhub using
+
+    docker run -p 8787:8787 -e ROOT=true -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/kitematic/ audiracmichelle/disperser
+
+Or you can build the image using the Dockerfile found in this github
+repository and then run the container form the local image.
+
+    docker build -t disperser .
+    docker run -p 8787:8787 -e ROOT=true -e DISABLE_AUTH=true -v $(pwd):/home/rstudio/kitematic/ disperser
+
+Once the container is running, point your browser to `localhost:8787`
+and enjoy `disperseR` through your dockerized connection to Rstudio\!
+
+Make sure to run the container from the location where you want tyou
+disperseR Rstudio project or R files are saved (or where you want them
+to be saved), `$(pwd):/home/rstudio/kitematic/` allows to sync the local
+volume with the container’s volume.
 
 ### See the vignettes
 
@@ -246,8 +273,7 @@ This will set up is the following folders and paths to them :
       - `process`: temporary files that are created when the model is
         running and then deleted
 
-Here is a screen shot of what it should look
-like:
+Here is a screen shot of what it should look like:
 
 <img width="856" alt="Screen Shot 2019-09-01 at 16 43 58" src="https://user-images.githubusercontent.com/43005886/64078186-c2381100-ccd7-11e9-96e4-be8f6ef97875.png">
 
@@ -312,8 +338,7 @@ view(disperseR::units)
 **Please note:** If you decide to use a specific unit but for many years
 you must have a row of data for each year. For example this is out data
 from the main vignette. Look at row 1 and row 3. They contain data for
-the same unit but a different
-year.
+the same unit but a different year.
 
 <img width="681" alt="Screen Shot 2019-09-11 at 13 05 52" src="https://user-images.githubusercontent.com/43005886/64718825-f3ad9b00-d494-11e9-951e-020db25d0c8a.png">
 
