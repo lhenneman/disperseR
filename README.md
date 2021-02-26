@@ -208,7 +208,7 @@ repository and then run the container form the local image.
 Once the container is running, point your browser to `localhost:8787`
 and enjoy `disperseR` through your dockerized connection to Rstudio\!
 
-Make sure to run the container from the location where you want tyou
+Make sure to run the container from the location where you your
 disperseR Rstudio project or R files are saved (or where you want them
 to be saved), `$(pwd):/home/rstudio/kitematic/` allows to sync the local
 volume with the container’s volume.
