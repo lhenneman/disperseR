@@ -56,7 +56,6 @@ link_all_units<- function(units.run,
                           duration.run.hours = 240,
                           res.link = 12000,
                           overwrite = FALSE,
-                          pbl.trim = FALSE,
                           crop.usa = FALSE,
                           return.linked.data = TRUE) {
 
