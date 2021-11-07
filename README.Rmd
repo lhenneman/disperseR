@@ -119,6 +119,12 @@ Load `disperseR` into your R session.
 library(disperseR)
 ```
 
+### Docker container
+
+The [audiracmichelle/disperser](https://hub.docker.com/r/audiracmichelle/disperser) image has Rstudio and all the R and unix dependencies already installed to run `disperseR` quickly and reliably. The image is based on rocker project (<https://www.rocker-project.org/>). 
+
+More information on `disperseR` docker image is found in this DockerHub site [https://hub.docker.com/r/audiracmichelle/disperser](https://hub.docker.com/r/audiracmichelle/disperser) or in this GitHub repository [https://github.com/audiracmichelle/docker_disperser](https://github.com/audiracmichelle/docker_disperser).
+
 ### See the vignettes
 
 You should be able to see the main vignette like this. This will be opened by your RStudio.
