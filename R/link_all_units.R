@@ -6,7 +6,7 @@
 #'
 #'
 #'
-#' @param units.run information on unit locations as output from disperseR::units()
+#' @param units.run A data.table with the following columns (and column classes): ID (character)a unique ID assigned to the particles emmission source. uID (character) same as ID. Latitude (numeric) and Longitude (numeric) the emmission source's latitude and longitude. year (integer) in which the emission events occur. If disperseR::units() was used in `run_disperser_parallel()` then units.run is the information on unit locations as output from disperseR::units().
 #'
 #' @param start.date this argument is not necessary, but can be used if the user is interested in specifying a specific date to start the analysis with as opposed to using months. For example `start.date="2005-01-02"` for 2 January 2005. This argument are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided.
 #'
