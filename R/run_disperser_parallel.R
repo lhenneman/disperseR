@@ -5,7 +5,7 @@
 #' It is possible that running the below code with output a warning "WARNING: map background file not found ../graphics/arlmap". It is safe to ignore it.
 #'
 #'
-#' @param input.refs should be the data table that is the result of the `define_input()` function or a subset of that dataset
+#' @param input.refs A data.table with the following columns (and column classes): ID (character) a unique ID assigned to the particles emmission source. uID (character) same as ID. Latitude (numeric) and Longitude (numeric) the emmission source's latitude and longitude. Height (numeric) the emmission source's height in meters above ground level. start_day (Date) and start_hour (numeric) the date and time when the emissions occurrence begins. duration_emiss_hours (numeric) the length in hours of the emission event. duration_run_hours (numeric) the length in hours of the dispersion simulation. Be mindful of the default value of the parameter stringsAsFactors when using the function data.table() to convert a data.frame to a data.table. If disperseR::units data is used, then input.refs can take the data.table that is the result of the `define_input()` function or a subset of that dataset. 
 #'
 #' @param pbl.height Monthly mean planetary boundary layer heights. See vignettes for more information
 #'
