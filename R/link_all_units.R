@@ -12,7 +12,7 @@
 #'
 #' @param start.end this argument is not necessary, but can be used if the user is interested in specifying a specific date to end the analysis with as opposed to using months. For example `start.date="2005-01-02"` for 2 January 2005.This argument are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided.
 #'
-#' @param link.to one of 'zips', 'counties', or 'grids' to denote spatial linkage scale. zips and counties are only for the USA
+#' @param link.to one of 'zips', 'counties', or 'grids' to denote spatial linkage scale. zips and counties are only for the USA. If another spatial unit of aggregation is required (census tracts, census block groups, etc), an sf object with POLYGONS can be provided to the `counties.` parameter. These sf object provided to the `counties.` parameter must have the following columns: statefp (character) the fips id of the state. countyfp (character) the fips id of the county. state_name (character) the name of the state. geoid (character) the id of the aggregation unit. name (character) the name of the aggregation unit. geometry (sfc_POLYGON or sfc_MULTIPOLYGON).
 #'
 #' @param year.mons these are the months for which we would like to do the linking. You can use the get_yearmon() function to create a vector that can be an input here.
 #'
