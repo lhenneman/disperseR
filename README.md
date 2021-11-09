@@ -3,9 +3,7 @@ DisperseR
 11 Sep 2019
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-
 <!-- badges: start -->
-
 <!-- badges: end -->
 
 # PLEASE NOTE:This package as well as this readme are still under development.
@@ -14,9 +12,9 @@ DisperseR
 
 ## Package Authors:
 
-  - **Main author**: Lucas Henneman
-  - **Contributor**: Christine Choirat
-  - **Contributor**: Maja Garbulinska
+-   **Main author**: Lucas Henneman
+-   **Contributor**: Christine Choirat
+-   **Contributor**: Maja Garbulinska
 
 ## What is disperseR ?
 
@@ -44,16 +42,16 @@ a more friendly interaction with the package.
 `disperseR` is a new version of the `hyspdisp` package. What has been
 improved?
 
-  - Input data manipulation is handled at the package level. The user
+-   Input data manipulation is handled at the package level. The user
     only has to read the data in using the `disperseR::get_data()`
     function. We show how to do it in the main vignette.
 
-  - We also created additional vignettes should the user want to see how
+-   We also created additional vignettes should the user want to see how
     the attached data was preprocessed. We show every single step of
     preprocessing starting from the step of data download. This is key
     for reproducible research.
 
-  - Very clear project struture and automatization does not make the
+-   Very clear project struture and automatization does not make the
     user lost in the maze of multiple folders. The
     `disperseR::create_dirs()` automatically creates the whole project
     structure either in the specified location or on the desktop. The
@@ -62,22 +60,22 @@ improved?
     that the `disperseR::create_dirs()` function does not overwrite the
     project folders if they already exists in the specified location.
 
-  - Until now the `units` data for different years was separated and
+-   Until now the `units` data for different years was separated and
     only four years of data were available with the package. Now data
     for years 1995 to 2015 has been added and aggregated to one data
     file called `units` attached to `disperseR`.
 
-  - ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk
+-   ZIP code linkage procedure requires a ZCTA-to-ZIP code crosswalk
     file. These crosswalk data has also been attached to the package. It
     not only provides the crosswalk between ZCTA and ZIP but also
     contains information about population sizes.
 
-  - Before the user could only run analysis for one year. `disperseR`
+-   Before the user could only run analysis for one year. `disperseR`
     allows to process all the needed years together.
 
-  - Graph functions now have many automatic features.
+-   Graph functions now have many automatic features.
 
-  - Documentation has been much improved. The `?FUNCTION` syntax should
+-   Documentation has been much improved. The `?FUNCTION` syntax should
     work to access help files.
 
 ### Vignettes attached with the package
@@ -87,19 +85,19 @@ especially if you are not very familiar with R. We also believe in
 reproducible research. This is why we have included several vignettes to
 help you with the process.
 
-  - [The main vignette for
-    disperseR](https://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/dev/vignettesHTML/Vignette_DisperseR.html)
-  - [Load data one by
+-   [The main vignette for
+    disperseR](https://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_DisperseR.html)
+-   [Load data one by
     one](http://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_Get_Data_One_by_One.html)
-  - [Crosswalk data preparation
+-   [Crosswalk data preparation
     (optional)](http://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_Crosswalk_preparation.html)
-  - [Planetary layers data preparation
+-   [Planetary layers data preparation
     (optional)](http://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_Planetary_Layers_Data_Preparation.html)
-  - [ZIP Code coordinate data preparation
+-   [ZIP Code coordinate data preparation
     (optional)](http://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_Zip_Code_Coordinate_Data_Preparation.html)
-  - [Vignette ZCTA shapefile preparation
+-   [Vignette ZCTA shapefile preparation
     (optional)](http://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_ZCTA_Shapefile_Preparation.html)
-  - [Vignette units preparation
+-   [Vignette units preparation
     (optional)](http://htmlpreview.github.io/?https://github.com/lhenneman/disperseR/blob/master/vignettesHTML/Vignette_Units_Preparation.html)
 
 ### Data attached with the package
@@ -110,7 +108,7 @@ ZCTA shapefile is more than 140 MB. You can access it very simply with
 the help of the `disperseR::get_data()` function. Here however are the
 data that are attached:
 
-  - **crosswalk**: ZIP code linkage procedure requires a ZCTA-to-ZIP
+-   **crosswalk**: ZIP code linkage procedure requires a ZCTA-to-ZIP
     code crosswalk file. ZCTAs are not exact geographic matches to ZIP
     codes, and multiple groups compile and maintain Crosswalk files. We
     used the Crosswalk maintained by [UDS
@@ -123,13 +121,13 @@ data that are attached:
     vignette that explains it. You can see it by clicking
     [here](vignettes/Vignette_Crosswalk_Preparation/html).
 
-  - **PP.units.monthly1995\_2017** : The `disperseR` package also
+-   **PP.units.monthly1995\_2017** : The `disperseR` package also
     includes monthly power plant emissions, load, and heat input data.
     (we currently do not have a vignette for these data due to server
     problems of the data owner). This will be updated as soon as
     possible.
 
-  - **units**(data for 1995-2015): This package contains annual
+-   **units**(data for 1995-2015): This package contains annual
     emissions and stack height data from [EPA’s Air Markets Program
     Data](https://ampd.epa.gov/ampd/) and the [Energy Information
     Agency](https://www.eia.gov/electricity/data/eia860/). Again, if you
@@ -137,7 +135,7 @@ data that are attached:
     special vignette that we have attached to this package. You can see
     it by clicking [here](vignettes/Vignette_Units_Preparation.html).
 
-  - **zipcode coordinate data**: The `disperseR` package contains a data
+-   **zipcode coordinate data**: The `disperseR` package contains a data
     set with coordinates of ZIP codes. This might be useful for
     plotting, but it is not necessary as it will be used automatically
     by our plotting functions where required. Please click
@@ -147,8 +145,7 @@ data that are attached:
 ### Example graphical output
 
 `disperseR` has functions that let you plot your results. Here is just
-one of many
-examples.
+one of many examples.
 
 <img width="500" alt="Screen Shot 2019-09-11 at 10 51 52" src="https://user-images.githubusercontent.com/43005886/64708191-344fe900-d482-11e9-952e-d21007f8c846.png">
 
@@ -173,8 +170,7 @@ have added links to access already rendered vignettes on GitHub.*
 
 Continue by typing the following in your R console. This will download
 the package from GitHub, install it and build the vignettes. This might
-take some
-minutes.
+take some minutes.
 
 ``` r
 devtools::install_github("lhenneman/disperseR", force = TRUE, build_vignettes = TRUE)
@@ -185,6 +181,18 @@ Load `disperseR` into your R session.
 ``` r
 library(disperseR)
 ```
+
+### Docker container
+
+The
+[audiracmichelle/disperser](https://hub.docker.com/r/audiracmichelle/disperser)
+image has Rstudio and all the R and unix dependencies already installed
+to run `disperseR` quickly and reliably. The image is based on rocker
+project (<https://www.rocker-project.org/>).
+
+More information on `disperseR` docker image is found in its DockerHub
+site <https://hub.docker.com/r/audiracmichelle/disperser> or in its
+GitHub repository <https://github.com/audiracmichelle/docker_disperser>.
 
 ### See the vignettes
 
@@ -230,24 +238,23 @@ disperseR::create_dirs(location = "/Users/username/Dropbox")
 
 This will set up is the following folders and paths to them :
 
-  - `main`: the main folder where the project will be located.
-      - `input`: the input that we need for calculations.
-          - `zcta_500k`: ZCTA (A Zip Code Tabulation Area) shape files
-          - `hpbl`: monthly global planetary boundary layer files.
-          - `meteo`: (reanalysis) meteorology files
-      - `output`
-          - `hysplit`: disperseR output (one file for each emissions
+-   `main`: the main folder where the project will be located.
+    -   `input`: the input that we need for calculations.
+        -   `zcta_500k`: ZCTA (A Zip Code Tabulation Area) shape files
+        -   `hpbl`: monthly global planetary boundary layer files.
+        -   `meteo`: (reanalysis) meteorology files
+    -   `output`
+        -   `hysplit`: disperseR output (one file for each emissions
             event)
-          - `ziplink`: files containing ZIP code linkages
-          - `rdata`: RData files containing HyADS source-receptor
+        -   `ziplink`: files containing ZIP code linkages
+        -   `rdata`: RData files containing HyADS source-receptor
             matrices
-          - `exp`: exposure per zipcode data
-          - `graph`: graphs saved here as pdf when running functions
-      - `process`: temporary files that are created when the model is
+        -   `exp`: exposure per zipcode data
+        -   `graph`: graphs saved here as pdf when running functions
+    -   `process`: temporary files that are created when the model is
         running and then deleted
 
-Here is a screen shot of what it should look
-like:
+Here is a screen shot of what it should look like:
 
 <img width="856" alt="Screen Shot 2019-09-01 at 16 43 58" src="https://user-images.githubusercontent.com/43005886/64078186-c2381100-ccd7-11e9-96e4-be8f6ef97875.png">
 
@@ -312,8 +319,7 @@ view(disperseR::units)
 **Please note:** If you decide to use a specific unit but for many years
 you must have a row of data for each year. For example this is out data
 from the main vignette. Look at row 1 and row 3. They contain data for
-the same unit but a different
-year.
+the same unit but a different year.
 
 <img width="681" alt="Screen Shot 2019-09-11 at 13 05 52" src="https://user-images.githubusercontent.com/43005886/64718825-f3ad9b00-d494-11e9-951e-020db25d0c8a.png">
 
@@ -329,26 +335,26 @@ plotting functions.
 
 ## Packages used in functions and vignettes.
 
-  - base (R Core Team 2019a)
-  - data.table (Dowle and Srinivasan 2019)
-  - dplyr (Wickham et al. 2019)
-  - ggmap (Kahle and Wickham 2013)
-  - ggplot2 (Wickham 2016)
-  - ggrepel (Slowikowski 2019)
-  - ggsn (Santos Baquero 2019)
-  - gridExtra (Auguie 2017)
-  - lubridate (Grolemund and Wickham 2011)
-  - measurements (Birk 2019)
-  - ncdf4 (Pierce 2019)
-  - parallel (R Core Team 2019b)
-  - raster (Hijmans 2019)
-  - readxl (Wickham and Bryan 2019)
-  - scales (Wickham 2018)
-  - sf (Pebesma 2018)
-  - sp (Pebesma and Bivand 2005)
-  - tidyr (Wickham and Henry 2019)
-  - tidyverse (Wickham 2017)
-  - viridis (Garnier 2018)
+-   base (R Core Team 2019a)
+-   data.table (Dowle and Srinivasan 2019)
+-   dplyr (Wickham et al. 2019)
+-   ggmap (Kahle and Wickham 2013)
+-   ggplot2 (Wickham 2016)
+-   ggrepel (Slowikowski 2019)
+-   ggsn (Santos Baquero 2019)
+-   gridExtra (Auguie 2017)
+-   lubridate (Grolemund and Wickham 2011)
+-   measurements (Birk 2019)
+-   ncdf4 (Pierce 2019)
+-   parallel (R Core Team 2019b)
+-   raster (Hijmans 2019)
+-   readxl (Wickham and Bryan 2019)
+-   scales (Wickham 2018)
+-   sf (Pebesma 2018)
+-   sp (Bivand, Pebesma, and Gomez-Rubio 2013)
+-   tidyr (Wickham and Henry 2019)
+-   tidyverse (Wickham 2017)
+-   viridis (Garnier 2018)
 
 ## References / Resources Used
 
@@ -364,82 +370,90 @@ Soc., 87, 343–360, <https://doi.org/10.1175/BAMS-87-3-343>
 
 [SplitR package](https://rdrr.io/github/rich-iannone/SplitR/)
 
-<div id="refs" class="references">
+<div id="refs" class="references csl-bib-body hanging-indent">
 
-<div id="ref-gridExtra">
+<div id="ref-gridExtra" class="csl-entry">
 
-Auguie, Baptiste. 2017. *GridExtra: Miscellaneous Functions for "Grid"
+Auguie, Baptiste. 2017. *gridExtra: Miscellaneous Functions for "Grid"
 Graphics*. <https://CRAN.R-project.org/package=gridExtra>.
 
 </div>
 
-<div id="ref-measurements">
+<div id="ref-measurements" class="csl-entry">
 
 Birk, Matthew A. 2019. *Measurements: Tools for Units of Measurement*.
 <https://CRAN.R-project.org/package=measurements>.
 
 </div>
 
-<div id="ref-Crosswalk">
+<div id="ref-sp" class="csl-entry">
 
-“Crosswalk Zip Code to Zcta Crosswalk Table Developed by John Snow, Inc.
-(JSI) for Use with Uds Service Area Data. Not an Official Usps or Census
+Bivand, Roger S., Edzer Pebesma, and Virgilio Gomez-Rubio. 2013.
+*Applied Spatial Data Analysis with R, Second Edition*. Springer, NY.
+<http://www.asdar-book.org/>.
+
+</div>
+
+<div id="ref-Crosswalk" class="csl-entry">
+
+“Crosswalk ZIP Code to ZCTA Crosswalk Table Developed by John Snow, Inc.
+(JSI) for Use with UDS Service Area Data. Not an Official USPS or Census
 Product.” n.d. <https://www.udsmapper.org/zcta-crosswalk.cfm>.
 
 </div>
 
-<div id="ref-data.table">
+<div id="ref-data.table" class="csl-entry">
 
 Dowle, Matt, and Arun Srinivasan. 2019. *Data.table: Extension of
 ‘Data.frame‘*. <https://CRAN.R-project.org/package=data.table>.
 
 </div>
 
-<div id="ref-EIA">
+<div id="ref-EIA" class="csl-entry">
 
 “EIA Data.” n.d. <https://www.eia.gov/electricity/data/eia860/>.
 
 </div>
 
-<div id="ref-EPA">
+<div id="ref-EPA" class="csl-entry">
 
-“EPA’s Air Markets Program Data Data.” n.d.
+“<span class="nocase">EPA’s Air Markets Program Data</span> Data.” n.d.
 <https://ampd.epa.gov/ampd/>.
 
 </div>
 
-<div id="ref-viridis">
+<div id="ref-viridis" class="csl-entry">
 
 Garnier, Simon. 2018. *Viridis: Default Color Maps from ’Matplotlib’*.
 <https://CRAN.R-project.org/package=viridis>.
 
 </div>
 
-<div id="ref-lubridate">
+<div id="ref-lubridate" class="csl-entry">
 
 Grolemund, Garrett, and Hadley Wickham. 2011. “Dates and Times Made Easy
-with lubridate.” *Journal of Statistical Software* 40 (3): 1–25.
-<http://www.jstatsoft.org/v40/i03/>.
+with <span class="nocase">lubridate</span>.” *Journal of Statistical
+Software* 40 (3): 1–25. <http://www.jstatsoft.org/v40/i03/>.
 
 </div>
 
-<div id="ref-disperseR">
+<div id="ref-disperseR" class="csl-entry">
 
 Henneman, Lucas, Christine Choirat, and Maja Garbulinska. n.d.
-*DisperseR: Run Hysplit Many Times in Parallel, Aggregate to Zip Code
+*disperseR: Run HYSPLIT Many Times in Parallel, Aggregate to Zip Code
 Level, Plot the Results, Save the Plots.*
 <https://github.com/garbulinskamaja/disperseR>.
 
 </div>
 
-<div id="ref-raster">
+<div id="ref-raster" class="csl-entry">
 
 Hijmans, Robert J. 2019. *Raster: Geographic Data Analysis and
 Modeling*. <https://CRAN.R-project.org/package=raster>.
 
 </div>
 
-<div id="ref-ggmap">
+<div id="ref-ggmap" class="csl-entry">
 
 Kahle, David, and Hadley Wickham. 2013. “Ggmap: Spatial Visualization
 with Ggplot2.” *The R Journal* 5 (1): 144–61.
@@ -447,30 +461,22 @@ with Ggplot2.” *The R Journal* 5 (1): 144–61.
 
 </div>
 
-<div id="ref-sf">
+<div id="ref-sf" class="csl-entry">
 
-Pebesma, Edzer. 2018. “Simple Features for R: Standardized Support for
-Spatial Vector Data.” *The R Journal* 10 (1): 439–46.
-<https://doi.org/10.32614/RJ-2018-009>.
-
-</div>
-
-<div id="ref-sp">
-
-Pebesma, Edzer J., and Roger S. Bivand. 2005. “Classes and Methods for
-Spatial Data in R.” *R News* 5 (2): 9–13.
-<https://CRAN.R-project.org/doc/Rnews/>.
+Pebesma, Edzer. 2018. “<span class="nocase">Simple Features for R:
+Standardized Support for Spatial Vector Data</span>.” *The R Journal* 10
+(1): 439–46. <https://doi.org/10.32614/RJ-2018-009>.
 
 </div>
 
-<div id="ref-ncdf4">
+<div id="ref-ncdf4" class="csl-entry">
 
 Pierce, David. 2019. *Ncdf4: Interface to Unidata netCDF (Version 4 or
 Earlier) Format Data Files*. <https://CRAN.R-project.org/package=ncdf4>.
 
 </div>
 
-<div id="ref-base">
+<div id="ref-base" class="csl-entry">
 
 R Core Team. 2019a. *R: A Language and Environment for Statistical
 Computing*. Vienna, Austria: R Foundation for Statistical Computing.
@@ -478,7 +484,7 @@ Computing*. Vienna, Austria: R Foundation for Statistical Computing.
 
 </div>
 
-<div id="ref-parallel">
+<div id="ref-parallel" class="csl-entry">
 
 ———. 2019b. *R: A Language and Environment for Statistical Computing*.
 Vienna, Austria: R Foundation for Statistical Computing.
@@ -486,7 +492,7 @@ Vienna, Austria: R Foundation for Statistical Computing.
 
 </div>
 
-<div id="ref-ggsn">
+<div id="ref-ggsn" class="csl-entry">
 
 Santos Baquero, Oswaldo. 2019. *Ggsn: North Symbols and Scale Bars for
 Maps Created with ’Ggplot2’ or ’Ggmap’*.
@@ -494,7 +500,7 @@ Maps Created with ’Ggplot2’ or ’Ggmap’*.
 
 </div>
 
-<div id="ref-ggrepel">
+<div id="ref-ggrepel" class="csl-entry">
 
 Slowikowski, Kamil. 2019. *Ggrepel: Automatically Position
 Non-Overlapping Text Labels with ’Ggplot2’*.
@@ -502,42 +508,42 @@ Non-Overlapping Text Labels with ’Ggplot2’*.
 
 </div>
 
-<div id="ref-zcta">
+<div id="ref-zcta" class="csl-entry">
 
-“United States Census Bureau Zcta Shape Files.” n.d.
+“United States Census Bureau ZCTA Shape Files.” n.d.
 <http://www2.census.gov/geo/tiger/GENZ2017/shp/cb_2017_us_zcta510_500k.zip>.
 
 </div>
 
-<div id="ref-ggplot2">
+<div id="ref-ggplot2" class="csl-entry">
 
 Wickham, Hadley. 2016. *Ggplot2: Elegant Graphics for Data Analysis*.
 Springer-Verlag New York. <https://ggplot2.tidyverse.org>.
 
 </div>
 
-<div id="ref-tidyverse">
+<div id="ref-tidyverse" class="csl-entry">
 
 ———. 2017. *Tidyverse: Easily Install and Load the ’Tidyverse’*.
 <https://CRAN.R-project.org/package=tidyverse>.
 
 </div>
 
-<div id="ref-scales">
+<div id="ref-scales" class="csl-entry">
 
 ———. 2018. *Scales: Scale Functions for Visualization*.
 <https://CRAN.R-project.org/package=scales>.
 
 </div>
 
-<div id="ref-readxl">
+<div id="ref-readxl" class="csl-entry">
 
 Wickham, Hadley, and Jennifer Bryan. 2019. *Readxl: Read Excel Files*.
 <https://CRAN.R-project.org/package=readxl>.
 
 </div>
 
-<div id="ref-dplyr">
+<div id="ref-dplyr" class="csl-entry">
 
 Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2019.
 *Dplyr: A Grammar of Data Manipulation*.
@@ -545,7 +551,7 @@ Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2019.
 
 </div>
 
-<div id="ref-tidyr">
+<div id="ref-tidyr" class="csl-entry">
 
 Wickham, Hadley, and Lionel Henry. 2019. *Tidyr: Easily Tidy Data with
 ’Spread()’ and ’Gather()’ Functions*.
@@ -553,10 +559,11 @@ Wickham, Hadley, and Lionel Henry. 2019. *Tidyr: Easily Tidy Data with
 
 </div>
 
-<div id="ref-opendatasoft">
+<div id="ref-opendatasoft" class="csl-entry">
 
-“ZIP code latitude and longitude Public Open Datasoft.” n.d.
-['https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/download/?format=csv\&timezone=Europe/Berlin\&use\_labels\_for\_header=true']('https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/download/?format=csv&timezone=Europe/Berlin&use_labels_for_header=true').
+“<span class="nocase">ZIP code latitude and longitude</span> PUBLIC OPEN
+DATASOFT.” n.d.
+['https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/download/?format=csv&timezone=Europe/Berlin&use\_labels\_for\_header=true']('https://public.opendatasoft.com/explore/dataset/us-zip-code-latitude-and-longitude/download/?format=csv&timezone=Europe/Berlin&use_labels_for_header=true').
 
 </div>
 
