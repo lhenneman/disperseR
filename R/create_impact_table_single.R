@@ -36,7 +36,7 @@ create_impact_table_single <- function(data.linked,
 
   year.use <- as( substr( map.month, 1, 4), 'integer')
   datareduced <-
-    data.linked[month == map.month & ID == map.unitID]
+    data.linked[month == map.month & unitID == map.unitID]
   dataunits <- data.units[ID == map.unitID & year == year.use]
 
   if( link.to == 'zips'){
