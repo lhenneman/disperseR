@@ -145,7 +145,7 @@ link_all_units<- function(units.run,
   if( link.to == 'grids')
     out <- units.run[, grids_link_parallel(.SD), by = seq_len(nrow(units.run))]
 
-  out[, comb := paste("month: ", out[, month], " unitID :", out[, ID], sep = "")]
+  out[, comb := paste("month: ", out[, .(month)], " unitID :", out[, .(ID)], sep = "")]
   out[, seq_len := NULL]
   return(out)
 }
