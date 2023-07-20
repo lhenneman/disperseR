@@ -30,7 +30,7 @@ link_all_units(units.run, link.to = "zips", mc.cores = detectCores(),
 
 \item{overwrite}{`overwrite = FALSE` by default. Would you like to overwrite files that already exist?}
 
-\item{start.end}{this argument is not necessary, but can be used if the user is interested in specifying a specific date to end the analysis with as opposed to using months. For example `start.date="2005-01-02"` for 2 January 2005.This argument are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided.}
+\item{end.date}{this argument is not necessary, but can be used if the user is interested in specifying a specific date to end the analysis with as opposed to using months. For example `start.date="2005-01-02"` for 2 January 2005. This argument are set to `NULL` by default and the function computes the start and the end dates using the `year.mons` provided.}
 }
 \value{
 vector of months that you can loop over
