@@ -132,7 +132,7 @@ link_all_units<- function(units.run,
     linked_grids <- data.table::rbindlist(Filter(is.data.table, linked_grids))
     message(paste("processed unit", unit$ID, ""))
 
-    linked_grids[, month := as( month, 'character')]
+    linked_grids[, month := as( year.mons, 'character')]
     return(linked_grids)
   }
 
