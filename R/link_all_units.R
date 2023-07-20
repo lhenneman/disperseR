@@ -88,7 +88,7 @@ link_all_units<- function(units.run,
     linked_zips <- data.table::rbindlist(Filter(is.data.table, linked_zips))
     message(paste("processed unit", unit$ID, ""))
 
-    linked_zips[, month := as( month, 'character')]
+    linked_zips[, month := as( year.mons, 'character')]
     return(linked_zips)
   }
 
@@ -110,7 +110,7 @@ link_all_units<- function(units.run,
     linked_counties <- data.table::rbindlist(Filter(is.data.table, linked_counties))
     message(paste("processed unit", unit$ID, ""))
 
-    linked_counties[, month := as( month, 'character')]
+    linked_counties[, month := as( year.mons, 'character')]
     return(linked_counties)
   }
 
@@ -145,7 +145,7 @@ link_all_units<- function(units.run,
   if( link.to == 'grids')
     out <- units.run[, grids_link_parallel(.SD), by = seq_len(nrow(units.run))]
 
-  out[, comb := paste("month: ", out[, .(month)], " unitID :", out[, .(ID)], sep = "")]
+  out[, comb := paste("month: ", out[, .(month)], " unitID :", out[, .(unit)], sep = "")]
   out[, seq_len := NULL]
   return(out)
 }
