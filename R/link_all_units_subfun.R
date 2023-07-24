@@ -461,9 +461,10 @@ disperser_link_counties <- function( month_YYYYMM = NULL,
     } else
       d_trim <- d
 
-    counties.sp <- sf::as_Spatial( counties)
-    p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
-    counties.sp <- spTransform(counties.sp, p4s)
+      counties.sp <- sf::as_Spatial( counties)
+      p4s <- "+init=epsg:3857"
+      ## p4s <- "+proj=aea +lat_1=20 +lat_2=60 +lat_0=40 +lon_0=-96 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m"
+      counties.sp <- spTransform(counties.sp, p4s)
 
     disp_df_link <- link_to( d = d_trim,
                              link.to = 'counties',

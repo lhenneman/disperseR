@@ -2,7 +2,7 @@
 % Please edit documentation in R/plot_impact_unit.R
 \name{plot_impact_unit}
 \alias{plot_impact_unit}
-\title{create a set of directories to run disperseR}
+\title{Plot unit locations and ranks and bar plots}
 \usage{
 plot_impact_unit(data.linked = NULL, zip.codes = NULL, y.lim = c(24,
   50), x.lim = c(-123, -69), plot.title = NULL, legend.lims = NULL,
